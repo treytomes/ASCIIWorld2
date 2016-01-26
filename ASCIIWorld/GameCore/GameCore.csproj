@@ -1,0 +1,124 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{15F57529-4C96-4886-B141-3DBBACC2FC09}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>GameCore</RootNamespace>
+    <AssemblyName>GameCore</AssemblyName>
+    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="OpenTK, Version=1.1.0.0, Culture=neutral, PublicKeyToken=bad199fe84eb3df4, processorArchitecture=MSIL">
+      <HintPath>..\..\DungeonRunner\packages\OpenTK.1.1.1589.5942\lib\NET40\OpenTK.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Camera.cs" />
+    <Compile Include="ICloneable.cs" />
+    <Compile Include="IPoolable.cs" />
+    <Compile Include="Math\Direction.cs" />
+    <Compile Include="ObjectPool.cs" />
+    <Compile Include="Platform\GdiPlus.cs" />
+    <Compile Include="Platform\IGdiPlusInternals.cs" />
+    <Compile Include="Platform\Windows\WinGdiPlusInternals.cs" />
+    <Compile Include="Platform\X11\X11GdiPlusInternals.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="PropertyAccessor.cs" />
+    <Compile Include="PropertyChangingEventArgs.cs" />
+    <Compile Include="Rendering\BaseTessellator.cs" />
+    <Compile Include="Rendering\ColorHelper.cs" />
+    <Compile Include="Rendering\GraphicsResourceException.cs" />
+    <Compile Include="Rendering\IGraphicsResource.cs" />
+    <Compile Include="Rendering\ImmediateModeTessellator.cs" />
+    <Compile Include="Rendering\IProjection.cs" />
+    <Compile Include="Rendering\ITessellator.cs" />
+    <Compile Include="Rendering\OrthographicProjection.cs" />
+    <Compile Include="Rendering\PerspectiveProjection.cs" />
+    <Compile Include="Rendering\ShaderProgram.cs" />
+    <Compile Include="Rendering\ShaderVariable.cs" />
+    <Compile Include="Rendering\Texture2D.cs" />
+    <Compile Include="Rendering\TextureRegion2D.cs" />
+    <Compile Include="Rendering\Text\CachedGlyphInfo.cs" />
+    <Compile Include="Rendering\Text\GdiPlusGlyphRasterizer.cs" />
+    <Compile Include="Rendering\Text\GL11TextOutputProvider.cs" />
+    <Compile Include="Rendering\Text\GL12TextOutputProvider.cs" />
+    <Compile Include="Rendering\Text\GL1TextOuputProvider.cs" />
+    <Compile Include="Rendering\Text\GLTextWriter.cs" />
+    <Compile Include="Rendering\Text\Glyph.cs" />
+    <Compile Include="Rendering\Text\GlyphCache.cs" />
+    <Compile Include="Rendering\Text\GlyphEnumerator.cs" />
+    <Compile Include="Rendering\Text\GlyphPacker.cs" />
+    <Compile Include="Rendering\Text\GlyphSheet.cs" />
+    <Compile Include="Rendering\Text\IGlyphCache.cs" />
+    <Compile Include="Rendering\Text\IGlyphRasterizer.cs" />
+    <Compile Include="Rendering\Text\ITextOutputProvider.cs" />
+    <Compile Include="Rendering\Text\ITextPrinter.cs" />
+    <Compile Include="Rendering\Text\PoolableTextExtents.cs" />
+    <Compile Include="Rendering\Text\TextAlignment.cs" />
+    <Compile Include="Rendering\Text\TextBlock.cs" />
+    <Compile Include="Rendering\Text\TextDirection.cs" />
+    <Compile Include="Rendering\Text\TextExtents.cs" />
+    <Compile Include="Rendering\Text\TextPrinter.cs" />
+    <Compile Include="Rendering\Text\TextPrinterOptions.cs" />
+    <Compile Include="Rendering\Text\TextQuality.cs" />
+    <Compile Include="Rendering\TileSet.cs" />
+    <Compile Include="Rendering\VertexBufferElement.cs" />
+    <Compile Include="Rendering\VertexBufferObject.cs" />
+    <Compile Include="Rendering\VertexBufferTessellator.cs" />
+    <Compile Include="Rendering\VertexTessellatorMode.cs" />
+    <Compile Include="Rendering\Viewport.cs" />
+    <Compile Include="StateManagement\GameState.cs" />
+    <Compile Include="StateManagement\GameStateManager.cs" />
+    <Compile Include="UI\ITextDescription.cs" />
+    <Compile Include="UI\ListItem.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
