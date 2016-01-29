@@ -1,4 +1,5 @@
-﻿using GameCore.Rendering;
+﻿using GameCore.IO;
+using GameCore.Rendering;
 using System;
 using System.Collections.Generic;
 
@@ -8,20 +9,26 @@ namespace GameCore.StateManagement
 	{
 		#region Fields
 
+		private ContentManager _content;
 		private List<GameState> _states;
 
 		#endregion
 
 		#region Constructors
 
-		public GameStateManager()
+		public GameStateManager(IGameWindow gameWindow, ContentManager content)
 		{
+			GameWindow = gameWindow;
+
+			_content = content;
 			_states = new List<GameState>();
 		}
 
 		#endregion
 
 		#region Properties
+
+		public IGameWindow GameWindow { get; private set; }
 
 		public int Count
 		{
@@ -45,7 +52,7 @@ namespace GameCore.StateManagement
 
 		public void EnterState(GameState state)
 		{
-			state.LoadContent();
+			state.LoadContent(_content);
 			_states.Insert(0, state);
 		}
 

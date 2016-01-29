@@ -86,6 +86,10 @@ namespace GameCore.Rendering
 				shader.Begin();
 				shader.GetVariable("texture").BindTexture(_textureID);
 			}
+			else
+			{
+				GL.BindTexture(TextureTarget.Texture2D, _textureID);
+			}
 
 			Render(type);
 

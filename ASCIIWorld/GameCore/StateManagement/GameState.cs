@@ -1,4 +1,5 @@
-﻿using GameCore.Rendering;
+﻿using GameCore.IO;
+using GameCore.Rendering;
 using System;
 
 namespace GameCore.StateManagement
@@ -31,7 +32,7 @@ namespace GameCore.StateManagement
 		{
 			get
 			{
-				return Manager.CurrentState == this;
+				return Manager.GameWindow.Focused && (Manager.CurrentState == this);
 			}
 		}
 
@@ -41,7 +42,7 @@ namespace GameCore.StateManagement
 
 		#region Methods
 
-		public virtual void LoadContent()
+		public virtual void LoadContent(ContentManager content)
 		{
 		}
 

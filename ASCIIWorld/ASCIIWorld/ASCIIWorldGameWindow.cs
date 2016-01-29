@@ -1,36 +1,27 @@
-﻿using GameCore.StateManagement;
-using OpenTK;
-using OpenTK.Graphics;
-using OpenTK.Graphics.OpenGL;
-using OpenTK.Input;
+﻿using ASCIIWorld.IO;
+using ASCIIWorld.Properties;
+using GameCore;
 using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ASCIIWorld
 {
-	public class ASCIIWorldGameWindow : GameWindow
+	public class ASCIIWorldGameWindow : BasicGameWindow
 	{
 		#region Fields
 
-		private GameStateManager _states;
+		//private ScriptManager _scriptManager;
 
 		#endregion
 
 		#region Constructors
 
 		public ASCIIWorldGameWindow()
-			: base(1280, 720, GraphicsMode.Default, "ASCII World")
+			: base(1280, 720, "ASCII World", Resources.ContentRootPath)
 		{
 			Load += ASCIIWorldGameWindow_Load;
-			Resize += ASCIIWorldGameWindow_Resize;
-			UpdateFrame += ASCIIWorldGameWindow_UpdateFrame;
-			RenderFrame += ASCIIWorldGameWindow_RenderFrame;
+			Content.RegisterContentProvider(new TileContentProvider());
 
-			_states = new GameStateManager();
+			//_scriptManager = new ScriptManager();
 		}
 
 		#endregion
@@ -42,35 +33,8 @@ namespace ASCIIWorld
 		/// </summary>
 		private void ASCIIWorldGameWindow_Load(object sender, EventArgs e)
 		{
-			VSync = VSyncMode.On;
-
-			_states.EnterState(new GameplayState(_states));
-		}
-
-		private void ASCIIWorldGameWindow_Resize(object sender, EventArgs e)
-		{
-			GL.Viewport(0, 0, Width, Height);
-		}
-
-		private void ASCIIWorldGameWindow_UpdateFrame(object sender, FrameEventArgs e)
-		{
-			if (_states.CurrentState == null)
-			{
-				Exit();
-			}
-			else
-			{
-				_states.Update(TimeSpan.FromSeconds(e.Time));
-			}
-		}
-
-		private void ASCIIWorldGameWindow_RenderFrame(object sender, FrameEventArgs e)
-		{
-			GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
-
-			_states.Render();
-
-			SwapBuffers();
+			States.EnterState(new GameplayState(States));
+			//_scriptManager.Show();
 		}
 
 		#endregion

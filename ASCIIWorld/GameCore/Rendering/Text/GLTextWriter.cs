@@ -25,16 +25,26 @@ namespace GameCore.Rendering.Text
 
 		#region Constructors
 
-		public GLTextWriter()
+		public GLTextWriter(Font font)
 		{
-			Font = new Font(DEFAULT_FONT_FAMILY, DEFAULT_FONT_SIZE, DEFAULT_FONT_SYLTE);
+			Font = font;
 			_printer = new TextPrinter();
-
+			
 			Color = Color.White;
 			Position = Vector2.Zero;
 			Options = TextPrinterOptions.Default;
 			Alignment = TextAlignment.Near;
 			Direction = TextDirection.LeftToRight;
+		}
+
+		public GLTextWriter(string fontFamily, float fontSize, FontStyle fontStyle)
+			: this(new Font(fontFamily, fontSize, fontStyle))
+		{
+		}
+
+		public GLTextWriter()
+			: this(new Font(DEFAULT_FONT_FAMILY, DEFAULT_FONT_SIZE, DEFAULT_FONT_SYLTE))
+		{
 		}
 
 		#endregion
@@ -64,6 +74,11 @@ namespace GameCore.Rendering.Text
 		#endregion
 
 		#region Methods
+
+		public SizeF Measure(string text)
+		{
+			return _printer.Measure(text, Font).BoundingBox.Size;
+		}
 
 		public void Apply(ITextDescription description)
 		{

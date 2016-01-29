@@ -52,7 +52,7 @@ namespace GameCore.Rendering
 				}
 				else
 				{
-					return (CurrentTexture as IGraphicsResource).Id;
+					return (CurrentTexture as IGraphicsResource).Id;	
 				}
 			}
 		}
