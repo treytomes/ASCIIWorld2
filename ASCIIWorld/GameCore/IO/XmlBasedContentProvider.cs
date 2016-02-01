@@ -20,15 +20,5 @@ namespace GameCore.IO
 				throw new Exception(string.Format("Expected element named '{0}', found element named '{1}'.", name, element.Name));
 			}
 		}
-
-		protected TAttribute GetAttributeValue<TAttribute>(XElement element, string attributeName)
-		{
-			var attribute = element.Attribute(attributeName);
-			if (attribute == null)
-			{
-				throw new Exception(string.Format("Unable to find attribute '{0}'", attributeName));
-			}
-			return (TAttribute)Convert.ChangeType(attribute.Value, typeof(TAttribute));
-		}
 	}
 }

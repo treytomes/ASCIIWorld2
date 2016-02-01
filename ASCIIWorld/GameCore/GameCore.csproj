@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>GameCore</RootNamespace>
     <AssemblyName>GameCore</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <TargetFrameworkProfile />
@@ -51,8 +51,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BackgroundRenderer.cs" />
     <Compile Include="BasicGameWindow.cs" />
     <Compile Include="Camera.cs" />
+    <Compile Include="FrameEventArgs.cs" />
     <Compile Include="ICloneable.cs" />
     <Compile Include="IGameWindow.cs" />
     <Compile Include="IO\ContentManager.cs" />
@@ -117,6 +119,7 @@
     <Compile Include="StateManagement\GameStateManager.cs" />
     <Compile Include="UI\ITextDescription.cs" />
     <Compile Include="UI\ListItem.cs" />
+    <Compile Include="XElementExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

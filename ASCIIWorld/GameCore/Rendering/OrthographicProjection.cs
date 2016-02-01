@@ -1,4 +1,5 @@
-﻿using OpenTK;
+﻿using System;
+using OpenTK;
 using OpenTK.Graphics.OpenGL;
 
 namespace GameCore.Rendering
@@ -54,6 +55,8 @@ namespace GameCore.Rendering
 		{
 			Viewport = viewport.Clone();
 
+			// TODO: Right = Left + Viewport.Width; Bottom = Top + Viewport.Height;  // Make sure this works.
+
 			Left = Viewport.X;
 			Right = Viewport.Width;
 			Top = Viewport.Y;
@@ -67,6 +70,12 @@ namespace GameCore.Rendering
 			var projection = Matrix4.CreateOrthographicOffCenter(Left, Right, Bottom, Top, ZNear, ZFar);
 			GL.MatrixMode(MatrixMode.Projection);
 			GL.LoadMatrix(ref projection);
+		}
+
+		public bool Contains(float x, float y, float z = 0)
+		{
+			// TODO: Make this work if Top and Bottom are flipped.
+			return (Left <= x) && (x <= Right) && (Top <= y) && (y <= Bottom);
 		}
 
 		#endregion

@@ -1,5 +1,4 @@
 ﻿using ASCIIWorld.IO;
-using ASCIIWorld.Properties;
 using GameCore;
 using System;
 
@@ -15,11 +14,11 @@ namespace ASCIIWorld
 
 		#region Constructors
 
-		public ASCIIWorldGameWindow()
-			: base(1280, 720, "ASCII World", Resources.ContentRootPath)
+		public ASCIIWorldGameWindow(AppSettings settings)
+			: base(1280, 720, "ASCII World", settings.ContentRootPath)
 		{
 			Load += ASCIIWorldGameWindow_Load;
-			Content.RegisterContentProvider(new TileContentProvider());
+			Content.RegisterContentProvider(new BlockContentProvider());
 
 			//_scriptManager = new ScriptManager();
 		}

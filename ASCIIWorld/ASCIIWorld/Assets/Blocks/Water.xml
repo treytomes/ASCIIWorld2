@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<Tile tileSet="TileSets/ASCII.xml">
+<Block tileSet="TileSets/ASCII.xml">
 	<Frames framesPerSecond="3">
 		<Frame backgroundColor="#FF0026FF" foregroundColor="#FF3269FF" tileIndex="61" />
 		<Frame backgroundColor="#FF0026FF" foregroundColor="#FF3269FF" tileIndex="205" />
@@ -9,4 +9,4 @@
 	<Properties>
 		<Property name="Friction" value="0.25" />
 	</Properties>
-</Tile>
+</Block>

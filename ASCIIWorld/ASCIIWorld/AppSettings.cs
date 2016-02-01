@@ -37,6 +37,14 @@ namespace ASCIIWorld
 			}
 		}
 
+		public string ContentRootPath
+		{
+			get
+			{
+				return GetSetting(() => ContentRootPath);
+			}
+		}
+
 		protected T GetSetting<T>(Expression<Func<T>> settingProperty, T defaultValue = default(T))
 		{
 			var accessor = new PropertyAccessor<T>(settingProperty);

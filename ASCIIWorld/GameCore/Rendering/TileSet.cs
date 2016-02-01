@@ -59,6 +59,8 @@ namespace GameCore.Rendering
 					MaxV = texBottom
 				};
 			}
+
+			IsNormalized = true;
 		}
 
 		#region Properties
@@ -75,6 +77,14 @@ namespace GameCore.Rendering
 
 		public int Height { get; private set; }
 
+		/// <summary>
+		/// Should the tiles be drawn with a width and height of 1?  Or of their pixel height?
+		/// </summary>
+		/// <remarks>
+		/// Defaults to True.
+		/// </remarks>
+		public bool IsNormalized { get; set; }
+
 		#endregion
 
 		#region Methods
@@ -88,11 +98,14 @@ namespace GameCore.Rendering
 			var minV = mirrorY ? tile.MaxV : tile.MinV;
 			var maxV = mirrorY ? tile.MinV : tile.MaxV;
 
+			var width = IsNormalized ? 1 : tile.Width;
+			var height = IsNormalized ? 1 : tile.Height;
+
 			tessellator.BindTexture(_texture);
 			tessellator.AddPoint(0, 0, minU, minV);
-			tessellator.AddPoint(0, tile.Height, minU, maxV);
-			tessellator.AddPoint(tile.Width, tile.Height, maxU, maxV);
-			tessellator.AddPoint(tile.Width, 0, maxU, minV);
+			tessellator.AddPoint(0, height, minU, maxV);
+			tessellator.AddPoint(width, height, maxU, maxV);
+			tessellator.AddPoint(width, 0, maxU, minV);
 		}
 
 		#endregion

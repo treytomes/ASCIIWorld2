@@ -1,7 +1,11 @@
-﻿namespace GameCore
+﻿using System;
+
+namespace GameCore
 {
 	public interface IGameWindow
 	{
+		event EventHandler<EventArgs> Resize;
+
 		/// <summary>
 		/// Does the game window have input focus?
 		/// </summary>

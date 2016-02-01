@@ -1,5 +1,6 @@
 ﻿using OpenTK;
 using OpenTK.Graphics.OpenGL;
+using System;
 
 namespace GameCore.Rendering
 {
@@ -60,6 +61,12 @@ namespace GameCore.Rendering
 			var projection = Matrix4.CreatePerspectiveFieldOfView(FieldOfViewY, Viewport.AspectRatio, ZNear, ZFar);
 			GL.MatrixMode(MatrixMode.Projection);
 			GL.LoadMatrix(ref projection);
+		}
+		
+		public bool Contains(float x, float y, float z = 0)
+		{
+			// TODO: Implement this.
+			throw new NotImplementedException();
 		}
 
 		#endregion

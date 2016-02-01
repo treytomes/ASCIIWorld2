@@ -18,7 +18,8 @@ namespace ASCIIWorld
 			var settings = new AppSettings();
 
 			Console.WriteLine("Launching game window.");
-			new ASCIIWorldGameWindow().Run(settings.UpdatesPerSecond, settings.FramesPerSecond);
+			var gameWindow = new ASCIIWorldGameWindow(settings);
+			gameWindow.Run(settings.UpdatesPerSecond, settings.FramesPerSecond);
 		}
 
 		private static void ScriptTest()

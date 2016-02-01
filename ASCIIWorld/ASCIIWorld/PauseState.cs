@@ -20,6 +20,8 @@ namespace ASCIIWorld
 
 		#region Fields
 
+		private Viewport _viewport;
+		private IProjection _projection;
 		private ITessellator _tessellator;
 		private GLTextWriter _writer;
 
@@ -31,6 +33,12 @@ namespace ASCIIWorld
 		public PauseState(GameStateManager manager)
 			: base(manager)
 		{
+			_viewport = new Viewport(0, 0, manager.GameWindow.Width, manager.GameWindow.Height);
+			_projection = new OrthographicProjection(_viewport)
+			{
+				ZNear = -10,
+				ZFar = 10
+			};
 		}
 
 		#endregion
@@ -65,6 +73,8 @@ namespace ASCIIWorld
 		public override void Render()
 		{
 			base.Render();
+
+			_projection.Apply();
 
 			_tessellator.Begin(PrimitiveType.Quads);
 			_tessellator.LoadIdentity();

@@ -1,4 +1,5 @@
 ﻿using ASCIIWorld.Data;
+using ASCIIWorld.Generation;
 using GameCore.IO;
 using GameCore.Rendering;
 using GameCore.Rendering.Text;
@@ -7,6 +8,7 @@ using OpenTK;
 using OpenTK.Graphics.OpenGL;
 using OpenTK.Input;
 using System;
+using System.Diagnostics;
 using System.Drawing;
 
 namespace ASCIIWorld
@@ -15,20 +17,42 @@ namespace ASCIIWorld
 	{
 		#region Fields
 
-		private Texture2D _texture;
-		private GLTextWriter _writer;
-		private TileSet _tiles;
+		private Viewport _viewport;
+		private OrthographicProjection _projection;
+		private OrthographicProjection _chunkProjection;
 
-		private Tile _grassTile;
-		private Tile _waterTile;
+		private GLTextWriter _writer;
+		private Chunk _chunk;
+		private BlockRegistry _blocks;
+
+		// These should be moved up to the GameWindow level.
+		private int _frameCount;
+		private TimeSpan _totalGameTime;
+		private Stopwatch _timer;
 
 		#endregion
 
 		#region Constructors
 
+		// TODO: All game states will need to handle the Resize event.
 		public GameplayState(GameStateManager manager)
 			: base(manager)
 		{
+			_viewport = new Viewport(0, 0, manager.GameWindow.Width, manager.GameWindow.Height);
+			_projection = new OrthographicProjection(_viewport)
+			{
+				ZNear = -10,
+				ZFar = 10
+			};
+			_chunkProjection = new OrthographicProjection(_viewport)
+			{
+				ZNear = -10,
+				ZFar = 10
+			};
+
+			_frameCount = 0;
+			_totalGameTime = TimeSpan.Zero;
+			_timer = Stopwatch.StartNew();
 		}
 
 		#endregion
@@ -67,35 +91,51 @@ namespace ASCIIWorld
 			base.LoadContent(content);
 
 			_writer = new GLTextWriter();
-			_texture = content.Load<Texture2D>("Textures/OEM437_8.png");
-			_tiles = content.Load<TileSet>("TileSets/ASCII.xml");
 
-			// TODO: Test an animated frame.
-			//_grassTile = new Tile(1, new TileFrame(
-			//	new TileLayer(_tiles, Color.FromArgb(0xFF, 0x28, 0xB5, 0x15), 219),
-			//	new TileLayer(_tiles, Color.FromArgb(0xFF, 0x68, 0xD3, 0x61), 176)));
-
-			_grassTile = content.Load<Tile>("Tiles/Grass.xml");
-			_waterTile = content.Load<Tile>("Tiles/Water.xml");
+			_blocks = new SampleBlockRegistry(content);
+			_chunk = new ChunkGenerator(_blocks).Generate();
 		}
 
 		public override void Update(TimeSpan elapsed)
 		{
 			base.Update(elapsed);
 
+			_frameCount++;
+			_totalGameTime = _totalGameTime.Add(elapsed);
+
 			if (HasFocus)
 			{
-				if (Keyboard.GetState().IsKeyDown(Key.Escape))
+				var keys = Keyboard.GetState();
+				if (keys.IsKeyDown(Key.Escape))
 				{
 					LeaveState();
 				}
-				else if (Keyboard.GetState().IsKeyDown(Key.P))
+				else if (keys.IsKeyDown(Key.P))
 				{
 					EnterState(new PauseState(Manager));
 				}
-
-				_grassTile.Update(elapsed);
-				_waterTile.Update(elapsed);
+				else if (keys.IsKeyDown(Key.Up))
+				{
+					// TODO: Implement a MoveBy(deltaX, deltaY) method on OrthographicProjection.
+					_chunkProjection.Top--;
+					_chunkProjection.Bottom--;
+				}
+				else if (keys.IsKeyDown(Key.Down))
+				{
+					_chunkProjection.Top++;
+					_chunkProjection.Bottom++;
+				}
+				else if (keys.IsKeyDown(Key.Left))
+				{
+					_chunkProjection.Left--;
+					_chunkProjection.Right--;
+				}
+				else if (keys.IsKeyDown(Key.Right))
+				{
+					_chunkProjection.Left++;
+					_chunkProjection.Right++;
+				}
+				_blocks.Update(elapsed);
 			}
 			else
 			{
@@ -103,40 +143,27 @@ namespace ASCIIWorld
 			}
 		}
 
+		private TimeSpan _lastRenderTime = TimeSpan.Zero;
 		public override void Render()
 		{
 			base.Render();
 
-			var tessellator = new VertexBufferTessellator() { Mode = VertexTessellatorMode.Render };
+			_chunk.Render(_chunkProjection);
 
-			tessellator.Begin(PrimitiveType.Quads);
-			tessellator.Scale(1, 1);
-			tessellator.BindColor(Color.White);
-			tessellator.BindTexture(_texture);
-			tessellator.AddPoint(0, 0, 0, 0);
-			tessellator.AddPoint(0, _texture.Height, 0, 1);
-			tessellator.AddPoint(_texture.Width, _texture.Height, 1, 1);
-			tessellator.AddPoint(_texture.Width, 0, 1, 0);
-			tessellator.End();
-
-			tessellator.Begin(PrimitiveType.Quads);
-			tessellator.Scale(4, 4);
-			tessellator.Translate(400, 100);
-			tessellator.BindColor(Color.Red);
-			_tiles.Render(tessellator, 3);
-			tessellator.End();
-
-			tessellator.Begin(PrimitiveType.Quads);
-			tessellator.LoadIdentity();
-			tessellator.Scale(4, 4);
-			_grassTile.Render(tessellator, 400, 200);
-			_waterTile.Render(tessellator, 400 + 8 * 4, 200);
-			tessellator.End();
+			_projection.Apply();
 
 			_writer.Color = Color.Thistle;
 			_writer.Position = new Vector2(256, 256);
 			_writer.Write("Hello, world!");
-		}
+
+			_writer.Position = new Vector2(256, 300);
+			_writer.Write("Update FPS: {0}", _frameCount / _totalGameTime.TotalSeconds);
+
+			
+			_writer.Position = new Vector2(256, 320);
+			_writer.Write("Render FPS: {0}", 1.0 / (_timer.Elapsed.TotalSeconds - _lastRenderTime.TotalSeconds));
+			_lastRenderTime = _timer.Elapsed;
+        }
 
 		#endregion
 	}

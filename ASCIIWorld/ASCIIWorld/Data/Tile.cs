@@ -1,108 +1,56 @@
 ﻿using GameCore.Rendering;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using OpenTK;
+using System.Drawing;
 
 namespace ASCIIWorld.Data
 {
 	/// <summary>
-	/// A Tile is composed of multiple frames, and can be animated.
+	/// The most basic rendering unit; this class references a single tile index, associating it with a color.
 	/// </summary>
-	public class Tile
+	/// <remarks>
+	/// A Frame is composed of a stack of Tiles.
+	/// </remarks>
+	public class Tile : IRenderable
 	{
 		#region Fields
 
-		private List<TileFrame> _frames;
-		private Dictionary<string, object> _properties;
-		private int _frameIndex;
-		private double _totalElapsedSeconds;
+		private TileSet _tileSet;
 
 		#endregion
 
 		#region Constructors
 
-		public Tile(int framesPerSecond, IEnumerable<TileFrame> frames)
+		public Tile(TileSet tileSet, Color color, int tileIndex)
 		{
-			if (framesPerSecond <= 0)
-			{
-				throw new ArgumentException("framesPerSeconds");
-			}
-			if (frames.Count() == 0)
-			{
-				throw new ArgumentException("frames");
-			}
-
-			FramesPerSecond = framesPerSecond;
-			_frames = new List<TileFrame>(frames);
-			_properties = new Dictionary<string, object>();
-
-			_totalElapsedSeconds = 0;
+			_tileSet = tileSet;
+			Color = color;
+			TileIndex = tileIndex;
 		}
 
 		#endregion
-
+		
 		#region Properties
 
-		public int FramesPerSecond { get; private set; }
+		public Color Color { get; private set; }
 
-		public int Count
-		{
-			get
-			{
-				return _frames.Count;
-			}
-		}
-
-		public TileFrame this[int index]
-		{
-			get
-			{
-				return _frames[index];
-			}
-		}
-
-		public int FrameIndex
-		{
-			get
-			{
-				return _frameIndex;
-			}
-			set
-			{
-				_frameIndex = value % _frames.Count;
-			}
-		}
+		public int TileIndex { get; private set; }
 
 		#endregion
 
 		#region Methods
 
-		public bool HasProperty(string propertyName)
+		public void Render(ITessellator tessellator)
 		{
-			return _properties.ContainsKey(propertyName);
+			tessellator.BindColor(Color);
+			_tileSet.Render(tessellator, TileIndex);
 		}
 
-		public T GetProperty<T>(string propertyName)
+		public void Render(ITessellator tessellator, float x, float y)
 		{
-			return (T)Convert.ChangeType(_properties[propertyName], typeof(T));
-		}
-
-		public void SetProperty<T>(string propertyName, T value)
-		{
-			_properties[propertyName] = value;
-		}
-
-		public void Update(TimeSpan elapsed)
-		{
-			_totalElapsedSeconds += elapsed.TotalSeconds;
-			FrameIndex = (int)(_totalElapsedSeconds * FramesPerSecond);
-		}
-
-		public void Render(ITessellator tessellator, int x, int y)
-		{
-			_frames[_frameIndex].Render(tessellator, x, y);
+			var position = tessellator.Transform(new Vector2(x, y));
+			tessellator.Translate(position);
+			Render(tessellator);
+			tessellator.Translate(-position);
 		}
 
 		#endregion

@@ -10,30 +10,15 @@ namespace GameCore
 {
 	public class BasicGameWindow : GameWindow, IGameWindow
 	{
-		#region Fields
-
-		private Viewport _viewport;
-		private IProjection _projection;
-
-		#endregion
-
 		#region Constructors
 
 		public BasicGameWindow(int width, int height, string title, string contentRootPath)
 			: base(width, height, new GraphicsMode(new ColorFormat(32), 1, 0, 4, new ColorFormat(32), 2), title)
 		{
-			_viewport = new Viewport(0, 0, Width, Height);
-			_projection = new OrthographicProjection(_viewport)
-			{
-				ZNear = -10,
-				ZFar = 10
-			};
-
 			Content = new ContentManager(contentRootPath);
 			States = new GameStateManager(this, Content);
 
 			Load += BasicGameWindow_Load;
-			Resize += BasicGameWindow_Resize;
 			UpdateFrame += BasicGameWindow_UpdateFrame;
 			RenderFrame += BasicGameWindow_RenderFrame;
 		}
@@ -59,12 +44,12 @@ namespace GameCore
 			OpenGLState.SetDefaultState();
 		}
 
-		private void BasicGameWindow_Resize(object sender, EventArgs e)
-		{
-			_viewport.Width = Width;
-			_viewport.Height = Height;
-			_projection.Resize(_viewport);
-		}
+		//private void BasicGameWindow_Resize(object sender, EventArgs e)
+		//{
+		//	_viewport.Width = Width;
+		//	_viewport.Height = Height;
+		//	Projection.Resize(_viewport);
+		//}
 
 		private void BasicGameWindow_UpdateFrame(object sender, FrameEventArgs e)
 		{
@@ -81,7 +66,6 @@ namespace GameCore
 		private void BasicGameWindow_RenderFrame(object sender, FrameEventArgs e)
 		{
 			GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
-			_projection.Apply();
 			States.Render();
 			SwapBuffers();
 		}

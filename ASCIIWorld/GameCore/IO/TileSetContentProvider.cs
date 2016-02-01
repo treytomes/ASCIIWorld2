@@ -1,7 +1,5 @@
 ﻿using GameCore.Rendering;
-using System;
 using System.IO;
-using System.Xml.Linq;
 
 namespace GameCore.IO
 {
@@ -12,9 +10,9 @@ namespace GameCore.IO
 			var tileSetElem = LoadFile(contentPath);
 			ExpectElementName(tileSetElem, "TileSet");
 
-			var source = GetAttributeValue<string>(tileSetElem, "source");
-			var rows = GetAttributeValue<int>(tileSetElem, "rows");
-			var columns = GetAttributeValue<int>(tileSetElem, "columns");
+			var source = tileSetElem.Attribute<string>("source");
+			var rows = tileSetElem.Attribute<int>("rows");
+			var columns = tileSetElem.Attribute<int>("columns");
 
 			var texture = content.Load<Texture2D>(source);
 
