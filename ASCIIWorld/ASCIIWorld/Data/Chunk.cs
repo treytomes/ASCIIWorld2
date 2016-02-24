@@ -28,7 +28,7 @@ namespace ASCIIWorld.Data
 		private const int CHUNK_HEIGHT = 4;
 		private const int ENTITY_LAYER = 2;
 
-		private const float BLOCK_SCALE = 48;
+		private const float BLOCK_SCALE = 24;
 
 		#endregion
 
@@ -113,16 +113,22 @@ namespace ASCIIWorld.Data
 			_tessellator.Scale(BLOCK_SCALE, BLOCK_SCALE);
 
 			// There is some kind of floating-point error going on here.
-			//var minRow = 0; // (int)Math.Floor(projection.Top / BLOCK_SCALE);
-			//var maxRow = CHUNK_ROWS; // (int)Math.Floor(projection.Bottom / BLOCK_SCALE);
-			//var minColumn = 0; // (int)Math.Floor(projection.Left / BLOCK_SCALE);
-			//var maxColumn = CHUNK_COLUMNS; // (int)Math.Floor(projection.Right / BLOCK_SCALE);
-			var minRow = ((float)projection.Top / BLOCK_SCALE);
-			var maxRow = ((float)projection.Bottom / BLOCK_SCALE);
-			var minColumn = ((float)projection.Left / BLOCK_SCALE);
-			var maxColumn = ((float)projection.Right / BLOCK_SCALE);
+			//var minRow = (int)Math.Floor(projection.Top / BLOCK_SCALE);
+			//var maxRow = (int)Math.Floor(projection.Bottom / BLOCK_SCALE);
+			//var minColumn = (int)Math.Floor(projection.Left / BLOCK_SCALE);
+			//var maxColumn = (int)Math.Floor(projection.Right / BLOCK_SCALE);
 
-			Console.WriteLine("{0}, {1}", minRow, minColumn);
+			var minRow = (float)Math.Floor(projection.Top / BLOCK_SCALE);
+			var maxRow = (float)Math.Ceiling(projection.Bottom / BLOCK_SCALE);
+			var minColumn = (float)Math.Floor(projection.Left / BLOCK_SCALE);
+			var maxColumn = (float)Math.Ceiling(projection.Right / BLOCK_SCALE);
+
+			Console.WriteLine("{0}, {1}", Math.Floor(projection.Left / BLOCK_SCALE), Math.Floor(projection.Top / BLOCK_SCALE));
+
+			//minRow = 0;
+			//maxRow = Rows;
+			//minColumn = 0;
+			//maxColumn = Columns;
 
 			for (var layer = 0; layer < ENTITY_LAYER; layer++)
 			{

@@ -1,5 +1,6 @@
 ﻿using ASCIIWorld.Data;
 using ASCIIWorld.Generation;
+using GameCore;
 using GameCore.IO;
 using GameCore.Rendering;
 using GameCore.Rendering.Text;
@@ -29,6 +30,7 @@ namespace ASCIIWorld
 		private int _frameCount;
 		private TimeSpan _totalGameTime;
 		private Stopwatch _timer;
+		private Vector2 _cameraVelocity;
 
 		#endregion
 
@@ -69,14 +71,19 @@ namespace ASCIIWorld
 			{
 				if (IsPaused != value)
 				{
-					if (IsPaused && !value)
+					if (!value)
 					{
-						// Un-pause the game.
-						Manager.LeaveState();
+						if (IsPaused)
+						{
+							Manager.LeaveState();
+						}
 					}
-					else
+					else if (value)
 					{
-						Manager.EnterState(new PauseState(Manager));
+						if (!IsPaused)
+						{
+							Manager.EnterState(new PauseState(Manager));
+						}
 					}
 				}
 			}
@@ -94,6 +101,17 @@ namespace ASCIIWorld
 
 			_blocks = new SampleBlockRegistry(content);
 			_chunk = new ChunkGenerator(_blocks).Generate();
+
+			InputManager.Instance.Keyboard.KeyDown += Keyboard_KeyDown;
+			InputManager.Instance.Keyboard.KeyUp += Keyboard_KeyUp;
+		}
+
+		public override void UnloadContent()
+		{
+			base.UnloadContent();
+
+			InputManager.Instance.Keyboard.KeyDown -= Keyboard_KeyDown;
+			InputManager.Instance.Keyboard.KeyUp -= Keyboard_KeyUp;
 		}
 
 		public override void Update(TimeSpan elapsed)
@@ -105,37 +123,9 @@ namespace ASCIIWorld
 
 			if (HasFocus)
 			{
-				var keys = Keyboard.GetState();
-				if (keys.IsKeyDown(Key.Escape))
-				{
-					LeaveState();
-				}
-				else if (keys.IsKeyDown(Key.P))
-				{
-					EnterState(new PauseState(Manager));
-				}
-				else if (keys.IsKeyDown(Key.Up))
-				{
-					// TODO: Implement a MoveBy(deltaX, deltaY) method on OrthographicProjection.
-					_chunkProjection.Top--;
-					_chunkProjection.Bottom--;
-				}
-				else if (keys.IsKeyDown(Key.Down))
-				{
-					_chunkProjection.Top++;
-					_chunkProjection.Bottom++;
-				}
-				else if (keys.IsKeyDown(Key.Left))
-				{
-					_chunkProjection.Left--;
-					_chunkProjection.Right--;
-				}
-				else if (keys.IsKeyDown(Key.Right))
-				{
-					_chunkProjection.Left++;
-					_chunkProjection.Right++;
-				}
 				_blocks.Update(elapsed);
+
+				_chunkProjection.MoveBy(_cameraVelocity);
 			}
 			else
 			{
@@ -152,18 +142,73 @@ namespace ASCIIWorld
 
 			_projection.Apply();
 
-			_writer.Color = Color.Thistle;
+			_writer.Color = Color.White;
 			_writer.Position = new Vector2(256, 256);
 			_writer.Write("Hello, world!");
 
 			_writer.Position = new Vector2(256, 300);
 			_writer.Write("Update FPS: {0}", _frameCount / _totalGameTime.TotalSeconds);
-
 			
 			_writer.Position = new Vector2(256, 320);
 			_writer.Write("Render FPS: {0}", 1.0 / (_timer.Elapsed.TotalSeconds - _lastRenderTime.TotalSeconds));
 			_lastRenderTime = _timer.Elapsed;
         }
+
+		#endregion
+
+		#region Event Handlers
+
+		private void Keyboard_KeyDown(object sender, KeyboardKeyEventArgs e)
+		{
+			if (HasFocus)
+			{
+				switch (e.Key)
+				{
+					case Key.Escape:
+						LeaveState();
+						break;
+					case Key.P:
+						EnterState(new PauseState(Manager));
+						break;
+					case Key.Up:
+						_cameraVelocity.Y = -1;
+						break;
+					case Key.Down:
+						_cameraVelocity.Y = 1;
+						break;
+					case Key.Left:
+						_cameraVelocity.X = -1;
+						break;
+					case Key.Right:
+						_cameraVelocity.X = 1;
+						break;
+				}
+			}
+		}
+
+		private void Keyboard_KeyUp(object sender, KeyboardKeyEventArgs e)
+		{
+			if (HasFocus)
+			{
+				switch (e.Key)
+				{
+					case Key.Escape:
+						LeaveState();
+						break;
+					case Key.P:
+						EnterState(new PauseState(Manager));
+						break;
+					case Key.Up:
+					case Key.Down:
+						_cameraVelocity.Y = 0;
+						break;
+					case Key.Left:
+					case Key.Right:
+						_cameraVelocity.X = 0;
+						break;
+				}
+			}
+		}
 
 		#endregion
 	}

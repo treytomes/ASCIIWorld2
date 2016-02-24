@@ -7,6 +7,7 @@ using OpenTK.Graphics.OpenGL;
 using System.Drawing;
 using OpenTK;
 using OpenTK.Input;
+using GameCore;
 
 namespace ASCIIWorld
 {
@@ -55,19 +56,20 @@ namespace ASCIIWorld
 			var size = _writer.Measure(PAUSE_MESSAGE);
 			_writer.Position = new Vector2(Manager.GameWindow.Width - size.Width, Manager.GameWindow.Height - size.Height) / 2.0f;
 			_writer.Color = Color.White;
+
+			InputManager.Instance.Keyboard.KeyDown += Keyboard_KeyDown;
+		}
+
+		public override void UnloadContent()
+		{
+			base.UnloadContent();
+
+			InputManager.Instance.Keyboard.KeyDown -= Keyboard_KeyDown;
 		}
 
 		public override void Update(TimeSpan elapsed)
 		{
 			base.Update(elapsed);
-
-			if (HasFocus)
-			{
-				if (Keyboard.GetState().IsKeyDown(Key.Enter))
-				{
-					LeaveState();
-				}
-			}
 		}
 
 		public override void Render()
@@ -81,12 +83,27 @@ namespace ASCIIWorld
 			_tessellator.BindTexture(null);
 			_tessellator.BindColor(Color.FromArgb(64, 255, 255, 255));
 			_tessellator.AddPoint(0, 0);
-			_tessellator.AddPoint(0, Manager.GameWindow.Height);
-			_tessellator.AddPoint(Manager.GameWindow.Width, Manager.GameWindow.Height);
 			_tessellator.AddPoint(Manager.GameWindow.Width, 0);
+			_tessellator.AddPoint(Manager.GameWindow.Width, Manager.GameWindow.Height);
+			_tessellator.AddPoint(0, Manager.GameWindow.Height);
 			_tessellator.End();
 
 			_writer.Write(PAUSE_MESSAGE);
+		}
+
+		#endregion
+
+		#region Event Handlers
+
+		private void Keyboard_KeyDown(object sender, KeyboardKeyEventArgs e)
+		{
+			if (HasFocus)
+			{
+				if (e.Key == Key.Enter)
+				{
+					LeaveState();
+				}
+			}
 		}
 
 		#endregion
