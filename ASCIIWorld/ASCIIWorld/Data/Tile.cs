@@ -1,5 +1,6 @@
 ﻿using GameCore.Rendering;
 using OpenTK;
+using System;
 using System.Drawing;
 
 namespace ASCIIWorld.Data
@@ -14,11 +15,17 @@ namespace ASCIIWorld.Data
 	{
 		#region Fields
 
+		private static int _numChunkLayers;
 		private TileSet _tileSet;
 
 		#endregion
 
 		#region Constructors
+
+		static Tile()
+		{
+			_numChunkLayers = Enum.GetValues(typeof(ChunkLayer)).Length;
+		}
 
 		public Tile(TileSet tileSet, Color color, int tileIndex)
 		{
@@ -41,7 +48,12 @@ namespace ASCIIWorld.Data
 
 		public void Render(ITessellator tessellator)
 		{
-			tessellator.BindColor(Color);
+			// This will cause tile images to become darker as they move into the background layers.
+			var layer = tessellator.Transform(Vector3.Zero).Z;
+			var multiplier = layer / (_numChunkLayers * 2) + 0.5f;
+			var color = Color.FromArgb((int)(Color.R * multiplier), (int)(Color.G * multiplier), (int)(Color.B * multiplier));
+
+			tessellator.BindColor(color);
 			_tileSet.Render(tessellator, TileIndex);
 		}
 

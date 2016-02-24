@@ -67,6 +67,7 @@
     <Compile Include="IO\XmlBasedContentProvider.cs" />
     <Compile Include="IPoolable.cs" />
     <Compile Include="Math\Direction.cs" />
+    <Compile Include="Math\MathHelper.cs" />
     <Compile Include="ObjectPool.cs" />
     <Compile Include="Platform\GdiPlus.cs" />
     <Compile Include="Platform\IGdiPlusInternals.cs" />

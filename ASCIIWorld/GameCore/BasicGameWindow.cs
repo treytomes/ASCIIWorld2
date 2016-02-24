@@ -5,6 +5,8 @@ using OpenTK;
 using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
 using System;
+using System.Drawing;
+using System.Reflection;
 
 namespace GameCore
 {
@@ -12,9 +14,10 @@ namespace GameCore
 	{
 		#region Constructors
 
-		public BasicGameWindow(int width, int height, string title, string contentRootPath)
+		public BasicGameWindow(int width, int height, string title, Icon icon, string contentRootPath)
 			: base(width, height, new GraphicsMode(new ColorFormat(32), 1, 0, 4, new ColorFormat(32), 2), title)
 		{
+			Icon = icon;
 			Content = new ContentManager(contentRootPath);
 			States = new GameStateManager(this, Content);
 

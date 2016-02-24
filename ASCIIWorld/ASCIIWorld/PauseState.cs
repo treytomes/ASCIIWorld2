@@ -24,7 +24,8 @@ namespace ASCIIWorld
 		private Viewport _viewport;
 		private IProjection _projection;
 		private ITessellator _tessellator;
-		private GLTextWriter _writer;
+		//private GLTextWriter _writer;
+		private TileSet _ascii;
 
 		#endregion
 
@@ -50,12 +51,14 @@ namespace ASCIIWorld
 		{
 			base.LoadContent(content);
 
-			_tessellator = new VertexBufferTessellator() { Mode = VertexTessellatorMode.Render };
-			_writer = new GLTextWriter(new Font("Consolas", 64, FontStyle.Bold));
+			_ascii = content.Load<TileSet>("TileSets/ASCII.xml");
 
-			var size = _writer.Measure(PAUSE_MESSAGE);
-			_writer.Position = new Vector2(Manager.GameWindow.Width - size.Width, Manager.GameWindow.Height - size.Height) / 2.0f;
-			_writer.Color = Color.White;
+			_tessellator = new VertexBufferTessellator() { Mode = VertexTessellatorMode.Render };
+			//_writer = new GLTextWriter(new Font("Consolas", 64, FontStyle.Bold));
+
+			//var size = _writer.Measure(PAUSE_MESSAGE);
+			//_writer.Position = new Vector2(Manager.GameWindow.Width - size.Width, Manager.GameWindow.Height - size.Height) / 2.0f;
+			//_writer.Color = Color.White;
 
 			InputManager.Instance.Keyboard.KeyDown += Keyboard_KeyDown;
 		}
@@ -80,15 +83,22 @@ namespace ASCIIWorld
 
 			_tessellator.Begin(PrimitiveType.Quads);
 			_tessellator.LoadIdentity();
+			_tessellator.Translate(0, 0, 10);
+
 			_tessellator.BindTexture(null);
-			_tessellator.BindColor(Color.FromArgb(64, 255, 255, 255));
+			_tessellator.BindColor(Color.FromArgb(64, Color.Black));
 			_tessellator.AddPoint(0, 0);
-			_tessellator.AddPoint(Manager.GameWindow.Width, 0);
-			_tessellator.AddPoint(Manager.GameWindow.Width, Manager.GameWindow.Height);
 			_tessellator.AddPoint(0, Manager.GameWindow.Height);
+			_tessellator.AddPoint(Manager.GameWindow.Width, Manager.GameWindow.Height);
+			_tessellator.AddPoint(Manager.GameWindow.Width, 0);
+
+			_tessellator.BindColor(Color.White);
+			_tessellator.Scale(_ascii.Width * 4, _ascii.Height * 4);
+			_ascii.RenderText(_tessellator, (Manager.GameWindow.Width - _ascii.Width * 4 * PAUSE_MESSAGE.Length) / 2, (Manager.GameWindow.Height - _ascii.Height * 4) / 2, PAUSE_MESSAGE);
+
 			_tessellator.End();
 
-			_writer.Write(PAUSE_MESSAGE);
+			//_writer.Write(PAUSE_MESSAGE);
 		}
 
 		#endregion

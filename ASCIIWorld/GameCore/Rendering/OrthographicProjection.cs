@@ -55,19 +55,17 @@ namespace GameCore.Rendering
 		{
 			Viewport = viewport.Clone();
 
-			// TODO: Right = Left + Viewport.Width; Bottom = Top + Viewport.Height;  // Make sure this works.
-
-			Left = Viewport.X;
-			Right = Viewport.Width;
-			Top = Viewport.Y;
-			Bottom = Viewport.Height;
+			Left = Viewport.Left;
+			Right = Viewport.Right;
+			Top = Viewport.Top;
+			Bottom = Viewport.Bottom;
 		}
 
 		public void Apply()
 		{
 			Viewport.Apply();
 
-			var projection = Matrix4.CreateOrthographicOffCenter(Left, Right, Bottom, Top, ZNear, ZFar);
+			var projection = Matrix4.CreateOrthographicOffCenter(Left, Right + 1, Bottom + 1, Top, ZNear, ZFar);
 			GL.MatrixMode(MatrixMode.Projection);
 			GL.LoadMatrix(ref projection);
 		}

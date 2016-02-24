@@ -1,7 +1,9 @@
-﻿namespace ASCIIWorld.Generation
+﻿using System;
+
+namespace ASCIIWorld.Generation
 {
 	public interface IGenerator<T>
 	{
-		T Generate();
+		T Generate(IProgress<string> progress);
 	}
 }

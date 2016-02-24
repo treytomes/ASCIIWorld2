@@ -3,11 +3,11 @@ using System;
 
 namespace ASCIIWorld.Generation
 {
-	public class ChunkGenerator : IGenerator<Chunk>
+	public class SampleChunkGenerator : IGenerator<Chunk>
 	{
 		private BlockRegistry _blocks;
 
-		public ChunkGenerator(BlockRegistry blocks)
+		public SampleChunkGenerator(BlockRegistry blocks)
 		{
 			if (blocks == null)
 			{
@@ -16,8 +16,10 @@ namespace ASCIIWorld.Generation
 			_blocks = blocks;
 		}
 
-		public Chunk Generate()
+		public Chunk Generate(IProgress<string> progress)
 		{
+			progress.Report("Generating chunk.");
+
 			var random = new Random();
 			var chunk = new Chunk(_blocks);
 			for (var row = 0; row < chunk.Rows; row++)
@@ -26,14 +28,16 @@ namespace ASCIIWorld.Generation
 				{
 					if (random.Next(4) == 1)
 					{
-						chunk[1, row, column] = 2;
+						chunk[ChunkLayer.Floor, row, column] = 2;
 					}
 					else
 					{
-						chunk[1, row, column] = 1;
+						chunk[ChunkLayer.Floor, row, column] = 1;
 					}
 				}
 			}
+
+			progress.Report("Done generating chunk.");
 			return chunk;
 		}
 	}

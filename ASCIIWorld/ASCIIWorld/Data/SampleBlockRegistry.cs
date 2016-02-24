@@ -12,13 +12,17 @@ namespace ASCIIWorld.Data
 		{
 			Water = content.Load<Block>("Blocks/Water.xml");
 			Grass = content.Load<Block>("Blocks/Grass.xml");
+			Stone = content.Load<Block>("Blocks/Stone.xml");
 
 			RegisterBlock(1, Water);
 			RegisterBlock(2, Grass);
+			RegisterBlock(3, Stone);
 		}
 
 		public Block Water { get; private set; }
 
 		public Block Grass { get; private set; }
+
+		public Block Stone { get; private set; }
 	}
 }

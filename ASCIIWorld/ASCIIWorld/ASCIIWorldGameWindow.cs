@@ -1,4 +1,5 @@
 ﻿using ASCIIWorld.IO;
+using ASCIIWorld.Properties;
 using GameCore;
 using System;
 
@@ -15,7 +16,7 @@ namespace ASCIIWorld
 		#region Constructors
 
 		public ASCIIWorldGameWindow(AppSettings settings)
-			: base(1280, 720, "ASCII World", settings.ContentRootPath)
+			: base(1280, 720, "ASCII World", Resources.icon, settings.ContentRootPath)
 		{
 			Load += ASCIIWorldGameWindow_Load;
 			Content.RegisterContentProvider(new BlockContentProvider());

@@ -1,0 +1,6 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Block tileSet="TileSets/ASCII.xml">
+	<Frames framesPerSecond="1">
+		<Frame backgroundColor="#FF878787" foregroundColor="#FFB5B5B5" tileIndex="178" />
+	</Frames>
+</Block>

@@ -6,11 +6,11 @@ using GameCore.Rendering;
 using GameCore.Rendering.Text;
 using GameCore.StateManagement;
 using OpenTK;
-using OpenTK.Graphics.OpenGL;
 using OpenTK.Input;
 using System;
 using System.Diagnostics;
 using System.Drawing;
+using System.Threading.Tasks;
 
 namespace ASCIIWorld
 {
@@ -100,7 +100,11 @@ namespace ASCIIWorld
 			_writer = new GLTextWriter();
 
 			_blocks = new SampleBlockRegistry(content);
-			_chunk = new ChunkGenerator(_blocks).Generate();
+
+			// TODO: This should be done from a LoadingState.
+			var progress = new Progress<string>(message => Console.WriteLine(message));
+			//_chunk = new SampleChunkGenerator(_blocks).Generate();
+			Task.Run(() => _chunk = new CavernChunkGenerator(_blocks as SampleBlockRegistry, 50, "hello!").Generate(progress)).Wait();
 
 			InputManager.Instance.Keyboard.KeyDown += Keyboard_KeyDown;
 			InputManager.Instance.Keyboard.KeyUp += Keyboard_KeyUp;
@@ -171,16 +175,16 @@ namespace ASCIIWorld
 						EnterState(new PauseState(Manager));
 						break;
 					case Key.Up:
-						_cameraVelocity.Y = -1;
+						_cameraVelocity.Y = -4;
 						break;
 					case Key.Down:
-						_cameraVelocity.Y = 1;
+						_cameraVelocity.Y = 4;
 						break;
 					case Key.Left:
-						_cameraVelocity.X = -1;
+						_cameraVelocity.X = -4;
 						break;
 					case Key.Right:
-						_cameraVelocity.X = 1;
+						_cameraVelocity.X = 4;
 						break;
 				}
 			}

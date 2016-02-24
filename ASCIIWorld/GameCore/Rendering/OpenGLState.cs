@@ -32,6 +32,10 @@ namespace GameCore.Rendering
 			SetBlendMode(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
 			SetDepthMode(DepthFunction.Lequal);
 			SetCullMode(CullFaceMode.Back);
+
+			//GL.ColorMaterial(MaterialFace.Front, ColorMaterialParameter.Diffuse);
+			//GL.Enable(EnableCap.ColorMaterial);
+
 			GL.Enable(EnableCap.Texture2D);
 
 			GL.ClearColor(Color.Black);
