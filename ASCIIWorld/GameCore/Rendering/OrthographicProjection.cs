@@ -29,13 +29,13 @@ namespace GameCore.Rendering
 
 		public Viewport Viewport { get; private set; }
 
-		public int Left { get; set; }
+		public float Left { get; set; }
 
-		public int Right { get; set; }
+		public float Right { get; set; }
 
-		public int Top { get; set; }
+		public float Top { get; set; }
 
-		public int Bottom { get; set; }
+		public float Bottom { get; set; }
 
 		/// <summary>
 		/// The distance to the near clipping plane.
@@ -76,6 +76,50 @@ namespace GameCore.Rendering
 		{
 			// TODO: Make this work if Top and Bottom are flipped.
 			return (Left <= x) && (x <= Right) && (Top <= y) && (y <= Bottom);
+		}
+
+		public void MoveBy(Vector2 delta)
+		{
+			MoveBy(delta.X, delta.Y);
+		}
+
+		public void MoveBy(Vector3 delta)
+		{
+			MoveBy(delta.X, delta.Y, delta.Z);
+		}
+
+		public void MoveBy(float deltaX, float deltaY, float deltaZ = 0)
+		{
+			Top += deltaY;
+			Bottom += deltaY;
+
+			Left += deltaX;
+			Right += deltaX;
+
+			ZNear += deltaZ;
+			ZFar += deltaZ;
+		}
+
+		public void MoveTo(Vector2 position)
+		{
+			MoveTo(position.X, position.Y);
+		}
+
+		public void MoveTo(Vector3 position)
+		{
+			MoveTo(position.X, position.Y, position.Z);
+		}
+
+		public void MoveTo(float x, float y, float z = 0)
+		{
+			Top = y;
+			Bottom = y;
+
+			Left = x;
+			Right = x;
+
+			ZNear = z;
+			ZFar = z;
 		}
 
 		#endregion

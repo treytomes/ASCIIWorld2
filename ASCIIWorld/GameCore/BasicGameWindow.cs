@@ -18,6 +18,8 @@ namespace GameCore
 			Content = new ContentManager(contentRootPath);
 			States = new GameStateManager(this, Content);
 
+			InputManager.Initialize(this);
+
 			Load += BasicGameWindow_Load;
 			UpdateFrame += BasicGameWindow_UpdateFrame;
 			RenderFrame += BasicGameWindow_RenderFrame;
@@ -44,6 +46,7 @@ namespace GameCore
 			OpenGLState.SetDefaultState();
 		}
 
+		// This should be handled by individual GameStates now.
 		//private void BasicGameWindow_Resize(object sender, EventArgs e)
 		//{
 		//	_viewport.Width = Width;
@@ -51,7 +54,7 @@ namespace GameCore
 		//	Projection.Resize(_viewport);
 		//}
 
-		private void BasicGameWindow_UpdateFrame(object sender, FrameEventArgs e)
+		private void BasicGameWindow_UpdateFrame(object sender, OpenTK.FrameEventArgs e)
 		{
 			if (States.CurrentState == null)
 			{
@@ -63,7 +66,7 @@ namespace GameCore
 			}
 		}
 
-		private void BasicGameWindow_RenderFrame(object sender, FrameEventArgs e)
+		private void BasicGameWindow_RenderFrame(object sender, OpenTK.FrameEventArgs e)
 		{
 			GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 			States.Render();
