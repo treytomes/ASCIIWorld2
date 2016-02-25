@@ -24,6 +24,9 @@ namespace ASCIIWorld.Generation
 		private string _seed;
 		private Random _random;
 
+		private int _passageCount;
+		private int _connectingRoomsCount;
+
 		#endregion
 
 		#region Constructors
@@ -39,6 +42,9 @@ namespace ASCIIWorld.Generation
 			_randomFillPercent = randomFillPercent;
 			_seed = seed ?? DateTime.Now.GetHashCode().ToString();
 			_random = new Random(_seed.GetHashCode());
+
+			_passageCount = 0;
+			_connectingRoomsCount = 0;
 		}
 
 		#endregion
@@ -49,7 +55,7 @@ namespace ASCIIWorld.Generation
 		{
 			progress.Report("Generating chunk.");
 
-			var chunk = new Chunk(_blocks);
+			var chunk = new Chunk();
 			GenerateCavern(chunk);
 
 			progress.Report("Removing small regions...");
@@ -292,12 +298,13 @@ namespace ASCIIWorld.Generation
 			floorRegions[0].IsMainRegion = true;
 			floorRegions[0].IsAccessibleFromMainRegion = true;
 
-			progress.Report("Connecting closest rooms...");
 			ConnectClosestRooms(progress, floorRegions, chunk);
 		}
 
 		private void ConnectClosestRooms(IProgress<string> progress, List<LevelRegion> floorRegions, Chunk chunk, bool forceAccessibilityFromMainRegion = false)
 		{
+			progress.Report($"Connecting rooms (x{++_connectingRoomsCount})...");
+
 			var roomListA = new List<LevelRegion>(); // is not accessible from main region
 			var roomListB = new List<LevelRegion>(); // is accessible from main region
 
@@ -370,7 +377,7 @@ namespace ASCIIWorld.Generation
 
 				if (possibleConnectionFound && !forceAccessibilityFromMainRegion)
 				{
-					progress.Report("Creating a passage...");
+					progress.Report($"Creating a passage (x{++_passageCount})...");
 					CreatePassage(chunk, bestRegionA, bestRegionB, bestTileA, bestTileB);
 				}
 			}

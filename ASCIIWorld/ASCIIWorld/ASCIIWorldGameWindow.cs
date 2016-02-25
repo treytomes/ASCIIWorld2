@@ -33,7 +33,7 @@ namespace ASCIIWorld
 		/// </summary>
 		private void ASCIIWorldGameWindow_Load(object sender, EventArgs e)
 		{
-			States.EnterState(new GameplayState(States));
+			States.EnterState(new LoadWorldGameState(States));
 			//_scriptManager.Show();
 		}
 

@@ -9,5 +9,22 @@ namespace GameCore.Math
 		{
 			return (inclusiveMin.CompareTo(value) <= 0) && (value.CompareTo(exclusiveMax) < 0);
 		}
+
+		public static T Clamp<T>(T value, T inclusiveMin, T inclusiveMax)
+			where T : IComparable<T>
+		{
+			if (value.CompareTo(inclusiveMin) < 0)
+			{
+				return inclusiveMin;
+			}
+			else if (inclusiveMax.CompareTo(value) < 0)
+			{
+				return inclusiveMax;
+			}
+			else
+			{
+				return value;
+			}
+		}
 	}
 }

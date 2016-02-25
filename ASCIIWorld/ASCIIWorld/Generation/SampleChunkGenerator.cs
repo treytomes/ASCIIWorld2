@@ -5,23 +5,12 @@ namespace ASCIIWorld.Generation
 {
 	public class SampleChunkGenerator : IGenerator<Chunk>
 	{
-		private BlockRegistry _blocks;
-
-		public SampleChunkGenerator(BlockRegistry blocks)
-		{
-			if (blocks == null)
-			{
-				throw new ArgumentNullException("blocks");
-			}
-			_blocks = blocks;
-		}
-
 		public Chunk Generate(IProgress<string> progress)
 		{
 			progress.Report("Generating chunk.");
 
 			var random = new Random();
-			var chunk = new Chunk(_blocks);
+			var chunk = new Chunk();
 			for (var row = 0; row < chunk.Rows; row++)
 			{
 				for (var column = 0; column < chunk.Columns; column++)

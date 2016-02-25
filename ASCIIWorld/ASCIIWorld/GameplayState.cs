@@ -1,5 +1,6 @@
 ﻿using ASCIIWorld.Data;
 using ASCIIWorld.Generation;
+using ASCIIWorld.Rendering;
 using GameCore;
 using GameCore.IO;
 using GameCore.Rendering;
@@ -23,8 +24,9 @@ namespace ASCIIWorld
 		private OrthographicProjection _chunkProjection;
 
 		private GLTextWriter _writer;
-		private Chunk _chunk;
 		private BlockRegistry _blocks;
+		private Chunk _chunk;
+		private ChunkRenderer _chunkRenderer;
 
 		// These should be moved up to the GameWindow level.
 		private int _frameCount;
@@ -37,7 +39,7 @@ namespace ASCIIWorld
 		#region Constructors
 
 		// TODO: All game states will need to handle the Resize event.
-		public GameplayState(GameStateManager manager)
+		public GameplayState(GameStateManager manager, BlockRegistry blocks, Chunk chunk)
 			: base(manager)
 		{
 			_viewport = new Viewport(0, 0, manager.GameWindow.Width, manager.GameWindow.Height);
@@ -51,6 +53,10 @@ namespace ASCIIWorld
 				ZNear = -10,
 				ZFar = 10
 			};
+
+			_blocks = blocks;
+			_chunk = chunk;
+			_chunkRenderer = new ChunkRenderer(_blocks);
 
 			_frameCount = 0;
 			_totalGameTime = TimeSpan.Zero;
@@ -99,13 +105,6 @@ namespace ASCIIWorld
 
 			_writer = new GLTextWriter();
 
-			_blocks = new SampleBlockRegistry(content);
-
-			// TODO: This should be done from a LoadingState.
-			var progress = new Progress<string>(message => Console.WriteLine(message));
-			//_chunk = new SampleChunkGenerator(_blocks).Generate();
-			Task.Run(() => _chunk = new CavernChunkGenerator(_blocks as SampleBlockRegistry, 50, "hello!").Generate(progress)).Wait();
-
 			InputManager.Instance.Keyboard.KeyDown += Keyboard_KeyDown;
 			InputManager.Instance.Keyboard.KeyUp += Keyboard_KeyUp;
 		}
@@ -142,7 +141,7 @@ namespace ASCIIWorld
 		{
 			base.Render();
 
-			_chunk.Render(_chunkProjection);
+			_chunkRenderer.Render(_chunk, _chunkProjection);
 
 			_projection.Apply();
 

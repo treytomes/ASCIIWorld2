@@ -78,6 +78,7 @@
     <Compile Include="Generation\SampleChunkGenerator.cs" />
     <Compile Include="Generation\IGenerator.cs" />
     <Compile Include="IO\BlockContentProvider.cs" />
+    <Compile Include="LoadWorldGameState.cs" />
     <Compile Include="PauseState.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -86,6 +87,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="Rendering\ChunkRenderer.cs" />
     <Compile Include="ScriptManager.xaml.cs">
       <DependentUpon>ScriptManager.xaml</DependentUpon>
     </Compile>

@@ -109,10 +109,10 @@ namespace GameCore.Rendering
 			tessellator.AddPoint(width, 0, maxU, minV);
 		}
 
-		public void RenderText(ITessellator tessellator, float x, float y, string format, params object[] args)
+		public void RenderText(ITessellator tessellator, string format, params object[] args)
 		{
-			var unitX = tessellator.Transform(Vector2.UnitX);
-			tessellator.Translate(x, y);
+			var unitX = tessellator.Transform(Vector2.UnitX) - tessellator.Transform(Vector2.Zero);
+			//tessellator.Translate(x, y);
 
 			format = string.Format(format, args);
 			for (var index = 0; index < format.Length; index++)
@@ -122,7 +122,7 @@ namespace GameCore.Rendering
 			}
 
 			tessellator.Translate(-unitX * format.Length);
-			tessellator.Translate(-x, -y);
+			//tessellator.Translate(-x, -y);
 		}
 
 		#endregion

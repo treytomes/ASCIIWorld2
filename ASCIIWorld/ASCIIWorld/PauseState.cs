@@ -41,6 +41,7 @@ namespace ASCIIWorld
 				ZNear = -10,
 				ZFar = 10
 			};
+			_tessellator = new VertexBufferTessellator() { Mode = VertexTessellatorMode.Render };
 		}
 
 		#endregion
@@ -53,7 +54,6 @@ namespace ASCIIWorld
 
 			_ascii = content.Load<TileSet>("TileSets/ASCII.xml");
 
-			_tessellator = new VertexBufferTessellator() { Mode = VertexTessellatorMode.Render };
 			//_writer = new GLTextWriter(new Font("Consolas", 64, FontStyle.Bold));
 
 			//var size = _writer.Measure(PAUSE_MESSAGE);
@@ -93,8 +93,10 @@ namespace ASCIIWorld
 			_tessellator.AddPoint(Manager.GameWindow.Width, 0);
 
 			_tessellator.BindColor(Color.White);
-			_tessellator.Scale(_ascii.Width * 4, _ascii.Height * 4);
-			_ascii.RenderText(_tessellator, (Manager.GameWindow.Width - _ascii.Width * 4 * PAUSE_MESSAGE.Length) / 2, (Manager.GameWindow.Height - _ascii.Height * 4) / 2, PAUSE_MESSAGE);
+			var scale = new Vector2(_ascii.Width, _ascii.Height) * 4;
+			_tessellator.Scale(scale.X, scale.Y);
+			_tessellator.Translate((Manager.GameWindow.Width - scale.X * PAUSE_MESSAGE.Length) / 2, (Manager.GameWindow.Height - scale.Y) / 2);
+			_ascii.RenderText(_tessellator, PAUSE_MESSAGE);
 
 			_tessellator.End();
 
