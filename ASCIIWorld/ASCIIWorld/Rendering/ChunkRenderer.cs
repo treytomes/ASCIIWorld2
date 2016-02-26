@@ -2,7 +2,6 @@
 using GameCore.Rendering;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
-using System;
 
 namespace ASCIIWorld.Rendering
 {

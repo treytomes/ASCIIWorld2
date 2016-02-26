@@ -21,10 +21,10 @@ namespace ASCIIWorld
 
 		#region Fields
 
-		private IProjection _projection;
 		private ITessellator _tessellator;
 		//private GLTextWriter _writer;
 		private TileSet _ascii;
+		private Camera<OrthographicProjection> _hudCamera;
 
 		#endregion
 
@@ -35,12 +35,9 @@ namespace ASCIIWorld
 			: base(manager)
 		{
 			var viewport = new Viewport(0, 0, manager.GameWindow.Width, manager.GameWindow.Height);
-			_projection = new OrthographicProjection(viewport)
-			{
-				ZNear = -10,
-				ZFar = 10
-			};
 			_tessellator = new VertexBufferTessellator() { Mode = VertexTessellatorMode.Render };
+			_hudCamera = Camera.CreateOrthographicCamera(viewport);
+			_hudCamera.Projection.OrthographicSize = viewport.Height / 2;
 		}
 
 		#endregion
@@ -72,7 +69,7 @@ namespace ASCIIWorld
 		public override void Resize(Viewport viewport)
 		{
 			base.Resize(viewport);
-			_projection.Resize(viewport);
+			_hudCamera.Resize(viewport);
 		}
 
 		public override void Update(TimeSpan elapsed)
@@ -84,23 +81,23 @@ namespace ASCIIWorld
 		{
 			base.Render();
 
-			_projection.Apply();
+			_hudCamera.Apply();
 
 			_tessellator.Begin(PrimitiveType.Quads);
 			_tessellator.LoadIdentity();
-			_tessellator.Translate(0, 0, 10);
+			_tessellator.Translate(0, 0, -10);
 
 			_tessellator.BindTexture(null);
 			_tessellator.BindColor(Color.FromArgb(64, Color.Black));
-			_tessellator.AddPoint(0, 0);
-			_tessellator.AddPoint(0, _projection.Viewport.Height);
-			_tessellator.AddPoint(_projection.Viewport.Width, _projection.Viewport.Height);
-			_tessellator.AddPoint(_projection.Viewport.Width, 0);
+			_tessellator.AddPoint(_hudCamera.Projection.Left, _hudCamera.Projection.Top);
+			_tessellator.AddPoint(_hudCamera.Projection.Left, _hudCamera.Projection.Bottom);
+			_tessellator.AddPoint(_hudCamera.Projection.Right, _hudCamera.Projection.Bottom);
+			_tessellator.AddPoint(_hudCamera.Projection.Right, _hudCamera.Projection.Top);
 
 			_tessellator.BindColor(Color.White);
 			var scale = new Vector2(_ascii.Width, _ascii.Height) * 4;
 			_tessellator.Scale(scale.X, scale.Y);
-			_tessellator.Translate((_projection.Viewport.Width - scale.X * PAUSE_MESSAGE.Length) / 2, (_projection.Viewport.Height - scale.Y) / 2);
+			_tessellator.Translate(-scale.X * PAUSE_MESSAGE.Length / 2, -scale.Y / 2);
 			_ascii.RenderText(_tessellator, PAUSE_MESSAGE);
 
 			_tessellator.End();
@@ -116,7 +113,7 @@ namespace ASCIIWorld
 		{
 			if (HasFocus)
 			{
-				if (e.Key == Key.Enter)
+				if (e.Key == Key.Escape)
 				{
 					LeaveState();
 				}

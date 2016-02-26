@@ -21,23 +21,20 @@ namespace ASCIIWorld
 	{
 		#region Constants
 
-		private const float BLOCK_SCALE = 24;
-
 		private const float ZOOM_MIN = 3.0f;
 		private const float ZOOM_MAX = 25.0f;
-
 
 		#endregion
 
 		#region Fields
 
-		private OrthographicProjection _projection;
-
 		private GLTextWriter _writer;
 		private BlockRegistry _blocks;
 		private Chunk _chunk;
 		private ChunkRenderer _chunkRenderer;
+
 		private Camera<OrthographicProjection> _camera;
+		private Camera<OrthographicProjection> _hudCamera;
 
 		// These should be moved up to the GameWindow level.
 		private int _frameCount;
@@ -56,11 +53,6 @@ namespace ASCIIWorld
 			: base(manager)
 		{
 			var viewport = new Viewport(0, 0, manager.GameWindow.Width, manager.GameWindow.Height);
-			_projection = new OrthographicProjection(viewport)
-			{
-				ZNear = -10,
-				ZFar = 10
-			};
 
 			_blocks = blocks;
 			_chunk = chunk;
@@ -71,7 +63,8 @@ namespace ASCIIWorld
 			_timer = Stopwatch.StartNew();
 
 			_camera = Camera.CreateOrthographicCamera(viewport);
-			//_camera.Scale(BLOCK_SCALE, BLOCK_SCALE);
+			_hudCamera = Camera.CreateOrthographicCamera(viewport);
+			_hudCamera.Projection.OrthographicSize = viewport.Height / 2;
 		}
 
 		#endregion
@@ -139,9 +132,8 @@ namespace ASCIIWorld
 		public override void Resize(Viewport viewport)
 		{
 			base.Resize(viewport);
-			_projection.Resize(viewport);
-			//_chunkRenderer.Resize(viewport);
 			_camera.Resize(viewport);
+			_hudCamera.Resize(viewport);
 		}
 
 
@@ -172,7 +164,7 @@ namespace ASCIIWorld
 			_camera.Apply();
 			_chunkRenderer.Render(_camera.Viewport, _chunk);
 
-			_projection.Apply();
+			_hudCamera.Apply();
 
 			_writer.Color = Color.White;
 			_writer.Position = new Vector2(256, 256);
@@ -197,10 +189,8 @@ namespace ASCIIWorld
 				switch (e.Key)
 				{
 					case Key.Escape:
-						LeaveState();
-						break;
-					case Key.P:
 						EnterState(new PauseState(Manager));
+						//LeaveState();
 						break;
 					//case Key.Up:
 					//	_cameraVelocity.Y = -1;
@@ -224,12 +214,6 @@ namespace ASCIIWorld
 			{
 				switch (e.Key)
 				{
-					case Key.Escape:
-						LeaveState();
-						break;
-					case Key.P:
-						EnterState(new PauseState(Manager));
-						break;
 					//case Key.Up:
 					//case Key.Down:
 					//	_cameraVelocity.Y = 0;
@@ -244,9 +228,12 @@ namespace ASCIIWorld
 
 		private void Mouse_ButtonDown(object sender, MouseButtonEventArgs e)
 		{
-			if (e.Button == MouseButton.Middle)
+			if (HasFocus)
 			{
-				_cameraMoveStart = new Vector3(InputManager.Instance.Mouse.X, InputManager.Instance.Mouse.Y, 0);
+				if (e.Button == MouseButton.Middle)
+				{
+					_cameraMoveStart = new Vector3(InputManager.Instance.Mouse.X, InputManager.Instance.Mouse.Y, 0);
+				}
 			}
 		}
 
@@ -256,12 +243,15 @@ namespace ASCIIWorld
 
 		private void Mouse_Move(object sender, MouseMoveEventArgs e)
 		{
-			if (e.Mouse.IsButtonDown(MouseButton.Middle))
+			if (HasFocus)
 			{
-				var mousePosition = new Vector3(e.X, e.Y, 0);
-				var delta = (_cameraMoveStart - mousePosition) / _camera.Projection.OrthographicSize;
-				_camera.MoveBy(delta);
-				_cameraMoveStart = mousePosition;
+				if (e.Mouse.IsButtonDown(MouseButton.Middle))
+				{
+					var mousePosition = new Vector3(e.X, e.Y, 0);
+					var delta = (_cameraMoveStart - mousePosition) / _camera.Projection.OrthographicSize;
+					_camera.MoveBy(delta);
+					_cameraMoveStart = mousePosition;
+				}
 			}
 		}
 
