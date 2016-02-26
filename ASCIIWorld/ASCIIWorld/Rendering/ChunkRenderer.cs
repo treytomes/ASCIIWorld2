@@ -8,12 +8,6 @@ namespace ASCIIWorld.Rendering
 {
 	public class ChunkRenderer
 	{
-		#region Constants
-
-		private const float BLOCK_SCALE = 24;
-
-		#endregion
-
 		#region Fields
 
 		private BlockRegistry _blocks;
@@ -23,9 +17,10 @@ namespace ASCIIWorld.Rendering
 
 		#region Constructors
 
-		public ChunkRenderer(BlockRegistry blocks)
+		public ChunkRenderer(Viewport viewport, BlockRegistry blocks)
 		{
 			_blocks = blocks;
+
 			_tessellator = new VertexBufferTessellator() { Mode = VertexTessellatorMode.Render };
 		}
 
@@ -33,31 +28,45 @@ namespace ASCIIWorld.Rendering
 
 		#region Methods
 
-		public void Render(Chunk chunk, OrthographicProjection projection)
+		public void Render(Viewport viewport, Chunk chunk)
 		{
-			projection.Apply();
+			_tessellator.LoadIdentity();
+
+			//var zero = _tessellator.WorldToScreenPoint(Vector2.Zero);
+			//var scale = (_tessellator.WorldToScreenPoint(Vector2.One) - zero);
+
+			//var blocksPerColumn = (viewport.Width / scale.X) + 1;
+			//var blocksPerRow = (viewport.Height / scale.Y) + 1;
+
+			//var topLeft = _tessellator.ScreenToWorldPoint(Vector2.Zero) * 2;
+			//var bottomRight = topLeft + new Vector2(blocksPerColumn, blocksPerRow);
+			
+			// This doesn't work.  I don't know why.  It really should work.
+			//var bottomRight = _tessellator.ScreenToWorldPoint(new Vector2(projection.Viewport.Width, projection.Viewport.Height));
 
 			_tessellator.Begin(PrimitiveType.Quads);
-			_tessellator.LoadIdentity();
-			_tessellator.Scale(BLOCK_SCALE, BLOCK_SCALE);
 
-			var minRow = (float)Math.Floor(projection.Top / BLOCK_SCALE);
-			var maxRow = (float)Math.Ceiling(projection.Bottom / BLOCK_SCALE);
-			var minColumn = (float)Math.Floor(projection.Left / BLOCK_SCALE);
-			var maxColumn = (float)Math.Ceiling(projection.Right / BLOCK_SCALE);
+			var minRow = 0; // (float)Math.Max(0, Math.Floor(topLeft.Y));
+			var maxRow = chunk.Rows; // (float)Math.Min(chunk.Rows, Math.Ceiling(bottomRight.Y));
+			var minColumn = 0; // (float)Math.Max(0, Math.Floor(topLeft.X));
+			var maxColumn = chunk.Columns; // (float)Math.Min(chunk.Columns, Math.Ceiling(bottomRight.X));
 
-			RenderLayer(chunk, ChunkLayer.Background, minRow, maxRow, minColumn, maxColumn);
-			RenderLayer(chunk, ChunkLayer.Floor, minRow, maxRow, minColumn, maxColumn);
+			//Console.WriteLine($"Viewport: {projection.Viewport.Left} --> {projection.Viewport.Right}");
+			//Console.WriteLine($"H: {topLeft.X*24}-->{bottomRight.X * 24} ({bottomRight.X * 24 - topLeft.X * 24}), V: {topLeft.Y}-->{bottomRight.Y} ({bottomRight.Y - topLeft.Y})");
+			//Console.WriteLine($"X: {minColumn}-->{maxColumn} ({maxColumn - minColumn}), Y: {minRow}-->{maxRow} ({maxRow - minRow})");
+			
+			RenderLayer(_tessellator, chunk, ChunkLayer.Background, minRow, maxRow, minColumn, maxColumn);
+			RenderLayer(_tessellator, chunk, ChunkLayer.Floor, minRow, maxRow, minColumn, maxColumn);
 
 			// TODO: Render entities here.
 
-			RenderLayer(chunk, ChunkLayer.Blocking, minRow, maxRow, minColumn, maxColumn);
-			RenderLayer(chunk, ChunkLayer.Ceiling, minRow, maxRow, minColumn, maxColumn);
+			RenderLayer(_tessellator, chunk, ChunkLayer.Blocking, minRow, maxRow, minColumn, maxColumn);
+			RenderLayer(_tessellator, chunk, ChunkLayer.Ceiling, minRow, maxRow, minColumn, maxColumn);
 
 			_tessellator.End();
 		}
 
-		private void RenderLayer(Chunk chunk, ChunkLayer layer, float minRow, float maxRow, float minColumn, float maxColumn)
+		private void RenderLayer(ITessellator tessellator, Chunk chunk, ChunkLayer layer, float minRow, float maxRow, float minColumn, float maxColumn)
 		{
 			for (var row = minRow; row < maxRow; row++)
 			{
@@ -65,12 +74,13 @@ namespace ASCIIWorld.Rendering
 				{
 					if (chunk[layer, (int)row, (int)column] > 0)
 					{
-						var position = _tessellator.Transform(new Vector3(column, row, 0));
-						position.Z = (int)layer;
+						//var position = tessellator.WorldToScreenPoint(new Vector3(column, row, (int)layer));
+						var position = new Vector3(column, row, -1 * (int)layer);
 
-						_tessellator.Translate(position);
-						_blocks.GetById(chunk[layer, (int)row, (int)column]).Render(_tessellator);
-						_tessellator.Translate(-position);
+						tessellator.Translate(position);
+						var id = _blocks.GetById(chunk[layer, (int)row, (int)column]);
+						_blocks.GetById(chunk[layer, (int)row, (int)column]).Render(tessellator);
+						tessellator.Translate(-position);
 					}
 				}
 			}

@@ -1,4 +1,5 @@
-﻿using OpenTK;
+﻿using GameCore.Math;
+using OpenTK;
 using OpenTK.Graphics.OpenGL;
 using System;
 using System.Drawing;
@@ -8,7 +9,7 @@ namespace GameCore.Rendering
 	/// <summary>
 	/// Common functions used by all tessellators, e.g. the matrix stack calculations.
 	/// </summary>
-	public abstract class BaseTessellator : ITessellator
+	public abstract class BaseTessellator : ViewCamera, ITessellator
 	{
 		#region Events
 
@@ -17,17 +18,11 @@ namespace GameCore.Rendering
 
 		#endregion
 
-		#region Fields
-
-		private Matrix4 _currentTransformation;
-
-		#endregion
-
 		#region Constructors
 
 		public BaseTessellator()
+			: base()
 		{
-			LoadIdentity();
 			BindTexture(null);
 			BindColor(Color.White);
 		}
@@ -88,49 +83,6 @@ namespace GameCore.Rendering
 
 		public abstract void End();
 
-		public void LoadIdentity()
-		{
-			_currentTransformation = Matrix4.Identity;
-		}
-
-		public void Scale(float x, float y)
-		{
-			Scale(x, y, 1);
-		}
-
-		public void Scale(float x, float y, float z)
-		{
-			var scale = Matrix4.CreateScale(x, y, z);
-			_currentTransformation *= scale;
-		}
-
-		public void Rotate(float angle, float x, float y, float z)
-		{
-			var rotation = Matrix4.CreateFromAxisAngle(new Vector3(x, y, z), angle * MathHelper.Pi / 180.0f);
-			_currentTransformation *= rotation;
-		}
-
-		public void Translate(Vector3 position)
-		{
-			var translation = Matrix4.CreateTranslation(position);
-			_currentTransformation *= translation;
-		}
-
-		public void Translate(Vector2 position)
-		{
-			Translate(new Vector3(position));
-		}
-
-		public void Translate(float x, float y)
-		{
-			Translate(new Vector3(x, y, 0));
-		}
-
-		public void Translate(float x, float y, float z)
-		{
-			Translate(new Vector3(x, y, z));
-		}
-
 		public void BindColor(Color color)
 		{
 			if (CurrentColor != color)
@@ -179,7 +131,7 @@ namespace GameCore.Rendering
 
 		public void AddPoint(float x, float y, float z, float u, float v)
 		{
-			var position = Transform(new Vector3(x, y, z));
+			var position = WorldToScreenPoint(new Vector3(x, y, z));
 			AddTransformedPoint(position, u, v);
 		}
 
@@ -196,23 +148,6 @@ namespace GameCore.Rendering
 		public void AddPoint(float x, float y)
 		{
 			AddPoint(x, y, 0, 0, 0);
-		}
-
-		/// <summary>
-		/// Transform <paramref name="vector"/> according to the current matrix stack.
-		/// </summary>
-		public Vector3 Transform(Vector3 vector)
-		{
-			return Vector3.TransformPosition(vector, _currentTransformation);
-		}
-
-		/// <summary>
-		/// Transform <paramref name="vector"/> according to the current matrix stack.
-		/// </summary>
-		public Vector2 Transform(Vector2 vector)
-		{
-			var v3 = Vector3.TransformPosition(new Vector3(vector), _currentTransformation);
-			return new Vector2(v3.X, v3.Y);
 		}
 
 		protected abstract void AddTransformedPoint(Vector3 transformedVector, float u, float v);

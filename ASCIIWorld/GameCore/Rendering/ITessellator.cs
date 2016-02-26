@@ -1,24 +1,15 @@
-﻿using OpenTK;
+﻿using GameCore.Math;
 using OpenTK.Graphics.OpenGL;
 using System.Drawing;
 
 namespace GameCore.Rendering
 {
-	public interface ITessellator
+	public interface ITessellator : ICamera
 	{
 		PrimitiveType PrimitiveType { get; }
 
 		void Begin(PrimitiveType primitiveType);
 		void End();
-
-		void LoadIdentity();
-		void Rotate(float angle, float x, float y, float z);
-		void Scale(float x, float y);
-		void Scale(float x, float y, float z);
-		void Translate(float x, float y, float z);
-		void Translate(float x, float y);
-		void Translate(Vector3 position);
-		void Translate(Vector2 position);
 
 		void BindTexture(Texture2D texture);
 		void BindColor(Color color);
@@ -36,8 +27,5 @@ namespace GameCore.Rendering
 
 		void AddPoint(float x, float y, float u, float v);
 		void AddPoint(float x, float y);
-
-		Vector3 Transform(Vector3 vector);
-		Vector2 Transform(Vector2 vector);
 	}
 }

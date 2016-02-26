@@ -6,7 +6,6 @@ using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
 using System;
 using System.Drawing;
-using System.Reflection;
 
 namespace GameCore
 {
@@ -24,6 +23,7 @@ namespace GameCore
 			InputManager.Initialize(this);
 
 			Load += BasicGameWindow_Load;
+			Resize += BasicGameWindow_Resize;
 			UpdateFrame += BasicGameWindow_UpdateFrame;
 			RenderFrame += BasicGameWindow_RenderFrame;
 		}
@@ -49,13 +49,10 @@ namespace GameCore
 			OpenGLState.SetDefaultState();
 		}
 
-		// This should be handled by individual GameStates now.
-		//private void BasicGameWindow_Resize(object sender, EventArgs e)
-		//{
-		//	_viewport.Width = Width;
-		//	_viewport.Height = Height;
-		//	Projection.Resize(_viewport);
-		//}
+		private void BasicGameWindow_Resize(object sender, EventArgs e)
+		{
+			States.Resize(new Viewport(0, 0, Width, Height));
+		}
 
 		private void BasicGameWindow_UpdateFrame(object sender, OpenTK.FrameEventArgs e)
 		{

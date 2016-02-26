@@ -21,7 +21,6 @@ namespace ASCIIWorld
 
 		#region Fields
 
-		private Viewport _viewport;
 		private IProjection _projection;
 		private ITessellator _tessellator;
 		//private GLTextWriter _writer;
@@ -35,8 +34,8 @@ namespace ASCIIWorld
 		public PauseState(GameStateManager manager)
 			: base(manager)
 		{
-			_viewport = new Viewport(0, 0, manager.GameWindow.Width, manager.GameWindow.Height);
-			_projection = new OrthographicProjection(_viewport)
+			var viewport = new Viewport(0, 0, manager.GameWindow.Width, manager.GameWindow.Height);
+			_projection = new OrthographicProjection(viewport)
 			{
 				ZNear = -10,
 				ZFar = 10
@@ -70,6 +69,12 @@ namespace ASCIIWorld
 			InputManager.Instance.Keyboard.KeyDown -= Keyboard_KeyDown;
 		}
 
+		public override void Resize(Viewport viewport)
+		{
+			base.Resize(viewport);
+			_projection.Resize(viewport);
+		}
+
 		public override void Update(TimeSpan elapsed)
 		{
 			base.Update(elapsed);
@@ -88,14 +93,14 @@ namespace ASCIIWorld
 			_tessellator.BindTexture(null);
 			_tessellator.BindColor(Color.FromArgb(64, Color.Black));
 			_tessellator.AddPoint(0, 0);
-			_tessellator.AddPoint(0, Manager.GameWindow.Height);
-			_tessellator.AddPoint(Manager.GameWindow.Width, Manager.GameWindow.Height);
-			_tessellator.AddPoint(Manager.GameWindow.Width, 0);
+			_tessellator.AddPoint(0, _projection.Viewport.Height);
+			_tessellator.AddPoint(_projection.Viewport.Width, _projection.Viewport.Height);
+			_tessellator.AddPoint(_projection.Viewport.Width, 0);
 
 			_tessellator.BindColor(Color.White);
 			var scale = new Vector2(_ascii.Width, _ascii.Height) * 4;
 			_tessellator.Scale(scale.X, scale.Y);
-			_tessellator.Translate((Manager.GameWindow.Width - scale.X * PAUSE_MESSAGE.Length) / 2, (Manager.GameWindow.Height - scale.Y) / 2);
+			_tessellator.Translate((_projection.Viewport.Width - scale.X * PAUSE_MESSAGE.Length) / 2, (_projection.Viewport.Height - scale.Y) / 2);
 			_ascii.RenderText(_tessellator, PAUSE_MESSAGE);
 
 			_tessellator.End();

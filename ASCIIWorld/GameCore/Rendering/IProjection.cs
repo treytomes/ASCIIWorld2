@@ -1,8 +1,11 @@
-﻿namespace GameCore.Rendering
+﻿using OpenTK;
+
+namespace GameCore.Rendering
 {
 	public interface IProjection
 	{
 		Viewport Viewport { get; }
+		Matrix4 ProjectionMatrix { get; }
 
 		void Resize(Viewport viewport);
 		void Apply();

@@ -62,7 +62,7 @@ namespace ASCIIWorld.Data
 
 		public void Render(ITessellator tessellator, float x, float y)
 		{
-			var position = tessellator.Transform(new Vector2(x, y));
+			var position = tessellator.WorldToScreenPoint(new Vector2(x, y));
 			tessellator.Translate(position);
 			Render(tessellator);
 			tessellator.Translate(-position);

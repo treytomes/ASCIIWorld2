@@ -20,7 +20,6 @@ namespace ASCIIWorld
 	{
 		#region Fields
 
-		private Viewport _viewport;
 		private OrthographicProjection _projection;
 		private ITessellator _tessellator;
 
@@ -38,8 +37,7 @@ namespace ASCIIWorld
 		public LoadWorldGameState(GameStateManager manager)
 			: base(manager)
 		{
-			_viewport = new Viewport(0, 0, manager.GameWindow.Width, manager.GameWindow.Height);
-			_projection = new OrthographicProjection(_viewport)
+			_projection = new OrthographicProjection(new Viewport(0, 0, manager.GameWindow.Width, manager.GameWindow.Height))
 			{
 				ZNear = -10,
 				ZFar = 10
@@ -63,6 +61,12 @@ namespace ASCIIWorld
 			_blocks = new SampleBlockRegistry(content);
 			_loadingTask = Task.Run(() => _chunk = new CavernChunkGenerator(_blocks as SampleBlockRegistry, 50, "hello!").Generate(progress))
 				.ContinueWith(x => Thread.Sleep(100));
+		}
+
+		public override void Resize(Viewport viewport)
+		{
+			base.Resize(viewport);
+			_projection.Resize(viewport);
 		}
 
 		public override void Update(TimeSpan elapsed)
@@ -90,7 +94,7 @@ namespace ASCIIWorld
 
 			var alpha = 255;
 
-			_tessellator.Translate(0, Manager.GameWindow.Height - scale.Y);
+			_tessellator.Translate(0, _projection.Viewport.Height - scale.Y);
 			foreach (var message in _progressMessages)
 			{
 				_tessellator.BindColor(Color.FromArgb(alpha, Color.White));

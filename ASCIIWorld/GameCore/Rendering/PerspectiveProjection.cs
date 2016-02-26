@@ -14,6 +14,12 @@ namespace GameCore.Rendering
 
 		#endregion
 
+		#region Fields
+
+		private Matrix4 _projection;
+
+		#endregion
+
 		#region Constructors
 
 		public PerspectiveProjection(Viewport viewport)
@@ -23,6 +29,8 @@ namespace GameCore.Rendering
 			FieldOfViewY = DEFAULT_FIELDOFVIEW;
 			ZNear = DEFAULT_ZNEAR;
 			ZFar = DEFAULT_ZFAR;
+
+			_projection = Matrix4.Identity;
 		}
 
 		#endregion
@@ -46,6 +54,14 @@ namespace GameCore.Rendering
 		/// </summary>
 		public float ZFar { get; set; }
 
+		public Matrix4 ProjectionMatrix
+		{
+			get
+			{
+				return _projection;
+			}
+		}
+
 		#endregion
 
 		#region Methods
@@ -58,9 +74,9 @@ namespace GameCore.Rendering
 		public void Apply()
 		{
 			Viewport.Apply();
-			var projection = Matrix4.CreatePerspectiveFieldOfView(FieldOfViewY, Viewport.AspectRatio, ZNear, ZFar);
+			_projection = Matrix4.CreatePerspectiveFieldOfView(FieldOfViewY, Viewport.AspectRatio, ZNear, ZFar);
 			GL.MatrixMode(MatrixMode.Projection);
-			GL.LoadMatrix(ref projection);
+			GL.LoadMatrix(ref _projection);
 		}
 		
 		public bool Contains(float x, float y, float z = 0)

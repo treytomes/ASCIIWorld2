@@ -6,17 +6,35 @@ namespace GameCore
 {
 	public class Camera
 	{
-		#region Fields
+		public static Camera<PerspectiveProjection> CreatePerspectiveCamera(int width, int height)
+		{
+			return CreatePerspectiveCamera(new Viewport(0, 0, width, height));
+		}
 
-		private IProjection _projection;
+		public static Camera<PerspectiveProjection> CreatePerspectiveCamera(Viewport viewport)
+		{
+			return new Camera<PerspectiveProjection>(new PerspectiveProjection(viewport));
+		}
 
-		#endregion
+		public static Camera<OrthographicProjection> CreateOrthographicCamera(int width, int height)
+		{
+			return CreateOrthographicCamera(new Viewport(0, 0, width, height));
+		}
 
+		public static Camera<OrthographicProjection> CreateOrthographicCamera(Viewport viewport)
+		{
+			return new Camera<OrthographicProjection>(new OrthographicProjection(viewport));
+		}
+	}
+
+	public class Camera<TProjection>
+		where TProjection : IProjection
+	{
 		#region Constructors
 
-		public Camera(IProjection projection)
+		public Camera(TProjection projection)
 		{
-			_projection = projection;
+			Projection = projection;
 
 			Eye = new Vector3(0, 0, 0);
 			Forward = Vector3.UnitZ;
@@ -31,7 +49,7 @@ namespace GameCore
 		{
 			get
 			{
-				return _projection.Viewport;
+				return Projection.Viewport;
 			}
 		}
 
@@ -46,6 +64,16 @@ namespace GameCore
 			get
 			{
 				return Vector3.Subtract(Eye, Forward);
+			}
+		}
+
+		public TProjection Projection { get; private set; }
+
+		public Matrix4 ModelViewMatrix
+		{
+			get
+			{
+				return Matrix4.LookAt(Eye, Target, Up);
 			}
 		}
 
@@ -65,36 +93,16 @@ namespace GameCore
 
 		public void Resize(Viewport viewport)
 		{
-			_projection.Resize(viewport);
+			Projection.Resize(viewport);
 		}
 
 		public void Apply()
 		{
-			_projection.Apply();
+			Projection.Apply();
 
-			var lookat = Matrix4.LookAt(Eye, Target, Up);
+			var lookAt = ModelViewMatrix;
 			GL.MatrixMode(MatrixMode.Modelview);
-			GL.LoadMatrix(ref lookat);
-		}
-
-		public static Camera CreatePerspectiveCamera(int width, int height)
-		{
-			return CreatePerspectiveCamera(new Viewport(0, 0, width, height));
-		}
-
-		public static Camera CreatePerspectiveCamera(Viewport viewport)
-		{
-			return new Camera(new PerspectiveProjection(viewport));
-		}
-
-		public static Camera CreateOrthographicCamera(int width, int height)
-		{
-			return CreateOrthographicCamera(new Viewport(0, 0, width, height));
-		}
-
-		public static Camera CreateOrthographicCamera(Viewport viewport)
-		{
-			return new Camera(new OrthographicProjection(viewport));
+			GL.LoadMatrix(ref lookAt);
 		}
 
 		#endregion

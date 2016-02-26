@@ -3,10 +3,12 @@ using ASCIIWorld.Generation;
 using ASCIIWorld.Rendering;
 using GameCore;
 using GameCore.IO;
+using GameCore.Math;
 using GameCore.Rendering;
 using GameCore.Rendering.Text;
 using GameCore.StateManagement;
 using OpenTK;
+using OpenTK.Graphics.OpenGL;
 using OpenTK.Input;
 using System;
 using System.Diagnostics;
@@ -17,22 +19,33 @@ namespace ASCIIWorld
 {
 	public class GameplayState : GameState
 	{
+		#region Constants
+
+		private const float BLOCK_SCALE = 24;
+
+		private const float ZOOM_MIN = 3.0f;
+		private const float ZOOM_MAX = 25.0f;
+
+
+		#endregion
+
 		#region Fields
 
-		private Viewport _viewport;
 		private OrthographicProjection _projection;
-		private OrthographicProjection _chunkProjection;
 
 		private GLTextWriter _writer;
 		private BlockRegistry _blocks;
 		private Chunk _chunk;
 		private ChunkRenderer _chunkRenderer;
+		private Camera<OrthographicProjection> _camera;
 
 		// These should be moved up to the GameWindow level.
 		private int _frameCount;
-		private TimeSpan _totalGameTime;
 		private Stopwatch _timer;
-		private Vector2 _cameraVelocity;
+		private TimeSpan _totalGameTime;
+		private TimeSpan _lastRenderTime = TimeSpan.Zero;
+
+		private Vector3 _cameraMoveStart;
 
 		#endregion
 
@@ -42,13 +55,8 @@ namespace ASCIIWorld
 		public GameplayState(GameStateManager manager, BlockRegistry blocks, Chunk chunk)
 			: base(manager)
 		{
-			_viewport = new Viewport(0, 0, manager.GameWindow.Width, manager.GameWindow.Height);
-			_projection = new OrthographicProjection(_viewport)
-			{
-				ZNear = -10,
-				ZFar = 10
-			};
-			_chunkProjection = new OrthographicProjection(_viewport)
+			var viewport = new Viewport(0, 0, manager.GameWindow.Width, manager.GameWindow.Height);
+			_projection = new OrthographicProjection(viewport)
 			{
 				ZNear = -10,
 				ZFar = 10
@@ -56,11 +64,14 @@ namespace ASCIIWorld
 
 			_blocks = blocks;
 			_chunk = chunk;
-			_chunkRenderer = new ChunkRenderer(_blocks);
+			_chunkRenderer = new ChunkRenderer(viewport, _blocks);
 
 			_frameCount = 0;
 			_totalGameTime = TimeSpan.Zero;
 			_timer = Stopwatch.StartNew();
+
+			_camera = Camera.CreateOrthographicCamera(viewport);
+			//_camera.Scale(BLOCK_SCALE, BLOCK_SCALE);
 		}
 
 		#endregion
@@ -107,6 +118,10 @@ namespace ASCIIWorld
 
 			InputManager.Instance.Keyboard.KeyDown += Keyboard_KeyDown;
 			InputManager.Instance.Keyboard.KeyUp += Keyboard_KeyUp;
+			InputManager.Instance.Mouse.ButtonDown += Mouse_ButtonDown;
+			InputManager.Instance.Mouse.ButtonUp += Mouse_ButtonUp;
+			InputManager.Instance.Mouse.Move += Mouse_Move;
+			InputManager.Instance.Mouse.WheelChanged += Mouse_WheelChanged;
 		}
 
 		public override void UnloadContent()
@@ -115,7 +130,20 @@ namespace ASCIIWorld
 
 			InputManager.Instance.Keyboard.KeyDown -= Keyboard_KeyDown;
 			InputManager.Instance.Keyboard.KeyUp -= Keyboard_KeyUp;
+			InputManager.Instance.Mouse.ButtonDown -= Mouse_ButtonDown;
+			InputManager.Instance.Mouse.ButtonUp -= Mouse_ButtonUp;
+			InputManager.Instance.Mouse.Move -= Mouse_Move;
+			InputManager.Instance.Mouse.WheelChanged -= Mouse_WheelChanged;
 		}
+
+		public override void Resize(Viewport viewport)
+		{
+			base.Resize(viewport);
+			_projection.Resize(viewport);
+			//_chunkRenderer.Resize(viewport);
+			_camera.Resize(viewport);
+		}
+
 
 		public override void Update(TimeSpan elapsed)
 		{
@@ -127,8 +155,6 @@ namespace ASCIIWorld
 			if (HasFocus)
 			{
 				_blocks.Update(elapsed);
-
-				_chunkProjection.MoveBy(_cameraVelocity);
 			}
 			else
 			{
@@ -136,12 +162,15 @@ namespace ASCIIWorld
 			}
 		}
 
-		private TimeSpan _lastRenderTime = TimeSpan.Zero;
 		public override void Render()
 		{
 			base.Render();
 
-			_chunkRenderer.Render(_chunk, _chunkProjection);
+			GL.ClearColor(Color.FromArgb(48, 48, 48));
+			GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
+
+			_camera.Apply();
+			_chunkRenderer.Render(_camera.Viewport, _chunk);
 
 			_projection.Apply();
 
@@ -173,18 +202,18 @@ namespace ASCIIWorld
 					case Key.P:
 						EnterState(new PauseState(Manager));
 						break;
-					case Key.Up:
-						_cameraVelocity.Y = -4;
-						break;
-					case Key.Down:
-						_cameraVelocity.Y = 4;
-						break;
-					case Key.Left:
-						_cameraVelocity.X = -4;
-						break;
-					case Key.Right:
-						_cameraVelocity.X = 4;
-						break;
+					//case Key.Up:
+					//	_cameraVelocity.Y = -1;
+					//	break;
+					//case Key.Down:
+					//	_cameraVelocity.Y = 1;
+					//	break;
+					//case Key.Left:
+					//	_cameraVelocity.X = -1;
+					//	break;
+					//case Key.Right:
+					//	_cameraVelocity.X = 1;
+					//	break;
 				}
 			}
 		}
@@ -201,16 +230,45 @@ namespace ASCIIWorld
 					case Key.P:
 						EnterState(new PauseState(Manager));
 						break;
-					case Key.Up:
-					case Key.Down:
-						_cameraVelocity.Y = 0;
-						break;
-					case Key.Left:
-					case Key.Right:
-						_cameraVelocity.X = 0;
-						break;
+					//case Key.Up:
+					//case Key.Down:
+					//	_cameraVelocity.Y = 0;
+					//	break;
+					//case Key.Left:
+					//case Key.Right:
+					//	_cameraVelocity.X = 0;
+					//	break;
 				}
 			}
+		}
+
+		private void Mouse_ButtonDown(object sender, MouseButtonEventArgs e)
+		{
+			if (e.Button == MouseButton.Middle)
+			{
+				_cameraMoveStart = new Vector3(InputManager.Instance.Mouse.X, InputManager.Instance.Mouse.Y, 0);
+			}
+		}
+
+		private void Mouse_ButtonUp(object sender, MouseButtonEventArgs e)
+		{
+		}
+
+		private void Mouse_Move(object sender, MouseMoveEventArgs e)
+		{
+			if (e.Mouse.IsButtonDown(MouseButton.Middle))
+			{
+				var mousePosition = new Vector3(e.X, e.Y, 0);
+				var delta = (_cameraMoveStart - mousePosition) / _camera.Projection.OrthographicSize;
+				_camera.MoveBy(delta);
+				_cameraMoveStart = mousePosition;
+			}
+		}
+
+		private void Mouse_WheelChanged(object sender, MouseWheelEventArgs e)
+		{
+			_camera.Projection.OrthographicSize = (float)Math.Ceiling(_camera.Projection.OrthographicSize - _camera.Projection.OrthographicSize * (e.DeltaPrecise / 10));
+			_camera.Projection.OrthographicSize = (float)Math.Floor(GameCore.Math.MathHelper.Clamp(_camera.Projection.OrthographicSize, ZOOM_MIN, ZOOM_MAX));
 		}
 
 		#endregion
