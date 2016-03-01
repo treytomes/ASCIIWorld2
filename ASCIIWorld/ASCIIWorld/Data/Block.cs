@@ -19,6 +19,7 @@ namespace ASCIIWorld.Data
 		public Block(int framesPerSecond, IEnumerable<IRenderable> frames)
 			: base(framesPerSecond, frames)
 		{
+			// TODO: A Block should contain a set of animations, where the animation can be chosen according to the block's world state.
 			_properties = new Dictionary<string, object>();
 		}
 
@@ -48,6 +49,12 @@ namespace ASCIIWorld.Data
 		public void SetProperty<T>(string propertyName, T value)
 		{
 			_properties[propertyName] = value;
+		}
+
+		public Animation GetAnimation(Chunk chunk, ChunkLayer layer, int x, int y)
+		{
+			// TODO: Call this from ChunkRenderer.RenderLayer to get a reference to the animation that needs to be rendered.
+			throw new NotImplementedException();
 		}
 
 		#endregion

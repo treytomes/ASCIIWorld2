@@ -1,0 +1,54 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<AtlasTileSet>
+	<Tile name="Solid">
+		<Tile.source>
+			<TileSetContentProvider tileSet="TileSets/ASCII.xml" tileIndex="219" />
+		</Tile.source>
+	</Tile>
+	<Tile name="Stone">
+		<Tile.source>
+			<TileSetContentProvider tileSet="TileSets/ASCII.xml" tileIndex="178" />
+		</Tile.source>
+	</Tile>
+	<Tile name="Grass">
+		<Tile.source>
+			<TileSetContentProvider tileSet="TileSets/ASCII.xml" tileIndex="176" />
+		</Tile.source>
+	</Tile>
+	<Tile name="Water_1">
+		<Tile.source>
+			<TileSetContentProvider tileSet="TileSets/ASCII.xml" tileIndex="61" />
+		</Tile.source>
+	</Tile>
+	<Tile name="Water_2">
+		<Tile.source>
+			<TileSetContentProvider tileSet="TileSets/ASCII.xml" tileIndex="205" />
+		</Tile.source>
+	</Tile>
+	<Tile name="Water_3">
+		<Tile.source>
+			<TileSetContentProvider tileSet="TileSets/ASCII.xml" tileIndex="45" />
+		</Tile.source>
+	</Tile>
+
+	<Tile name="ConnectedWall_N">
+		<Tile.source>
+			<TileSetContentProvider tileSet="TileSets/ConnectedWalls.xml" tileIndex="63" />
+		</Tile.source>
+	</Tile>
+	<Tile name="ConnectedWall_E">
+		<Tile.source>
+			<TileSetContentProvider tileSet="TileSets/ConnectedWalls.xml" tileIndex="77" />
+		</Tile.source>
+	</Tile>
+	<Tile name="ConnectedWall_S">
+		<Tile.source>
+			<TileSetContentProvider tileSet="TileSets/ConnectedWalls.xml" tileIndex="89" />
+		</Tile.source>
+	</Tile>
+	<Tile name="ConnectedWall_W">
+		<Tile.source>
+			<TileSetContentProvider tileSet="TileSets/ConnectedWalls.xml" tileIndex="75" />
+		</Tile.source>
+	</Tile>
+</AtlasTileSet>

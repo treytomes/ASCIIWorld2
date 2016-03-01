@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OpenTK;
+using System;
 
 namespace GameCore.Math
 {
@@ -25,6 +26,11 @@ namespace GameCore.Math
 			{
 				return value;
 			}
+		}
+
+		public static Vector3 Round(Vector3 value)
+		{
+			return new Vector3((float)System.Math.Round(value.X), (float)System.Math.Round(value.Y), (float)System.Math.Round(value.Z));
 		}
 	}
 }

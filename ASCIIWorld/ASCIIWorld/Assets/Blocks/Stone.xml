@@ -1,6 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<Block tileSet="TileSets/ASCII.xml">
+<Block tileSet="TileSets/SampleBlocks.xml">
 	<Frames framesPerSecond="1">
-		<Frame backgroundColor="#FF878787" foregroundColor="#FFB5B5B5" tileIndex="178" />
+		<Frame>
+			<Tile color="#FF878787" name="Solid" />
+			<Tile color="#FFB5B5B5" name="Stone" />
+		</Frame>
 	</Frames>
 </Block>

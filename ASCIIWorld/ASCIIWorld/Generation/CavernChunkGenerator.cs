@@ -84,34 +84,34 @@ namespace ASCIIWorld.Generation
 
 		private void RandomFillMap(Chunk chunk)
 		{
-			for (var x = 0; x < chunk.Columns; x++)
+			for (var x = 0; x < chunk.Width; x++)
 			{
-				for (var y = 0; y < chunk.Rows; y++)
+				for (var y = 0; y < chunk.Height; y++)
 				{
 					if (_random.Next(0, 100) < _randomFillPercent)
 					{
-						chunk[ChunkLayer.Blocking, y, x] = _blocks.Stone.Id;
+						chunk[ChunkLayer.Blocking, x, y] = _blocks.Stone.Id;
 					}
-					chunk[ChunkLayer.Floor, y, x] = _blocks.Stone.Id;
+					chunk[ChunkLayer.Floor, x, y] = _blocks.Stone.Id;
 				}
 			}
 		}
 
 		private void SmoothMap(Chunk chunk)
 		{
-			for (var x = 0; x < chunk.Columns; x++)
+			for (var x = 0; x < chunk.Width; x++)
 			{
-				for (var y = 0; y < chunk.Rows; y++)
+				for (var y = 0; y < chunk.Height; y++)
 				{
 					var neighbourWallTiles = GetSurroundingWallCount(chunk, x, y);
 
 					if (neighbourWallTiles > 4)
 					{
-						chunk[ChunkLayer.Blocking, y, x] = _blocks.Stone.Id;
+						chunk[ChunkLayer.Blocking, x, y] = _blocks.Stone.Id;
 					}
 					else if (neighbourWallTiles < 4)
 					{
-						chunk[ChunkLayer.Blocking, y, x] = 0;
+						chunk[ChunkLayer.Blocking, x, y] = 0;
 					}
 				}
 			}
@@ -124,11 +124,11 @@ namespace ASCIIWorld.Generation
 			{
 				for (var neighbourY = gridY - 1; neighbourY <= gridY + 1; neighbourY++)
 				{
-					if (MathHelper.IsInRange(neighbourX, 0, level.Columns) && MathHelper.IsInRange(neighbourY, 0, level.Rows))
+					if (MathHelper.IsInRange(neighbourX, 0, level.Width) && MathHelper.IsInRange(neighbourY, 0, level.Height))
 					{
 						if ((neighbourX != gridX) || (neighbourY != gridY))
 						{
-							if (level[ChunkLayer.Blocking, neighbourY, neighbourX] == _blocks.Stone.Id)
+							if (level[ChunkLayer.Blocking, neighbourX, neighbourY] == _blocks.Stone.Id)
 							{
 								wallCount++;
 							}
@@ -146,15 +146,15 @@ namespace ASCIIWorld.Generation
 
 		private void EnsureMapBorder(Chunk chunk)
 		{
-			for (var x = 0; x < chunk.Columns; x++)
+			for (var x = 0; x < chunk.Width; x++)
 			{
-				chunk[ChunkLayer.Blocking, 0, x] = _blocks.Stone.Id;
-				chunk[ChunkLayer.Blocking, chunk.Columns - 1, x] = _blocks.Stone.Id;
+				chunk[ChunkLayer.Blocking, x, 0] = _blocks.Stone.Id;
+				chunk[ChunkLayer.Blocking, x, chunk.Height - 1] = _blocks.Stone.Id;
 			}
-			for (var y = 0; y < chunk.Rows; y++)
+			for (var y = 0; y < chunk.Height; y++)
 			{
-				chunk[ChunkLayer.Blocking, y, 0] = _blocks.Stone.Id;
-				chunk[ChunkLayer.Blocking, y, chunk.Rows - 1] = _blocks.Stone.Id;
+				chunk[ChunkLayer.Blocking, 0, y] = _blocks.Stone.Id;
+				chunk[ChunkLayer.Blocking, chunk.Width - 1, y] = _blocks.Stone.Id;
 			}
 		}
 
@@ -191,11 +191,11 @@ namespace ASCIIWorld.Generation
 					{
 						if (layer == ChunkLayer.Blocking)
 						{
-							chunk[layer, point.Y, point.X] = 0;
+							chunk[layer, point.X, point.Y] = 0;
 						}
 						else
 						{
-							chunk[ChunkLayer.Blocking, point.Y, point.X] = _blocks.Stone.Id;
+							chunk[ChunkLayer.Blocking, point.X, point.Y] = _blocks.Stone.Id;
 						}
 					}
 					regions.Remove(region);
@@ -214,16 +214,16 @@ namespace ASCIIWorld.Generation
 			var regions = new List<List<Point>>();
 
 			// Track whether a position has been checked.
-			var mapFlags = new bool[chunk.Rows, chunk.Columns];
+			var mapFlags = new bool[chunk.Height, chunk.Width];
 
-			for (var x = 0; x < chunk.Columns; x++)
+			for (var x = 0; x < chunk.Width; x++)
 			{
-				for (var y = 0; y < chunk.Rows; y++)
+				for (var y = 0; y < chunk.Height; y++)
 				{
 					if (!mapFlags[y, x])
 					{
-						if (((layer == ChunkLayer.Floor) && (chunk[ChunkLayer.Floor, y, x] == tileId) && (chunk[ChunkLayer.Blocking, y, x] == 0)) ||
-							((layer == ChunkLayer.Blocking) && (chunk[ChunkLayer.Floor, y, x] == tileId)))
+						if (((layer == ChunkLayer.Floor) && (chunk[ChunkLayer.Floor, x, y] == tileId) && (chunk[ChunkLayer.Blocking, x, y] == 0)) ||
+							((layer == ChunkLayer.Blocking) && (chunk[ChunkLayer.Floor, x, y] == tileId)))
 						{
 							var newRegion = GetRegionPoints(chunk, layer, x, y);
 							regions.Add(newRegion);
@@ -247,10 +247,10 @@ namespace ASCIIWorld.Generation
 			var points = new List<Point>();
 
 			// Track whether a position has been checked.
-			var mapFlags = new bool[chunk.Rows, chunk.Columns];
+			var mapFlags = new bool[chunk.Height, chunk.Width];
 
 			// This is the tile id we will match the region on.
-			var tileId = chunk[layer, startY, startX];
+			var tileId = chunk[layer, startX, startY];
 
 			// The list of tiles to check.
 			var queue = new Queue<Point>();
@@ -267,12 +267,12 @@ namespace ASCIIWorld.Generation
 				{
 					for (var y = chunkPos.Y - 1; y <= chunkPos.Y + 1; y++)
 					{
-						if (MathHelper.IsInRange(x, 0, chunk.Columns) && MathHelper.IsInRange(y, 0, chunk.Rows) && ((y == chunkPos.Y) || (x == chunkPos.X)))
+						if (MathHelper.IsInRange(x, 0, chunk.Width) && MathHelper.IsInRange(y, 0, chunk.Height) && ((y == chunkPos.Y) || (x == chunkPos.X)))
 						{
 							if (!mapFlags[y, x])
 							{
-								if (((layer == ChunkLayer.Floor) && (chunk[ChunkLayer.Floor, y, x] == tileId) && (chunk[ChunkLayer.Blocking, y, x] == 0)) ||
-									((layer == ChunkLayer.Blocking) && (chunk[ChunkLayer.Floor, y, x] == tileId)))
+								if (((layer == ChunkLayer.Floor) && (chunk[ChunkLayer.Floor, x, y] == tileId) && (chunk[ChunkLayer.Blocking, x, y] == 0)) ||
+									((layer == ChunkLayer.Blocking) && (chunk[ChunkLayer.Floor, x, y] == tileId)))
 								{
 									mapFlags[y, x] = true;
 									queue.Enqueue(new Point(x, y));
@@ -415,9 +415,9 @@ namespace ASCIIWorld.Generation
 					{
 						var drawX = c.X + x;
 						var drawY = c.Y + y;
-						if (MathHelper.IsInRange(drawX, 0, chunk.Columns) && MathHelper.IsInRange(drawY, 0, chunk.Rows))
+						if (MathHelper.IsInRange(drawX, 0, chunk.Width) && MathHelper.IsInRange(drawY, 0, chunk.Height))
 						{
-							chunk[ChunkLayer.Blocking, drawY, drawX] = 0;
+							chunk[ChunkLayer.Blocking, drawX, drawY] = 0;
 						}
 					}
 				}
@@ -557,10 +557,10 @@ namespace ASCIIWorld.Generation
 
 			private void LocateEdgeTiles(Chunk chunk)
 			{
-				var regionTileId = chunk[ChunkLayer.Floor, Points[0].Y, Points[0].X];
+				var regionTileId = chunk[ChunkLayer.Floor, Points[0].X, Points[0].Y];
 
 				// TODO: Make this configurable?
-				Func<int, int, bool> isOnEdge = (x, y) => chunk[ChunkLayer.Blocking, y, x] != 0;
+				Func<int, int, bool> isOnEdge = (x, y) => chunk[ChunkLayer.Blocking, x, y] != 0;
 
 				EdgeTiles = new List<Point>();
 				foreach (var tile in Points)
@@ -569,7 +569,7 @@ namespace ASCIIWorld.Generation
 					{
 						for (var y = tile.Y - 1; y <= tile.Y + 1; y++)
 						{
-							if (MathHelper.IsInRange(x, 0, chunk.Columns) && MathHelper.IsInRange(y, 0, chunk.Rows) && ((x == tile.X) || (y == tile.Y)))
+							if (MathHelper.IsInRange(x, 0, chunk.Width) && MathHelper.IsInRange(y, 0, chunk.Height) && ((x == tile.X) || (y == tile.Y)))
 							{
 								if (isOnEdge(x, y))
 								{

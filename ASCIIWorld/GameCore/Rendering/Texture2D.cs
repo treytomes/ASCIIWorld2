@@ -200,7 +200,9 @@ namespace GameCore.Rendering
 		public TextureRegion2D ReadRegion(Rectangle rect, int mipLevel)
 		{
 			if (mipLevel < 0)
+			{
 				throw new ArgumentOutOfRangeException("miplevel");
+			}
 
 			TextureRegion2D<int> region = new TextureRegion2D<int>(rect);
 

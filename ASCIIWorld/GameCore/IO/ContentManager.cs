@@ -41,6 +41,9 @@ namespace GameCore.IO
 			_contentProviders = new Dictionary<Type, object>();
 			RegisterContentProvider(new Texture2DContentProvider());
 			RegisterContentProvider(new TileSetContentProvider());
+			RegisterContentProvider(new XElementContentProvider());
+			RegisterContentProvider(new BitmapContentProvider());
+			RegisterContentProvider(new AtlasTileSetContentProvider());
 
 			_contentCache = new Dictionary<ContentKey, object>();
 		}

@@ -13,8 +13,8 @@ namespace ASCIIWorld.Data
 
 		//private const int CHUNK_ROWS = 256;
 		//private const int CHUNK_COLUMNS = 256;
-		private const int CHUNK_ROWS = 64;
-		private const int CHUNK_COLUMNS = 64;
+		private const int CHUNK_HEIGHT = 64;
+		private const int CHUNK_WIDTH = 64;
 
 		#endregion
 
@@ -28,40 +28,40 @@ namespace ASCIIWorld.Data
 
 		public Chunk()
 		{
-			_blockIndex = new int[Enum.GetValues(typeof(ChunkLayer)).Length, CHUNK_ROWS, CHUNK_COLUMNS];
+			_blockIndex = new int[Enum.GetValues(typeof(ChunkLayer)).Length, CHUNK_HEIGHT, CHUNK_WIDTH];
 		}
 
 		#endregion
 
 		#region Properties
 
-		public int Rows
+		public int Height
 		{
 			get
 			{
-				return CHUNK_ROWS;
+				return CHUNK_HEIGHT;
 			}
 		}
 
-		public int Columns
+		public int Width
 		{
 			get
 			{
-				return CHUNK_COLUMNS;
+				return CHUNK_WIDTH;
 			}
 		}
 
-		public int this[ChunkLayer layer, int row, int column]
+		public int this[ChunkLayer layer, int x, int y]
 		{
 			get
 			{
-				if ((row < 0) || (row >= CHUNK_ROWS) || (column < 0) || (column >= CHUNK_COLUMNS))
+				if ((y < 0) || (y >= CHUNK_HEIGHT) || (x < 0) || (x >= CHUNK_WIDTH))
 				{
 					return 0;
 				}
 				else
 				{
-					return _blockIndex[(int)layer, row, column];
+					return _blockIndex[(int)layer, y, x];
 				}
 			}
 			set
@@ -71,9 +71,9 @@ namespace ASCIIWorld.Data
 				//	throw new ArgumentException("This id is not registered.");
 				//}
 
-				if ((row >= 0) && (row < CHUNK_ROWS) && (column >= 0) && (column < CHUNK_COLUMNS))
+				if ((y >= 0) && (y < CHUNK_HEIGHT) && (x >= 0) && (x < CHUNK_WIDTH))
 				{
-					_blockIndex[(int)layer, row, column] = value;
+					_blockIndex[(int)layer, y, x] = value;
 				}
 			}
 		}

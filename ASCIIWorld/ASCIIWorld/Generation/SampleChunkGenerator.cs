@@ -11,17 +11,17 @@ namespace ASCIIWorld.Generation
 
 			var random = new Random();
 			var chunk = new Chunk();
-			for (var row = 0; row < chunk.Rows; row++)
+			for (var y = 0; y < chunk.Height; y++)
 			{
-				for (var column = 0; column < chunk.Columns; column++)
+				for (var x = 0; x < chunk.Width; x++)
 				{
 					if (random.Next(4) == 1)
 					{
-						chunk[ChunkLayer.Floor, row, column] = 2;
+						chunk[ChunkLayer.Floor, x, y] = 2;
 					}
 					else
 					{
-						chunk[ChunkLayer.Floor, row, column] = 1;
+						chunk[ChunkLayer.Floor, x, y] = 1;
 					}
 				}
 			}

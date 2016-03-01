@@ -1,7 +1,9 @@
 ﻿using ASCIIWorld.Data;
+using GameCore.IO;
 using GameCore.Rendering;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
+using System.Drawing;
 
 namespace ASCIIWorld.Rendering
 {
@@ -11,6 +13,8 @@ namespace ASCIIWorld.Rendering
 
 		private BlockRegistry _blocks;
 		private ITessellator _tessellator;
+
+		private AtlasTileSet _connectedWallTiles;
 
 		#endregion
 
@@ -26,6 +30,11 @@ namespace ASCIIWorld.Rendering
 		#endregion
 
 		#region Methods
+
+		public void LoadContent(ContentManager content)
+		{
+			_connectedWallTiles = content.Load<AtlasTileSet>("TileSets/SampleBlocks.xml");
+		}
 
 		public void Render(Viewport viewport, Chunk chunk)
 		{
@@ -46,9 +55,9 @@ namespace ASCIIWorld.Rendering
 			_tessellator.Begin(PrimitiveType.Quads);
 
 			var minRow = 0; // (float)Math.Max(0, Math.Floor(topLeft.Y));
-			var maxRow = chunk.Rows; // (float)Math.Min(chunk.Rows, Math.Ceiling(bottomRight.Y));
+			var maxRow = chunk.Height; // (float)Math.Min(chunk.Rows, Math.Ceiling(bottomRight.Y));
 			var minColumn = 0; // (float)Math.Max(0, Math.Floor(topLeft.X));
-			var maxColumn = chunk.Columns; // (float)Math.Min(chunk.Columns, Math.Ceiling(bottomRight.X));
+			var maxColumn = chunk.Width; // (float)Math.Min(chunk.Columns, Math.Ceiling(bottomRight.X));
 
 			//Console.WriteLine($"Viewport: {projection.Viewport.Left} --> {projection.Viewport.Right}");
 			//Console.WriteLine($"H: {topLeft.X*24}-->{bottomRight.X * 24} ({bottomRight.X * 24 - topLeft.X * 24}), V: {topLeft.Y}-->{bottomRight.Y} ({bottomRight.Y - topLeft.Y})");
@@ -67,18 +76,37 @@ namespace ASCIIWorld.Rendering
 
 		private void RenderLayer(ITessellator tessellator, Chunk chunk, ChunkLayer layer, float minRow, float maxRow, float minColumn, float maxColumn)
 		{
-			for (var row = minRow; row < maxRow; row++)
+			for (var y = minRow; y < maxRow; y++)
 			{
-				for (var column = minColumn; column < maxColumn; column++)
+				for (var x = minColumn; x < maxColumn; x++)
 				{
-					if (chunk[layer, (int)row, (int)column] > 0)
+					if (chunk[layer, (int)x, (int)y] > 0)
 					{
 						//var position = tessellator.WorldToScreenPoint(new Vector3(column, row, (int)layer));
-						var position = new Vector3(column, row, -1 * (int)layer);
+						var position = new Vector3(x, y, -1 * (int)layer);
 
 						tessellator.Translate(position);
-						var id = _blocks.GetById(chunk[layer, (int)row, (int)column]);
-						_blocks.GetById(chunk[layer, (int)row, (int)column]).Render(tessellator);
+						var id = _blocks.GetById(chunk[layer, (int)x, (int)y]);
+						_blocks.GetById(chunk[layer, (int)x, (int)y]).Render(tessellator);
+
+						tessellator.BindColor(Color.DimGray);
+						if (chunk[layer, (int)x - 1, (int)y] != chunk[layer, (int)x, (int)y])
+						{
+							_connectedWallTiles.Render(tessellator, _connectedWallTiles.GetTileIndexFromName("ConnectedWall_W"));
+						}
+						if (chunk[layer, (int)x + 1, (int)y] != chunk[layer, (int)x, (int)y])
+						{
+							_connectedWallTiles.Render(tessellator, _connectedWallTiles.GetTileIndexFromName("ConnectedWall_E"));
+						}
+						if (chunk[layer, (int)x, (int)y - 1] != chunk[layer, (int)x, (int)y])
+						{
+							_connectedWallTiles.Render(tessellator, _connectedWallTiles.GetTileIndexFromName("ConnectedWall_N"));
+						}
+						if (chunk[layer, (int)x, (int)y + 1] != chunk[layer, (int)x, (int)y])
+						{
+							_connectedWallTiles.Render(tessellator, _connectedWallTiles.GetTileIndexFromName("ConnectedWall_S"));
+						}
+
 						tessellator.Translate(-position);
 					}
 				}

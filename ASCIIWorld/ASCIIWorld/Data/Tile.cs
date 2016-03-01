@@ -27,18 +27,29 @@ namespace ASCIIWorld.Data
 			_numChunkLayers = Enum.GetValues(typeof(ChunkLayer)).Length;
 		}
 
+		public Tile(TileSet tileSet, Color color, string name)
+		{
+			_tileSet = tileSet;
+			Color = color;
+			Name = name;
+			TileIndex = tileSet.GetTileIndexFromName(Name);
+		}
+
 		public Tile(TileSet tileSet, Color color, int tileIndex)
 		{
 			_tileSet = tileSet;
 			Color = color;
 			TileIndex = tileIndex;
+			Name = tileSet.GetNameFromTileIndex(TileIndex);
 		}
 
 		#endregion
-		
+
 		#region Properties
 
 		public Color Color { get; private set; }
+
+		public string Name { get; private set; }
 
 		public int TileIndex { get; private set; }
 

@@ -1,4 +1,6 @@
-﻿namespace ASCIIWorld.Data
+﻿using System;
+
+namespace ASCIIWorld.Data
 {
 	public enum ChunkLayer
 	{

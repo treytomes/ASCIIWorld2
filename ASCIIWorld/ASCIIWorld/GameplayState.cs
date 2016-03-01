@@ -108,6 +108,7 @@ namespace ASCIIWorld
 			base.LoadContent(content);
 
 			_writer = new GLTextWriter();
+			_chunkRenderer.LoadContent(content);
 
 			InputManager.Instance.Keyboard.KeyDown += Keyboard_KeyDown;
 			InputManager.Instance.Keyboard.KeyUp += Keyboard_KeyUp;
@@ -250,6 +251,7 @@ namespace ASCIIWorld
 					var mousePosition = new Vector3(e.X, e.Y, 0);
 					var delta = (_cameraMoveStart - mousePosition) / _camera.Projection.OrthographicSize;
 					_camera.MoveBy(delta);
+					_camera.Eye = GameCore.Math.MathHelper.Round(_camera.Eye);
 					_cameraMoveStart = mousePosition;
 				}
 			}

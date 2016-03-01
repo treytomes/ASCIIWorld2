@@ -1,68 +1,59 @@
 ﻿using OpenTK;
 using System;
+using System.Linq;
 
 namespace GameCore.Rendering
 {
 	public class TileSet
 	{
-		private struct Tile
+		public class Tile
 		{
-			public int Width;
-			public int Height;
+			#region Constructors
 
-			public float MinU;
-			public float MaxU;
-			public float MinV;
-			public float MaxV;
+			public Tile(string name, float uLeft, float uRight, float vTop, float vBottom)
+			{
+				Name = name;
+				ULeft = uLeft;
+				URight = uRight;
+				VTop = vTop;
+				VBottom = vBottom;
+			}
+
+			#endregion
+
+			#region Properties
+
+			public string Name { get; internal set; }
+
+			public float ULeft { get; private set; }
+			public float URight { get; private set; }
+			public float VTop { get; private set; }
+			public float VBottom { get; private set; }
+
+			#endregion
 		}
+
+		#region Fields
 
 		private Texture2D _texture;
 		private int _rows;
 		private int _columns;
 		private Tile[] _tiles;
 
+		#endregion
+
+		#region Constructors
+
 		public TileSet(Texture2D texture, int rows, int columns)
 		{
-			if (rows <= 0)
-			{
-				throw new ArgumentException("Value must be greater than 0.", "rows");
-			}
-			if (columns <= 0)
-			{
-				throw new ArgumentException("Value must be greater than 0.", "columns");
-			}
-
-			_texture = texture;
-			_rows = rows;
-			_columns = columns;
-
-			Width = _texture.Width / columns;
-			Height = _texture.Height / rows;
-
-			_tiles = new Tile[Count];
-			for (var n = 0; n < Count; n++)
-			{
-				float x = (n % _columns) * Width;
-				float y = (n / _columns) * Height;
-
-				float texLeft = x / _texture.Width;
-				float texTop = y / _texture.Height;
-				float texRight = (x + Width) / _texture.Width;
-				float texBottom = (y + Height) / _texture.Height;
-
-				_tiles[n] = new Tile()
-				{
-					Width = Width,
-					Height = Height,
-					MinU = texLeft,
-					MaxU = texRight,
-					MinV = texTop,
-					MaxV = texBottom
-				};
-			}
-
-			IsNormalized = true;
+			Initialize(texture, rows, columns);
 		}
+
+		protected TileSet()
+		{
+		}
+
+		#endregion
 
 		#region Properties
 
@@ -94,13 +85,13 @@ namespace GameCore.Rendering
 		{
 			var tile = _tiles[tileIndex];
 
-			var minU = mirrorX ? tile.MaxU : tile.MinU;
-			var maxU = mirrorX ? tile.MinU : tile.MaxU;
-			var minV = mirrorY ? tile.MaxV : tile.MinV;
-			var maxV = mirrorY ? tile.MinV : tile.MaxV;
+			var minU = mirrorX ? tile.URight : tile.ULeft;
+			var maxU = mirrorX ? tile.ULeft : tile.URight;
+			var minV = mirrorY ? tile.VBottom : tile.VTop;
+			var maxV = mirrorY ? tile.VTop : tile.VBottom;
 
-			var width = IsNormalized ? 1 : tile.Width;
-			var height = IsNormalized ? 1 : tile.Height;
+			var width = IsNormalized ? 1 : Width;
+			var height = IsNormalized ? 1 : Height;
 
 			tessellator.BindTexture(_texture);
 			tessellator.AddPoint(0, 0, minU, minV);
@@ -112,7 +103,6 @@ namespace GameCore.Rendering
 		public void RenderText(ITessellator tessellator, string format, params object[] args)
 		{
 			var unitX = tessellator.WorldToScreenPoint(Vector2.UnitX) - tessellator.WorldToScreenPoint(Vector2.Zero);
-			//tessellator.Translate(x, y);
 
 			format = string.Format(format, args);
 			for (var index = 0; index < format.Length; index++)
@@ -122,7 +112,56 @@ namespace GameCore.Rendering
 			}
 
 			tessellator.Translate(-unitX * format.Length);
-			//tessellator.Translate(-x, -y);
+		}
+
+		public int GetTileIndexFromName(string name)
+		{
+			return Array.IndexOf(_tiles, _tiles.Single(x => x.Name == name));
+		}
+
+		public string GetNameFromTileIndex(int tileIndex)
+		{
+			return _tiles[tileIndex].Name;
+		}
+
+		protected void Initialize(Texture2D texture, int rows, int columns)
+		{
+			if (rows <= 0)
+			{
+				throw new ArgumentException("Value must be greater than 0.", "rows");
+			}
+			if (columns <= 0)
+			{
+				throw new ArgumentException("Value must be greater than 0.", "columns");
+			}
+
+			_texture = texture;
+			_rows = rows;
+			_columns = columns;
+
+			Width = _texture.Width / columns;
+			Height = _texture.Height / rows;
+
+			_tiles = new Tile[Count];
+			for (var n = 0; n < Count; n++)
+			{
+				float x = (n % _columns) * Width;
+				float y = (n / _columns) * Height;
+
+				float texLeft = x / _texture.Width;
+				float texTop = y / _texture.Height;
+				float texRight = (x + Width) / _texture.Width;
+				float texBottom = (y + Height) / _texture.Height;
+
+				_tiles[n] = new Tile(n.ToString(), texLeft, texRight, texTop, texBottom);
+			}
+
+			IsNormalized = true;
+		}
+
+		protected void SetTileName(int tileIndex, string name)
+		{
+			_tiles[tileIndex].Name = name;
 		}
 
 		#endregion
