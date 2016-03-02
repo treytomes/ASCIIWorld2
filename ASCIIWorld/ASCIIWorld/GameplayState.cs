@@ -108,7 +108,6 @@ namespace ASCIIWorld
 			base.LoadContent(content);
 
 			_writer = new GLTextWriter();
-			_chunkRenderer.LoadContent(content);
 
 			InputManager.Instance.Keyboard.KeyDown += Keyboard_KeyDown;
 			InputManager.Instance.Keyboard.KeyUp += Keyboard_KeyUp;

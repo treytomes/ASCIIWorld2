@@ -1,8 +1,8 @@
 ﻿using GameCore.Rendering;
-using OpenTK;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using ASCIIWorld.Data;
 
 namespace ASCIIWorld.Rendering
 {
@@ -86,12 +86,9 @@ namespace ASCIIWorld.Rendering
 			_frames[_frameIndex].Render(tessellator);
 		}
 
-		public void Render(ITessellator tessellator, float x, float y)
+		public void Render(ITessellator tessellator, Chunk chunk, ChunkLayer layer, int x, int y)
 		{
-			var position = tessellator.WorldToScreenPoint(new Vector2(x, y));
-			tessellator.Translate(position);
 			Render(tessellator);
-			tessellator.Translate(-position);
 		}
 
 		#endregion

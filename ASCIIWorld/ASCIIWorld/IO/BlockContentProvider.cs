@@ -46,6 +46,10 @@ namespace ASCIIWorld.IO
 			{
 				return LoadAnimation(tileSet, rendererElem);
 			}
+			else if (rendererElem.Name == "RegionBoundedTileStack")
+			{
+				return LoadRegionBoundedTileStack(tileSet as AtlasTileSet, rendererElem);
+			}
 			else if (rendererElem.Name == "TileStack")
 			{
 				return LoadTileStack(tileSet, rendererElem);
@@ -70,6 +74,40 @@ namespace ASCIIWorld.IO
 			}
 
 			return new Animation(framesPerSecond, tileStacks);
+		}
+
+		private RegionBoundedTileStack LoadRegionBoundedTileStack(AtlasTileSet tileSet, XElement tileStackElem)
+		{
+			// TODO: Configure the wall tile names in the XML?
+
+			if (tileSet == null)
+			{
+				throw new Exception("TileSet must be an AtlasTileSet.");
+			}
+			if (tileSet.GetTileIndexFromName("ConnectedWall_W") == -1)
+			{
+				throw new Exception("TileSet must define a 'ConnectedWall_W'.");
+			}
+			if (tileSet.GetTileIndexFromName("ConnectedWall_E") == -1)
+			{
+				throw new Exception("TileSet must define a 'ConnectedWall_E'.");
+			}
+			if (tileSet.GetTileIndexFromName("ConnectedWall_N") == -1)
+			{
+				throw new Exception("TileSet must define a 'ConnectedWall_N'.");
+			}
+			if (tileSet.GetTileIndexFromName("ConnectedWall_S") == -1)
+			{
+				throw new Exception("TileSet must define a 'ConnectedWall_S'.");
+			}
+
+			var outlineColor = ParseColor(tileStackElem.Attribute<string>("outlineColor"));
+			var tiles = new List<Tile>();
+			foreach (var tileElem in tileStackElem.Elements("Tile"))
+			{
+				tiles.Add(LoadTile(tileSet, tileElem));
+			}
+			return new RegionBoundedTileStack(tiles, tileSet, outlineColor);
 		}
 
 		private TileStack LoadTileStack(TileSet tileSet, XElement tileStackElem)

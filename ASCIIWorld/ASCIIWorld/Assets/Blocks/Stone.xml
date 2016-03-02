@@ -1,9 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Block tileSet="TileSets/SampleBlocks.xml">
 	<Block.renderer>
-		<TileStack>
+		<RegionBoundedTileStack outlineColor="#FF696969">
 			<Tile color="#FF878787" name="Solid" />
 			<Tile color="#FFB5B5B5" name="Stone" />
-		</TileStack>
+		</RegionBoundedTileStack>
 	</Block.renderer>
 </Block>

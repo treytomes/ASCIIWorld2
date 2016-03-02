@@ -73,6 +73,7 @@
     <Compile Include="Rendering\IRenderable.cs" />
     <Compile Include="Rendering\IUpdateable.cs" />
     <Compile Include="Data\SampleBlockRegistry.cs" />
+    <Compile Include="Rendering\RegionBoundedTileStack.cs" />
     <Compile Include="Rendering\TileStack.cs" />
     <Compile Include="Rendering\Tile.cs" />
     <Compile Include="GameplayState.cs" />

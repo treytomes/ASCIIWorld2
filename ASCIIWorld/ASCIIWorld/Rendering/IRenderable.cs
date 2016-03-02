@@ -8,6 +8,5 @@ namespace ASCIIWorld.Rendering
 	public interface IRenderable
 	{
 		void Render(ITessellator tessellator);
-		void Render(ITessellator tessellator, float x, float y);
 	}
 }
