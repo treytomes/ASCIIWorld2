@@ -76,7 +76,7 @@ namespace ASCIIWorld.Rendering
 
 						tessellator.Translate(position);
 						var id = _blocks.GetById(chunk[layer, (int)x, (int)y]);
-						_blocks.GetById(chunk[layer, (int)x, (int)y]).Render(tessellator);
+						_blocks.GetById(chunk[layer, (int)x, (int)y]).Renderer.Render(tessellator);
 
 						// TODO: Borders should not be drawn around every type of block.
 						tessellator.BindColor(Color.DimGray);

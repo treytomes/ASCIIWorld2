@@ -4,21 +4,13 @@ using System.Xml.Linq;
 
 namespace GameCore.IO
 {
-	public abstract class XmlBasedContentProvider<T> : IContentProvider<T>
+	public abstract class XmlBasedContentProvider<T> : IContentProvider<T>, IXmlContentParser<T>
 	{
-		public abstract T Load(ContentManager content, FileInfo contentPath);
+		public abstract T Parse(ContentManager content, XElement elem);
 
-		protected XElement LoadFile(FileInfo contentPath)
+		public T Load(ContentManager content, FileInfo contentPath)
 		{
-			return XElement.Load(contentPath.FullName);
-		}
-
-		protected void ExpectElementName(XElement element, string name)
-		{
-			if (string.Compare(element.Name.LocalName, name, true) != 0)
-			{
-				throw new Exception(string.Format("Expected element named '{0}', found element named '{1}'.", name, element.Name));
-			}
+			return Parse(content, XElement.Load(contentPath.FullName));
 		}
 	}
 }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Xml.Linq;
 
 namespace GameCore.IO
 {
@@ -23,6 +24,7 @@ namespace GameCore.IO
 
 		private DirectoryInfo _rootPath;
 		private Dictionary<Type, object> _contentProviders;
+		private Dictionary<Type, object> _contentParsers;
 
 		private Dictionary<ContentKey, object> _contentCache;
 
@@ -39,6 +41,8 @@ namespace GameCore.IO
 			}
 
 			_contentProviders = new Dictionary<Type, object>();
+			_contentParsers = new Dictionary<Type, object>();
+
 			RegisterContentProvider(new Texture2DContentProvider());
 			RegisterContentProvider(new TileSetContentProvider());
 			RegisterContentProvider(new XElementContentProvider());
@@ -55,6 +59,25 @@ namespace GameCore.IO
 		public void RegisterContentProvider<T>(IContentProvider<T> provider)
 		{
 			_contentProviders.Add(typeof(T), provider);
+
+			if (provider is IXmlContentParser<T>)
+			{
+				RegisterContentParser<T>(provider as IXmlContentParser<T>);
+			}
+		}
+
+		public void RegisterContentParser<T>(IXmlContentParser<T> parser)
+		{
+			_contentParsers.Add(typeof(T), parser);
+		}
+
+		/// <summary>
+		/// Convert the xml into a content object.
+		/// </summary>
+		public T Parse<T>(XElement elem)
+		{
+			var parser = LocateContentParser<T>();
+			return parser.Parse(this, elem);
 		}
 
 		public T Load<T>(string contentPath, bool cached = true)
@@ -102,6 +125,15 @@ namespace GameCore.IO
 				return (IContentProvider<T>)_contentProviders[typeof(T)];
 			}
 			throw new Exception("Could not find a provider for content type.");
+		}
+
+		private IXmlContentParser<T> LocateContentParser<T>()
+		{
+			if (_contentProviders.ContainsKey(typeof(T)))
+			{
+				return (IXmlContentParser<T>)_contentProviders[typeof(T)];
+			}
+			throw new Exception("Could not find a parser for content type.");
 		}
 
 		#endregion

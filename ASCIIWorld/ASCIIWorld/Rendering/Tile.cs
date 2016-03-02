@@ -1,9 +1,10 @@
-﻿using GameCore.Rendering;
+﻿using ASCIIWorld.Data;
+using GameCore.Rendering;
 using OpenTK;
 using System;
 using System.Drawing;
 
-namespace ASCIIWorld.Data
+namespace ASCIIWorld.Rendering
 {
 	/// <summary>
 	/// The most basic rendering unit; this class references a single tile index, associating it with a color.
@@ -11,7 +12,7 @@ namespace ASCIIWorld.Data
 	/// <remarks>
 	/// A Frame is composed of a stack of Tiles.
 	/// </remarks>
-	public class Tile : IRenderable
+	public class Tile : IBlockRenderer
 	{
 		#region Fields
 
@@ -56,6 +57,10 @@ namespace ASCIIWorld.Data
 		#endregion
 
 		#region Methods
+
+		public void Update(TimeSpan elapsed)
+		{
+		}
 
 		public void Render(ITessellator tessellator)
 		{

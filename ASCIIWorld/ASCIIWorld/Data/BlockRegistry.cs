@@ -36,7 +36,7 @@ namespace ASCIIWorld.Data
 		{
 			foreach (var block in _blocks.Values)
 			{
-				block.Update(elapsed);
+				block.Renderer.Update(elapsed);
 			}
 		}
 	}

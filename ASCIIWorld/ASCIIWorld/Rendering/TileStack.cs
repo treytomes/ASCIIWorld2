@@ -4,12 +4,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace ASCIIWorld.Data
+namespace ASCIIWorld.Rendering
 {
 	/// <summary>
 	/// A graphic composed of a stack of rendered Tiles.
 	/// </summary>
-	public class TileStack : IRenderable
+	public class TileStack : IBlockRenderer
 	{
 		#region Fields
 
@@ -51,6 +51,10 @@ namespace ASCIIWorld.Data
 		#endregion
 
 		#region Methods
+
+		public void Update(TimeSpan elapsed)
+		{
+		}
 
 		public void Render(ITessellator tessellator)
 		{

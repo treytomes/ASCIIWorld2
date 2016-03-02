@@ -1,4 +1,5 @@
 ﻿using ASCIIWorld.Data;
+using ASCIIWorld.Rendering;
 using GameCore;
 using GameCore.IO;
 using GameCore.Rendering;
@@ -13,38 +14,14 @@ namespace ASCIIWorld.IO
 {
 	public class BlockContentProvider : XmlBasedContentProvider<Block>
 	{
-		public override Block Load(ContentManager content, FileInfo contentPath)
+		public override Block Parse(ContentManager content, XElement blockElem)
 		{
-			var blockElem = LoadFile(contentPath);
-			ExpectElementName(blockElem, "Block");
+			blockElem.RequireElement("Block");
 			var tileSet = LoadTileSet(content, blockElem.Attribute<string>("tileSet"));
 
-			var framesElem = blockElem.Element("Frames");
-			var framesPerSecond = framesElem.Attribute<int>("framesPerSecond");
-
-			var frames = new List<TileStack>();
-			foreach (var frameElem in framesElem.Elements("Frame"))
-			{
-				var tiles = new List<Tile>();
-				foreach (var tileElem in frameElem.Elements("Tile"))
-				{
-					if (tileElem.Attribute("tileIndex") != null)
-					{
-						tiles.Add(new Tile(tileSet, ParseColor(tileElem.Attribute<string>("color")), tileElem.Attribute<int>("tileIndex")));
-					}
-					else if (tileElem.Attribute("name") != null)
-					{
-						tiles.Add(new Tile(tileSet, ParseColor(tileElem.Attribute<string>("color")), tileElem.Attribute<string>("name")));
-					}
-					else
-					{
-						throw new InvalidOperationException("Expected either 'tileIndex' or 'name'.");
-					}
-				}
-				frames.Add(new TileStack(tiles));
-			}
-
-			var tile = new Block(framesPerSecond, frames);
+			var rendererElem = blockElem.Element("Block.renderer").Elements().Single();
+			var renderer = LoadRenderer(tileSet, rendererElem);
+			var tile = new Block(renderer);
 
 			var propertiesElem = blockElem.Element("Properties");
 			if (propertiesElem != null)
@@ -61,6 +38,64 @@ namespace ASCIIWorld.IO
 			}
 
 			return tile;
+		}
+
+		private IBlockRenderer LoadRenderer(TileSet tileSet, XElement rendererElem)
+		{
+			if (rendererElem.Name == "Animation")
+			{
+				return LoadAnimation(tileSet, rendererElem);
+			}
+			else if (rendererElem.Name == "TileStack")
+			{
+				return LoadTileStack(tileSet, rendererElem);
+			}
+			else if (rendererElem.Name == "Tile")
+			{
+				return LoadTile(tileSet, rendererElem);
+			}
+			else
+			{
+				throw new InvalidOperationException($"Unknown renderer: {rendererElem.Name}");
+			}
+		}
+
+		private Animation LoadAnimation(TileSet tileSet, XElement animationElem)
+		{
+			var framesPerSecond = animationElem.Attribute<int>("framesPerSecond");
+			var tileStacks = new List<TileStack>();
+			foreach (var tileStackElem in animationElem.Elements("TileStack"))
+			{
+				tileStacks.Add(LoadTileStack(tileSet, tileStackElem));
+			}
+
+			return new Animation(framesPerSecond, tileStacks);
+		}
+
+		private TileStack LoadTileStack(TileSet tileSet, XElement tileStackElem)
+		{
+			var tiles = new List<Tile>();
+			foreach (var tileElem in tileStackElem.Elements("Tile"))
+			{
+				tiles.Add(LoadTile(tileSet, tileElem));
+			}
+			return new TileStack(tiles);
+		}
+
+		private Tile LoadTile(TileSet tileSet, XElement tileElem)
+		{
+			if (tileElem.HasAttribute("tileIndex"))
+			{
+				return new Tile(tileSet, ParseColor(tileElem.Attribute<string>("color")), tileElem.Attribute<int>("tileIndex"));
+			}
+			else if (tileElem.HasAttribute("name"))
+			{
+				return new Tile(tileSet, ParseColor(tileElem.Attribute<string>("color")), tileElem.Attribute<string>("name"));
+			}
+			else
+			{
+				throw new InvalidOperationException("Expected either 'tileIndex' or 'name'.");
+			}
 		}
 
 		private TileSet LoadTileSet(ContentManager content, string name)

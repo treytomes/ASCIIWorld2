@@ -10,10 +10,9 @@ namespace GameCore.IO
 {
 	public class AtlasTileSetContentProvider : XmlBasedContentProvider<AtlasTileSet>
 	{
-		public override AtlasTileSet Load(ContentManager content, FileInfo contentPath)
+		public override AtlasTileSet Parse(ContentManager content, XElement tileSetElem)
 		{
-			var tileSetElem = LoadFile(contentPath);
-			ExpectElementName(tileSetElem, "AtlasTileSet");
+			tileSetElem.RequireElement("AtlasTileSet");
 
 			var tileElems = tileSetElem.Elements("Tile");
 			var tiles = new List<TileInfo>();

@@ -64,6 +64,7 @@
     <Compile Include="IO\ContentManager.cs" />
     <Compile Include="IO\IContentProvider.cs" />
     <Compile Include="IO\BitmapContentProvider.cs" />
+    <Compile Include="IO\IXmlContentParser.cs" />
     <Compile Include="IO\Texture2DContentProvider.cs" />
     <Compile Include="IO\TileSetContentProvider.cs" />
     <Compile Include="IO\XElementContentProvider.cs" />

@@ -1,11 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Block tileSet="TileSets/ASCII.xml">
-	<Frames framesPerSecond="1">
-		<Frame>
+	<Block.renderer>
+		<TileStack>
 			<Tile color="#FF28B515" tileIndex="219" />
 			<Tile color="#FF68D361" tileIndex="176" />
-		</Frame>
-	</Frames>
+		</TileStack>
+	</Block.renderer>
 	<Properties>
 		<Property name="Friction" value="1" />
 	</Properties>

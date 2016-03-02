@@ -4,12 +4,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace ASCIIWorld.Data
+namespace ASCIIWorld.Rendering
 {
 	/// <summary>
 	/// A Animation is composed of multiple renderable frames.
 	/// </summary>
-	public class Animation : IRenderable
+	public class Animation : IBlockRenderer
 	{
 		#region Fields
 

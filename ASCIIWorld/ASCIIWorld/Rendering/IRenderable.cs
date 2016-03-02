@@ -1,6 +1,6 @@
 ﻿using GameCore.Rendering;
 
-namespace ASCIIWorld.Data
+namespace ASCIIWorld.Rendering
 {
 	/// <summary>
 	/// Something that can be rendered to a tessellator.

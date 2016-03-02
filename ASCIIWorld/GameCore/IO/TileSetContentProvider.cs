@@ -1,14 +1,14 @@
 ﻿using GameCore.Rendering;
 using System.IO;
+using System.Xml.Linq;
 
 namespace GameCore.IO
 {
 	public class TileSetContentProvider : XmlBasedContentProvider<TileSet>
 	{
-		public override TileSet Load(ContentManager content, FileInfo contentPath)
+		public override TileSet Parse(ContentManager content, XElement tileSetElem)
 		{
-			var tileSetElem = LoadFile(contentPath);
-			ExpectElementName(tileSetElem, "TileSet");
+			tileSetElem.RequireElement("TileSet");
 
 			var source = tileSetElem.Attribute<string>("source");
 			var rows = tileSetElem.Attribute<int>("rows");

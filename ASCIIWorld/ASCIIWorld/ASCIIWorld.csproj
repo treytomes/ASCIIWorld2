@@ -64,15 +64,17 @@
   <ItemGroup>
     <Compile Include="AppSettings.cs" />
     <Compile Include="ASCIIWorldGameWindow.cs" />
-    <Compile Include="Data\Animation.cs" />
+    <Compile Include="Rendering\Animation.cs" />
     <Compile Include="Data\BlockRegistry.cs" />
     <Compile Include="Data\Chunk.cs" />
     <Compile Include="Data\Block.cs" />
     <Compile Include="Data\ChunkLayer.cs" />
-    <Compile Include="Data\IRenderable.cs" />
+    <Compile Include="Rendering\IBlockRenderer.cs" />
+    <Compile Include="Rendering\IRenderable.cs" />
+    <Compile Include="Rendering\IUpdateable.cs" />
     <Compile Include="Data\SampleBlockRegistry.cs" />
-    <Compile Include="Data\TileStack.cs" />
-    <Compile Include="Data\Tile.cs" />
+    <Compile Include="Rendering\TileStack.cs" />
+    <Compile Include="Rendering\Tile.cs" />
     <Compile Include="GameplayState.cs" />
     <Compile Include="Generation\CavernChunkGenerator.cs" />
     <Compile Include="Generation\SampleChunkGenerator.cs" />

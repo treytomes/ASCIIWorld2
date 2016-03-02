@@ -1,23 +1,25 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Block tileSet="TileSets/ASCII.xml">
-	<Frames framesPerSecond="3">
-		<Frame>
-			<Tile color="#FF0026FF" tileIndex="219" />
-			<Tile color="#FF3269FF" tileIndex="61" />
-		</Frame>
-		<Frame>
-			<Tile color="#FF0026FF" tileIndex="219" />
-			<Tile color="#FF3269FF" tileIndex="205" />
-		</Frame>
-		<Frame>
-			<Tile color="#FF0026FF" tileIndex="219" />
-			<Tile color="#FF3269FF" tileIndex="45" />
-		</Frame>
-		<Frame>
-			<Tile color="#FF0026FF" tileIndex="219" />
-			<Tile color="#FF3269FF" tileIndex="205" />
-		</Frame>
-	</Frames>
+	<Block.renderer>
+		<Animation framesPerSecond="3">
+			<TileStack>
+				<Tile color="#FF0026FF" tileIndex="219" />
+				<Tile color="#FF3269FF" tileIndex="61" />
+			</TileStack>
+			<TileStack>
+				<Tile color="#FF0026FF" tileIndex="219" />
+				<Tile color="#FF3269FF" tileIndex="205" />
+			</TileStack>
+			<TileStack>
+				<Tile color="#FF0026FF" tileIndex="219" />
+				<Tile color="#FF3269FF" tileIndex="45" />
+			</TileStack>
+			<TileStack>
+				<Tile color="#FF0026FF" tileIndex="219" />
+				<Tile color="#FF3269FF" tileIndex="205" />
+			</TileStack>
+		</Animation>
+	</Block.renderer>
 	<Properties>
 		<Property name="Friction" value="0.25" />
 	</Properties>

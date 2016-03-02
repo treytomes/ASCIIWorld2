@@ -43,5 +43,16 @@ namespace GameCore
 				}
 			}
 		}
+
+		/// <summary>
+		/// Throw an exception if an element with the given name doesn't exist.
+		/// </summary>
+		public static void RequireElement(this XElement @this, string name)
+		{
+			if (string.Compare(@this.Name.LocalName, name, true) != 0)
+			{
+				throw new Exception(string.Format("Expected element named '{0}', found element named '{1}'.", name, @this.Name));
+			}
+		}
 	}
 }

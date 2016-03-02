@@ -5,9 +5,9 @@ namespace GameCore.IO
 {
 	public class XElementContentProvider : XmlBasedContentProvider<XElement>
 	{
-		public override XElement Load(ContentManager content, FileInfo contentPath)
+		public override XElement Parse(ContentManager content, XElement elem)
 		{
-			return LoadFile(contentPath);
+			return elem;
 		}
 	}
 }
