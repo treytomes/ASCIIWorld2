@@ -10,13 +10,9 @@ namespace ASCIIWorld.Data
 	{
 		public SampleBlockRegistry(ContentManager content)
 		{
-			Water = content.Load<Block>("Blocks/Water.xml");
-			Grass = content.Load<Block>("Blocks/Grass.xml");
-			Stone = content.Load<Block>("Blocks/Stone.xml");
-
-			RegisterBlock(1, Water);
-			RegisterBlock(2, Grass);
-			RegisterBlock(3, Stone);
+			RegisterBlock(1, Water = content.Load<Block>("Blocks/Water.xml"));
+			RegisterBlock(2, Grass = content.Load<Block>("Blocks/Grass.xml"));
+			RegisterBlock(3, Stone = content.Load<Block>("Blocks/Stone.xml"));
 		}
 
 		public Block Water { get; private set; }

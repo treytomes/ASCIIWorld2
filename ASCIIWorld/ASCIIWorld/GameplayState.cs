@@ -163,7 +163,7 @@ namespace ASCIIWorld
 			GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
 			_camera.Apply();
-			_chunkRenderer.Render(_camera.Viewport, _chunk);
+			_chunkRenderer.Render(_camera, _chunk);
 
 			_hudCamera.Apply();
 
@@ -250,8 +250,8 @@ namespace ASCIIWorld
 				{
 					var mousePosition = new Vector3(e.X, e.Y, 0);
 					var delta = (_cameraMoveStart - mousePosition) / _camera.Projection.OrthographicSize;
+
 					_camera.MoveBy(delta);
-					_camera.Eye = GameCore.Math.MathHelper.Round(_camera.Eye);
 					_cameraMoveStart = mousePosition;
 				}
 			}

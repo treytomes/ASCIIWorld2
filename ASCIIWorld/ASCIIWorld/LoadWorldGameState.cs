@@ -2,9 +2,6 @@
 using GameCore.Rendering;
 using GameCore.StateManagement;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using GameCore.IO;
 using ASCIIWorld.Generation;
@@ -13,6 +10,7 @@ using System.Drawing;
 using OpenTK;
 using System.Threading;
 using System.Collections.Concurrent;
+using GameCore;
 
 namespace ASCIIWorld
 {
@@ -20,8 +18,8 @@ namespace ASCIIWorld
 	{
 		#region Fields
 
-		private OrthographicProjection _projection;
 		private ITessellator _tessellator;
+		private Camera<OrthographicProjection> _hudCamera;
 
 		private BlockRegistry _blocks;
 		private Chunk _chunk;
@@ -37,11 +35,9 @@ namespace ASCIIWorld
 		public LoadWorldGameState(GameStateManager manager)
 			: base(manager)
 		{
-			_projection = new OrthographicProjection(new Viewport(0, 0, manager.GameWindow.Width, manager.GameWindow.Height))
-			{
-				ZNear = -10,
-				ZFar = 10
-			};
+			var viewport = new Viewport(0, 0, manager.GameWindow.Width, manager.GameWindow.Height);
+			_hudCamera = Camera.CreateOrthographicCamera(viewport);
+			_hudCamera.Projection.OrthographicSize = viewport.Height / 2;
 			_tessellator = new VertexBufferTessellator() { Mode = VertexTessellatorMode.Render };
 
 			_progressMessages = new ConcurrentStack<string>();
@@ -66,7 +62,7 @@ namespace ASCIIWorld
 		public override void Resize(Viewport viewport)
 		{
 			base.Resize(viewport);
-			_projection.Resize(viewport);
+			_hudCamera.Resize(viewport);
 		}
 
 		public override void Update(TimeSpan elapsed)
@@ -83,7 +79,7 @@ namespace ASCIIWorld
 		{
 			base.Render();
 
-			_projection.Apply();
+			_hudCamera.Apply();
 
 			_tessellator.Begin(PrimitiveType.Quads);
 			_tessellator.LoadIdentity();
@@ -94,7 +90,7 @@ namespace ASCIIWorld
 
 			var alpha = 255;
 
-			_tessellator.Translate(0, _projection.Viewport.Height - scale.Y);
+			_tessellator.Translate(_hudCamera.Projection.Left, _hudCamera.Projection.Bottom - scale.Y);
 			foreach (var message in _progressMessages)
 			{
 				_tessellator.BindColor(Color.FromArgb(alpha, Color.White));

@@ -11,10 +11,8 @@ namespace ASCIIWorld.Data
 	{
 		#region Constants
 
-		//private const int CHUNK_ROWS = 256;
-		//private const int CHUNK_COLUMNS = 256;
-		private const int CHUNK_HEIGHT = 64;
-		private const int CHUNK_WIDTH = 64;
+		private const int CHUNK_HEIGHT = 256;
+		private const int CHUNK_WIDTH = 256;
 
 		#endregion
 

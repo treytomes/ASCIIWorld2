@@ -1,8 +1,10 @@
 ﻿using ASCIIWorld.Data;
+using GameCore;
 using GameCore.IO;
 using GameCore.Rendering;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
+using System;
 using System.Drawing;
 
 namespace ASCIIWorld.Rendering
@@ -36,32 +38,19 @@ namespace ASCIIWorld.Rendering
 			_connectedWallTiles = content.Load<AtlasTileSet>("TileSets/SampleBlocks.xml");
 		}
 
-		public void Render(Viewport viewport, Chunk chunk)
+		public void Render(Camera<OrthographicProjection> camera, Chunk chunk)
 		{
 			_tessellator.LoadIdentity();
 
-			//var zero = _tessellator.WorldToScreenPoint(Vector2.Zero);
-			//var scale = (_tessellator.WorldToScreenPoint(Vector2.One) - zero);
-
-			//var blocksPerColumn = (viewport.Width / scale.X) + 1;
-			//var blocksPerRow = (viewport.Height / scale.Y) + 1;
-
-			//var topLeft = _tessellator.ScreenToWorldPoint(Vector2.Zero) * 2;
-			//var bottomRight = topLeft + new Vector2(blocksPerColumn, blocksPerRow);
-			
-			// This doesn't work.  I don't know why.  It really should work.
-			//var bottomRight = _tessellator.ScreenToWorldPoint(new Vector2(projection.Viewport.Width, projection.Viewport.Height));
+			var topLeft = Vector3.Transform(new Vector3(camera.Projection.Left, camera.Projection.Top, 0), camera.ModelViewMatrix.Inverted());
+			var bottomRight = Vector3.Transform(new Vector3(camera.Projection.Right, camera.Projection.Bottom, 0), camera.ModelViewMatrix.Inverted());
 
 			_tessellator.Begin(PrimitiveType.Quads);
 
-			var minRow = 0; // (float)Math.Max(0, Math.Floor(topLeft.Y));
-			var maxRow = chunk.Height; // (float)Math.Min(chunk.Rows, Math.Ceiling(bottomRight.Y));
-			var minColumn = 0; // (float)Math.Max(0, Math.Floor(topLeft.X));
-			var maxColumn = chunk.Width; // (float)Math.Min(chunk.Columns, Math.Ceiling(bottomRight.X));
-
-			//Console.WriteLine($"Viewport: {projection.Viewport.Left} --> {projection.Viewport.Right}");
-			//Console.WriteLine($"H: {topLeft.X*24}-->{bottomRight.X * 24} ({bottomRight.X * 24 - topLeft.X * 24}), V: {topLeft.Y}-->{bottomRight.Y} ({bottomRight.Y - topLeft.Y})");
-			//Console.WriteLine($"X: {minColumn}-->{maxColumn} ({maxColumn - minColumn}), Y: {minRow}-->{maxRow} ({maxRow - minRow})");
+			var minRow = (float)Math.Floor(topLeft.Y);
+			var maxRow = (float)Math.Ceiling(bottomRight.Y);
+			var minColumn = (float)Math.Floor(topLeft.X);
+			var maxColumn = (float)Math.Ceiling(bottomRight.X);
 			
 			RenderLayer(_tessellator, chunk, ChunkLayer.Background, minRow, maxRow, minColumn, maxColumn);
 			RenderLayer(_tessellator, chunk, ChunkLayer.Floor, minRow, maxRow, minColumn, maxColumn);
@@ -89,6 +78,7 @@ namespace ASCIIWorld.Rendering
 						var id = _blocks.GetById(chunk[layer, (int)x, (int)y]);
 						_blocks.GetById(chunk[layer, (int)x, (int)y]).Render(tessellator);
 
+						// TODO: Borders should not be drawn around every type of block.
 						tessellator.BindColor(Color.DimGray);
 						if (chunk[layer, (int)x - 1, (int)y] != chunk[layer, (int)x, (int)y])
 						{
