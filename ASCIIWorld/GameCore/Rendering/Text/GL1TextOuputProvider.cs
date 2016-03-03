@@ -32,7 +32,7 @@ namespace GameCore.Rendering.Text
 		Matrix4 matrix = new Matrix4();
 
 		// TextBlock - display list cache.
-		// Todo: we need a cache eviction strategy.
+		// TODO: we need a cache eviction strategy.
 		const int block_cache_capacity = 32;
 		readonly Dictionary<int, int> block_cache = new Dictionary<int, int>(block_cache_capacity);
 

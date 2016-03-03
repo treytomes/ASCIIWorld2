@@ -1,4 +1,6 @@
-﻿namespace GameCore.Rendering.Text
+﻿using CommonCore;
+
+namespace GameCore.Rendering.Text
 {
 	class PoolableTextExtents : TextExtents, IPoolable<PoolableTextExtents>
 	{

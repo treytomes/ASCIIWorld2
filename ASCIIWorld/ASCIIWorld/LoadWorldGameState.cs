@@ -21,7 +21,7 @@ namespace ASCIIWorld
 		private ITessellator _tessellator;
 		private Camera<OrthographicProjection> _hudCamera;
 
-		private BlockRegistry _blocks;
+		private SampleBlockRegistry _blocks;
 		private Chunk _chunk;
 		private TileSet _ascii;
 
@@ -55,8 +55,19 @@ namespace ASCIIWorld
 			
 			var progress = new Progress<string>(message => _progressMessages.Push(message));
 			_blocks = new SampleBlockRegistry(content);
-			_loadingTask = Task.Run(() => _chunk = new CavernChunkGenerator(_blocks as SampleBlockRegistry, 50, "hello!").Generate(progress))
+			_loadingTask = Task.Run(() => _chunk = new CavernChunkGenerator(_blocks as SampleBlockRegistry, "hello!").Generate(progress))
+				.ContinueWith(x => SpawnBushes(progress))
 				.ContinueWith(x => Thread.Sleep(100));
+		}
+
+		private void SpawnBushes(IProgress<string> progress)
+		{
+			for (var n = 0; n < 10; n++)
+			{
+				progress.Report($"Planting bush (x{n + 1})...");
+				var spawnPoint = _chunk.FindSpawnPoint();
+				_chunk[ChunkLayer.Blocking, (int)spawnPoint.X, (int)spawnPoint.Y] = _blocks.Bush.Id;
+			}
 		}
 
 		public override void Resize(Viewport viewport)

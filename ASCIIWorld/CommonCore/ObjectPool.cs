@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace GameCore
+namespace CommonCore
 {
 	public class ObjectPool<T> where T : IPoolable<T>, new()
 	{

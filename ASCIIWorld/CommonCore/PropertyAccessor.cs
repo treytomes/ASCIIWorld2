@@ -4,7 +4,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 
-namespace GameCore
+namespace CommonCore
 {
 	/// <summary>
 	/// Use expressions to dynamically access information on a field or property.

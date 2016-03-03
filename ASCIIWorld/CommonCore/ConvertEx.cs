@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Drawing;
 
-namespace GameCore
+namespace CommonCore
 {
 	public static class ConvertEx
 	{

@@ -1,8 +1,8 @@
 ﻿using ASCIIWorld.Data;
-using GameCore.Math;
+using CommonCore;
+using CommonCore.Math;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 
 namespace ASCIIWorld.Generation
@@ -18,8 +18,6 @@ namespace ASCIIWorld.Generation
 
 		#region Fields
 
-		private SampleBlockRegistry _blocks;
-
 		private int _randomFillPercent;
 		private string _seed;
 		private Random _random;
@@ -27,24 +25,28 @@ namespace ASCIIWorld.Generation
 		private int _passageCount;
 		private int _connectingRoomsCount;
 
+		private int _stoneId;
+
 		#endregion
 
 		#region Constructors
 
-		public CavernChunkGenerator(SampleBlockRegistry blocks, int randomFillPercent, string seed = null)
+		public CavernChunkGenerator(IObjectRegistryAccess blocks, string seed)
 		{
 			if (blocks == null)
 			{
 				throw new ArgumentNullException("blocks");
 			}
-			_blocks = blocks;
 
-			_randomFillPercent = randomFillPercent;
+			_stoneId = blocks.GetId("Stone");
+
 			_seed = seed ?? DateTime.Now.GetHashCode().ToString();
 			_random = new Random(_seed.GetHashCode());
 
 			_passageCount = 0;
 			_connectingRoomsCount = 0;
+
+			_randomFillPercent = _random.Next(0, 100); // 50 is a good number
 		}
 
 		#endregion
@@ -90,9 +92,9 @@ namespace ASCIIWorld.Generation
 				{
 					if (_random.Next(0, 100) < _randomFillPercent)
 					{
-						chunk[ChunkLayer.Blocking, x, y] = _blocks.Stone.Id;
+						chunk[ChunkLayer.Blocking, x, y] = _stoneId;
 					}
-					chunk[ChunkLayer.Floor, x, y] = _blocks.Stone.Id;
+					chunk[ChunkLayer.Floor, x, y] = _stoneId;
 				}
 			}
 		}
@@ -107,7 +109,7 @@ namespace ASCIIWorld.Generation
 
 					if (neighbourWallTiles > 4)
 					{
-						chunk[ChunkLayer.Blocking, x, y] = _blocks.Stone.Id;
+						chunk[ChunkLayer.Blocking, x, y] = _stoneId;
 					}
 					else if (neighbourWallTiles < 4)
 					{
@@ -128,7 +130,7 @@ namespace ASCIIWorld.Generation
 					{
 						if ((neighbourX != gridX) || (neighbourY != gridY))
 						{
-							if (level[ChunkLayer.Blocking, neighbourX, neighbourY] == _blocks.Stone.Id)
+							if (level[ChunkLayer.Blocking, neighbourX, neighbourY] == _stoneId)
 							{
 								wallCount++;
 							}
@@ -148,13 +150,13 @@ namespace ASCIIWorld.Generation
 		{
 			for (var x = 0; x < chunk.Width; x++)
 			{
-				chunk[ChunkLayer.Blocking, x, 0] = _blocks.Stone.Id;
-				chunk[ChunkLayer.Blocking, x, chunk.Height - 1] = _blocks.Stone.Id;
+				chunk[ChunkLayer.Blocking, x, 0] = _stoneId;
+				chunk[ChunkLayer.Blocking, x, chunk.Height - 1] = _stoneId;
 			}
 			for (var y = 0; y < chunk.Height; y++)
 			{
-				chunk[ChunkLayer.Blocking, 0, y] = _blocks.Stone.Id;
-				chunk[ChunkLayer.Blocking, chunk.Width - 1, y] = _blocks.Stone.Id;
+				chunk[ChunkLayer.Blocking, 0, y] = _stoneId;
+				chunk[ChunkLayer.Blocking, chunk.Width - 1, y] = _stoneId;
 			}
 		}
 
@@ -165,11 +167,11 @@ namespace ASCIIWorld.Generation
 		private void RemoveSmallRegions(Chunk chunk)
 		{
 			// We do this in two rounds, because the first round will probably remove some regions.
-			EnsureMinimumSize(chunk, ChunkLayer.Blocking, GetRegions(chunk, ChunkLayer.Blocking, _blocks.Stone.Id), THRESHOLD_SIZE);
+			EnsureMinimumSize(chunk, ChunkLayer.Blocking, GetRegions(chunk, ChunkLayer.Blocking, _stoneId), THRESHOLD_SIZE);
 
-			var floors = GetRegions(chunk, ChunkLayer.Floor, _blocks.Stone.Id);
-			EnsureMinimumSize(chunk, ChunkLayer.Floor, GetRegions(chunk, ChunkLayer.Floor, _blocks.Stone.Id), THRESHOLD_SIZE);
-			floors = GetRegions(chunk, ChunkLayer.Floor, _blocks.Stone.Id);
+			var floors = GetRegions(chunk, ChunkLayer.Floor, _stoneId);
+			EnsureMinimumSize(chunk, ChunkLayer.Floor, GetRegions(chunk, ChunkLayer.Floor, _stoneId), THRESHOLD_SIZE);
+			floors = GetRegions(chunk, ChunkLayer.Floor, _stoneId);
 		}
 
 		/// <summary>
@@ -195,7 +197,7 @@ namespace ASCIIWorld.Generation
 						}
 						else
 						{
-							chunk[ChunkLayer.Blocking, point.X, point.Y] = _blocks.Stone.Id;
+							chunk[ChunkLayer.Blocking, point.X, point.Y] = _stoneId;
 						}
 					}
 					regions.Remove(region);
@@ -293,7 +295,7 @@ namespace ASCIIWorld.Generation
 		private void ConnectRegions(IProgress<string> progress, Chunk chunk)
 		{
 			progress.Report("Collecting regions...");
-			var floorRegions = GetRegions(chunk, ChunkLayer.Floor, _blocks.Stone.Id).Select(x => new LevelRegion(x, chunk)).ToList();
+			var floorRegions = GetRegions(chunk, ChunkLayer.Floor, _stoneId).Select(x => new LevelRegion(x, chunk)).ToList();
 			floorRegions.Sort();
 			floorRegions[0].IsMainRegion = true;
 			floorRegions[0].IsAccessibleFromMainRegion = true;

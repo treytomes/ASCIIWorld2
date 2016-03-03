@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Block name="Bush" tileSet="TileSets/ASCII.xml">
+	<Block.renderer>
+		<TileStack>
+			<Tile color="#FF7F520F" tileIndex="254" />
+			<Tile color="#FF4B9946" tileIndex="177" />
+		</TileStack>
+	</Block.renderer>
+</Block>

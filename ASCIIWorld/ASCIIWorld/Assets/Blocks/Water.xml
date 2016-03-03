@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<Block tileSet="TileSets/ASCII.xml">
+<Block name="Water" tileSet="TileSets/ASCII.xml">
 	<Block.renderer>
 		<Animation framesPerSecond="3">
 			<TileStack>

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace GameCore
+namespace CommonCore
 {
 	public interface IPoolable : IDisposable
 	{

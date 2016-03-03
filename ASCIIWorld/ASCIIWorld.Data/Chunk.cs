@@ -11,8 +11,8 @@ namespace ASCIIWorld.Data
 	{
 		#region Constants
 
-		private const int CHUNK_HEIGHT = 256;
-		private const int CHUNK_WIDTH = 256;
+		private const int CHUNK_HEIGHT = 64;
+		private const int CHUNK_WIDTH = 64;
 
 		#endregion
 
@@ -64,14 +64,31 @@ namespace ASCIIWorld.Data
 			}
 			set
 			{
-				//if ((value != 0) && !_blockRegistry.IsDefined(value))
-				//{
-				//	throw new ArgumentException("This id is not registered.");
-				//}
-
 				if ((y >= 0) && (y < CHUNK_HEIGHT) && (x >= 0) && (x < CHUNK_WIDTH))
 				{
 					_blockIndex[(int)layer, y, x] = value;
+				}
+				// TODO: Should this return 0 if out of range?
+			}
+		}
+
+		#endregion
+
+		#region Methods
+
+		/// <summary>
+		/// Search the chunk randomly for a spot that isn't blocked.
+		/// </summary>
+		public Point FindSpawnPoint()
+		{
+			var random = new Random();
+			while (true)
+			{
+				var x = random.Next(0, Width);
+				var y = random.Next(0, Height);
+				if (this[ChunkLayer.Blocking, x, y] == 0)
+				{
+					return new Point(x, y);
 				}
 			}
 		}

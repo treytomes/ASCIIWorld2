@@ -45,7 +45,6 @@ namespace ASCIIWorld
 
 		#region Constructors
 
-		// TODO: All game states will need to handle the Resize event.
 		public GameplayState(GameStateManager manager, BlockRegistry blocks, Chunk chunk)
 			: base(manager)
 		{
@@ -256,7 +255,7 @@ namespace ASCIIWorld
 		private void Mouse_WheelChanged(object sender, MouseWheelEventArgs e)
 		{
 			_camera.Projection.OrthographicSize = (float)Math.Ceiling(_camera.Projection.OrthographicSize - _camera.Projection.OrthographicSize * (e.DeltaPrecise / 10));
-			_camera.Projection.OrthographicSize = (float)Math.Floor(GameCore.Math.MathHelper.Clamp(_camera.Projection.OrthographicSize, ZOOM_MIN, ZOOM_MAX));
+			_camera.Projection.OrthographicSize = (float)Math.Floor(CommonCore.Math.MathHelper.Clamp(_camera.Projection.OrthographicSize, ZOOM_MIN, ZOOM_MAX));
 		}
 
 		#endregion

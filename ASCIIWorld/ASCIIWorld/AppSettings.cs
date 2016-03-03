@@ -4,6 +4,7 @@ using System.Configuration;
 using System.Linq;
 using System.Linq.Expressions;
 using GameCore;
+using CommonCore;
 
 namespace ASCIIWorld
 {

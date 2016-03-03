@@ -1,4 +1,4 @@
-﻿namespace GameCore
+﻿namespace CommonCore
 {
 	public class PropertyChangingEventArgs<TValue> : System.ComponentModel.PropertyChangingEventArgs
 	{

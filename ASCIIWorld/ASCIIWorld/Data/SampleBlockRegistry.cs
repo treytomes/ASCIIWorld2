@@ -13,6 +13,7 @@ namespace ASCIIWorld.Data
 			RegisterBlock(1, Water = content.Load<Block>("Blocks/Water.xml"));
 			RegisterBlock(2, Grass = content.Load<Block>("Blocks/Grass.xml"));
 			RegisterBlock(3, Stone = content.Load<Block>("Blocks/Stone.xml"));
+			RegisterBlock(4, Bush = content.Load<Block>("Blocks/Bush.xml"));
 		}
 
 		public Block Water { get; private set; }
@@ -20,5 +21,7 @@ namespace ASCIIWorld.Data
 		public Block Grass { get; private set; }
 
 		public Block Stone { get; private set; }
+
+		public Block Bush { get; private set; }
 	}
 }

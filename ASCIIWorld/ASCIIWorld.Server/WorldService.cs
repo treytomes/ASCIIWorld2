@@ -1,0 +1,25 @@
+﻿using ASCIIWorld.Data;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.Serialization;
+using System.ServiceModel;
+using System.Text;
+
+namespace ASCIIWorld.Server
+{
+	// NOTE: You can use the "Rename" command on the "Refactor" menu to change the class name "WorldService" in both code and config file together.
+	public class WorldService : IWorldService
+	{
+		private Dictionary<string, Chunk> _chunks;
+
+		public WorldService()
+		{
+			_chunks = new Dictionary<string, Chunk>();
+		}
+
+		public void DoWork()
+		{
+		}
+	}
+}

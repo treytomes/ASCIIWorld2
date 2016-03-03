@@ -1,4 +1,5 @@
-﻿using GameCore.Platform;
+﻿using CommonCore;
+using GameCore.Platform;
 using OpenTK;
 using System;
 using System.Collections.Generic;
@@ -241,7 +242,7 @@ namespace GameCore.Rendering.Text
 			// characters are not processed.) We'll need to find a
 			// different way to perform layout on Mono, probably
 			// through Pango.
-			// Todo: This workaround  allocates memory.
+			// TODO: This workaround allocates memory.
 			//if (Configuration.RunningOnMono)
 			{
 				string[] lines = block.Text.Replace("\r", String.Empty).Split('\n');
@@ -364,7 +365,7 @@ namespace GameCore.Rendering.Text
 			// Mono's GDI+ implementation suffers from an issue where the specified layoutRect is not taken into
 			// account. We will try to improve the situation by moving text to the correct location on this
 			// error condition. This will not help word wrapping, but it is better than nothing.
-			// Todo: Mono 2.8 is supposed to ship with a Pango-based GDI+ text renderer, which should not
+			// TODO: Mono 2.8 is supposed to ship with a Pango-based GDI+ text renderer, which should not
 			// suffer from this bug. Verify that this is the case and remove the hack.
 			if (Configuration.RunningOnMono && (layoutRect.X != 0 || layoutRect.Y != 0) && measured_glyphs.Count > 0)
 			{

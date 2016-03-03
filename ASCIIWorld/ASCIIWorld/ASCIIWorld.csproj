@@ -64,11 +64,9 @@
   <ItemGroup>
     <Compile Include="AppSettings.cs" />
     <Compile Include="ASCIIWorldGameWindow.cs" />
-    <Compile Include="Rendering\Animation.cs" />
     <Compile Include="Data\BlockRegistry.cs" />
-    <Compile Include="Data\Chunk.cs" />
+    <Compile Include="Rendering\Animation.cs" />
     <Compile Include="Data\Block.cs" />
-    <Compile Include="Data\ChunkLayer.cs" />
     <Compile Include="Rendering\IBlockRenderer.cs" />
     <Compile Include="Rendering\IRenderable.cs" />
     <Compile Include="Rendering\IUpdateable.cs" />
@@ -77,9 +75,6 @@
     <Compile Include="Rendering\TileStack.cs" />
     <Compile Include="Rendering\Tile.cs" />
     <Compile Include="GameplayState.cs" />
-    <Compile Include="Generation\CavernChunkGenerator.cs" />
-    <Compile Include="Generation\SampleChunkGenerator.cs" />
-    <Compile Include="Generation\IGenerator.cs" />
     <Compile Include="IO\BlockContentProvider.cs" />
     <Compile Include="LoadWorldGameState.cs" />
     <Compile Include="PauseState.cs" />
@@ -101,6 +96,14 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\ASCIIWorld.Data\ASCIIWorld.Data.csproj">
+      <Project>{aaae0789-1837-4044-9b0a-45c39555f8d4}</Project>
+      <Name>ASCIIWorld.Data</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CommonCore\CommonCore.csproj">
+      <Project>{d200d9da-0b2e-434d-a1bc-9c21b26697fd}</Project>
+      <Name>CommonCore</Name>
+    </ProjectReference>
     <ProjectReference Include="..\GameCore\GameCore.csproj">
       <Project>{15f57529-4c96-4886-b141-3dbbacc2fc09}</Project>
       <Name>GameCore</Name>
@@ -161,6 +164,11 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Assets\Maps\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Assets\Blocks\Bush.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -1,10 +1,20 @@
 ﻿using ASCIIWorld.Data;
+using CommonCore;
 using System;
 
 namespace ASCIIWorld.Generation
 {
 	public class SampleChunkGenerator : IGenerator<Chunk>
 	{
+		private int _grassId;
+		private int _waterId;
+
+		public SampleChunkGenerator(IObjectRegistryAccess blocks)
+		{
+			_grassId = blocks.GetId("Grass");
+			_waterId = blocks.GetId("Water");
+		}
+
 		public Chunk Generate(IProgress<string> progress)
 		{
 			progress.Report("Generating chunk.");
@@ -17,11 +27,11 @@ namespace ASCIIWorld.Generation
 				{
 					if (random.Next(4) == 1)
 					{
-						chunk[ChunkLayer.Floor, x, y] = 2;
+						chunk[ChunkLayer.Floor, x, y] = _waterId;
 					}
 					else
 					{
-						chunk[ChunkLayer.Floor, x, y] = 1;
+						chunk[ChunkLayer.Floor, x, y] = _grassId;
 					}
 				}
 			}

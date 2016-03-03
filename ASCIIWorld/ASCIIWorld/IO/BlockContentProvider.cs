@@ -1,6 +1,6 @@
 ﻿using ASCIIWorld.Data;
 using ASCIIWorld.Rendering;
-using GameCore;
+using CommonCore;
 using GameCore.IO;
 using GameCore.Rendering;
 using System;
@@ -16,11 +16,14 @@ namespace ASCIIWorld.IO
 		public override Block Parse(ContentManager content, XElement blockElem)
 		{
 			blockElem.RequireElement("Block");
-			var tileSet = LoadTileSet(content, blockElem.Attribute<string>("tileSet"));
 
+			var name = blockElem.Attribute<string>("name");
+
+			var tileSet = LoadTileSet(content, blockElem.Attribute<string>("tileSet"));
+			
 			var rendererElem = blockElem.Element("Block.renderer").Elements().Single();
 			var renderer = LoadRenderer(tileSet, rendererElem);
-			var tile = new Block(renderer);
+			var tile = new Block(name, renderer);
 
 			var propertiesElem = blockElem.Element("Properties");
 			if (propertiesElem != null)

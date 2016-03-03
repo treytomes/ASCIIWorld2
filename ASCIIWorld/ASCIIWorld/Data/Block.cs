@@ -1,4 +1,5 @@
 ﻿using ASCIIWorld.Rendering;
+using CommonCore;
 using GameCore;
 using System;
 using System.Collections.Generic;
@@ -8,7 +9,7 @@ namespace ASCIIWorld.Data
 	/// <summary>
 	/// Many Blocks make a Chunk.
 	/// </summary>
-	public class Block
+	public class Block : IRegisteredObject
 	{
 		#region Fields
 
@@ -18,12 +19,12 @@ namespace ASCIIWorld.Data
 
 		#region Constructors
 
-		public Block(IBlockRenderer renderer)
+		public Block(string name, IBlockRenderer renderer)
 		{
-			// TODO: A Block should contain a set of animations, where the animation can be chosen according to the block's world state.
-			_properties = new Dictionary<string, object>();
-
+			Name = name;
 			Renderer = renderer;
+
+			_properties = new Dictionary<string, object>();
 		}
 
 		#endregion
@@ -34,6 +35,8 @@ namespace ASCIIWorld.Data
 		/// This will be assigned by the BlockRegistry.
 		/// </summary>
 		public int Id { get; set; }
+
+		public string Name { get; private set; }
 
 		public IBlockRenderer Renderer { get; private set; }
 

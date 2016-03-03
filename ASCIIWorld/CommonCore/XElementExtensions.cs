@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Xml.Linq;
 
-namespace GameCore
+namespace CommonCore
 {
 	public static class XElementExtensions
 	{
