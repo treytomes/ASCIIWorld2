@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Block tileSet="TileSets/SampleBlocks.xml">
 	<Block.renderer>
-		<RegionBoundedTileStack outlineColor="#FF696969">
+		<RegionBoundedTileStack outlineColor="#FF696969" northWall="ConnectedWall_N" southWall="ConnectedWall_S" eastWall="ConnectedWall_E" westWall="ConnectedWall_W">
 			<Tile color="#FF878787" name="Solid" />
 			<Tile color="#FFB5B5B5" name="Stone" />
 		</RegionBoundedTileStack>

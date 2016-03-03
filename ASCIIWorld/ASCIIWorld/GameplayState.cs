@@ -1,9 +1,7 @@
 ﻿using ASCIIWorld.Data;
-using ASCIIWorld.Generation;
 using ASCIIWorld.Rendering;
 using GameCore;
 using GameCore.IO;
-using GameCore.Math;
 using GameCore.Rendering;
 using GameCore.Rendering.Text;
 using GameCore.StateManagement;
@@ -13,7 +11,6 @@ using OpenTK.Input;
 using System;
 using System.Diagnostics;
 using System.Drawing;
-using System.Threading.Tasks;
 
 namespace ASCIIWorld
 {

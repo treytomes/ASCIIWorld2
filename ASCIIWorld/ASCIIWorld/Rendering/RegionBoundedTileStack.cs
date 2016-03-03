@@ -13,17 +13,25 @@ namespace ASCIIWorld.Rendering
 	{
 		#region Fields
 
-		private AtlasTileSet _connectedWallTiles;
+		private TileSet _connectedWallTiles;
+		private string _northWall;
+		private string _eastWall;
+		private string _southWall;
+		private string _westWall;
 
 		#endregion
 
 		#region Constructors
 
-		public RegionBoundedTileStack(IEnumerable<IRenderable> layers, AtlasTileSet connectedWallTileSet, Color outlineColor)
+		public RegionBoundedTileStack(IEnumerable<IRenderable> layers, TileSet connectedWallTileSet, Color outlineColor, string northWall, string eastWall, string southWall, string westWall)
 			: base(layers)
 		{
 			OutlineColor = outlineColor;
 			_connectedWallTiles = connectedWallTileSet;
+			_northWall = northWall;
+			_eastWall = eastWall;
+			_southWall = southWall;
+			_westWall = westWall;
 		}
 
 		#endregion
@@ -43,19 +51,19 @@ namespace ASCIIWorld.Rendering
 			tessellator.BindColor(Color.DimGray);
 			if (chunk[layer, x - 1, y] != chunk[layer, x, y])
 			{
-				_connectedWallTiles.Render(tessellator, _connectedWallTiles.GetTileIndexFromName("ConnectedWall_W"));
+				_connectedWallTiles.Render(tessellator, _connectedWallTiles.GetTileIndexFromName(_westWall));
 			}
 			if (chunk[layer, x + 1, y] != chunk[layer, x, y])
 			{
-				_connectedWallTiles.Render(tessellator, _connectedWallTiles.GetTileIndexFromName("ConnectedWall_E"));
+				_connectedWallTiles.Render(tessellator, _connectedWallTiles.GetTileIndexFromName(_eastWall));
 			}
 			if (chunk[layer, x, y - 1] != chunk[layer, x, y])
 			{
-				_connectedWallTiles.Render(tessellator, _connectedWallTiles.GetTileIndexFromName("ConnectedWall_N"));
+				_connectedWallTiles.Render(tessellator, _connectedWallTiles.GetTileIndexFromName(_northWall));
 			}
 			if (chunk[layer, x, y + 1] != chunk[layer, x, y])
 			{
-				_connectedWallTiles.Render(tessellator, _connectedWallTiles.GetTileIndexFromName("ConnectedWall_S"));
+				_connectedWallTiles.Render(tessellator, _connectedWallTiles.GetTileIndexFromName(_southWall));
 			}
 		}
 

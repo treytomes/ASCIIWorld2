@@ -1,11 +1,9 @@
 ﻿using ASCIIWorld.Data;
 using GameCore;
-using GameCore.IO;
 using GameCore.Rendering;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
 using System;
-using System.Drawing;
 
 namespace ASCIIWorld.Rendering
 {

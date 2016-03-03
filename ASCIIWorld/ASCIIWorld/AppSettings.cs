@@ -51,7 +51,7 @@ namespace ASCIIWorld
 			if (_appSettings.AllKeys.Contains(accessor.Name))
 			{
 				var textValue = _appSettings[accessor.Name];
-				return (T)Convert.ChangeType(textValue, accessor.Type);
+				return (T)ConvertEx.ChangeType<T>(textValue);
 			}
 			else
 			{

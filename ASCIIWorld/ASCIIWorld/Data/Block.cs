@@ -1,4 +1,5 @@
 ﻿using ASCIIWorld.Rendering;
+using GameCore;
 using System;
 using System.Collections.Generic;
 
@@ -47,7 +48,7 @@ namespace ASCIIWorld.Data
 
 		public T GetProperty<T>(string propertyName)
 		{
-			return (T)Convert.ChangeType(_properties[propertyName], typeof(T));
+			return ConvertEx.ChangeType<T>(_properties[propertyName]);
 		}
 
 		public void SetProperty<T>(string propertyName, T value)

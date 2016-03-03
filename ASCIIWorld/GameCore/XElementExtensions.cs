@@ -12,7 +12,7 @@ namespace GameCore
 			{
 				throw new Exception($"Unable to find attribute '{name}'");
 			}
-			return (TAttribute)Convert.ChangeType(attribute.Value, typeof(TAttribute));
+			return ConvertEx.ChangeType<TAttribute>(attribute.Value);
 		}
 
 		public static bool HasAttribute(this XElement @this, XName name)
@@ -35,7 +35,7 @@ namespace GameCore
 				var propertyElement = @this.Element(propertyElementName);
 				if (propertyElement != null)
 				{
-					return (TProperty)Convert.ChangeType(propertyElement.Value, typeof(TProperty));
+					return ConvertEx.ChangeType<TProperty>(propertyElement.Value);
 				}
 				else
 				{

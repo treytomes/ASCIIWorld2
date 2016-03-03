@@ -56,6 +56,7 @@
     <Compile Include="BackgroundRenderer.cs" />
     <Compile Include="BasicGameWindow.cs" />
     <Compile Include="Camera.cs" />
+    <Compile Include="ConvertEx.cs" />
     <Compile Include="FrameEventArgs.cs" />
     <Compile Include="ICloneable.cs" />
     <Compile Include="IGameWindow.cs" />

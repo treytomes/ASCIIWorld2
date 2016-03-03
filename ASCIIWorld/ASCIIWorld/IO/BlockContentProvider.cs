@@ -6,7 +6,6 @@ using GameCore.Rendering;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.IO;
 using System.Linq;
 using System.Xml.Linq;
 
@@ -76,38 +75,21 @@ namespace ASCIIWorld.IO
 			return new Animation(framesPerSecond, tileStacks);
 		}
 
-		private RegionBoundedTileStack LoadRegionBoundedTileStack(AtlasTileSet tileSet, XElement tileStackElem)
+		private RegionBoundedTileStack LoadRegionBoundedTileStack(TileSet tileSet, XElement tileStackElem)
 		{
-			// TODO: Configure the wall tile names in the XML?
-
-			if (tileSet == null)
-			{
-				throw new Exception("TileSet must be an AtlasTileSet.");
-			}
-			if (tileSet.GetTileIndexFromName("ConnectedWall_W") == -1)
-			{
-				throw new Exception("TileSet must define a 'ConnectedWall_W'.");
-			}
-			if (tileSet.GetTileIndexFromName("ConnectedWall_E") == -1)
-			{
-				throw new Exception("TileSet must define a 'ConnectedWall_E'.");
-			}
-			if (tileSet.GetTileIndexFromName("ConnectedWall_N") == -1)
-			{
-				throw new Exception("TileSet must define a 'ConnectedWall_N'.");
-			}
-			if (tileSet.GetTileIndexFromName("ConnectedWall_S") == -1)
-			{
-				throw new Exception("TileSet must define a 'ConnectedWall_S'.");
-			}
-
-			var outlineColor = ParseColor(tileStackElem.Attribute<string>("outlineColor"));
+			var outlineColor = ConvertEx.ChangeType<Color>(tileStackElem.Attribute<string>("outlineColor"));
 			var tiles = new List<Tile>();
 			foreach (var tileElem in tileStackElem.Elements("Tile"))
 			{
 				tiles.Add(LoadTile(tileSet, tileElem));
 			}
-			return new RegionBoundedTileStack(tiles, tileSet, outlineColor);
+
+			var northWall = tileStackElem.Attribute<string>("northWall");
+			var eastWall = tileStackElem.Attribute<string>("eastWall");
+			var southWall = tileStackElem.Attribute<string>("southWall");
+			var westWall = tileStackElem.Attribute<string>("westWall");
+
+			return new RegionBoundedTileStack(tiles, tileSet, outlineColor, northWall, eastWall, southWall, westWall);
 		}
 
 		private TileStack LoadTileStack(TileSet tileSet, XElement tileStackElem)
@@ -124,11 +106,15 @@ namespace ASCIIWorld.IO
 		{
 			if (tileElem.HasAttribute("tileIndex"))
 			{
-				return new Tile(tileSet, ParseColor(tileElem.Attribute<string>("color")), tileElem.Attribute<int>("tileIndex"));
+				return new Tile(tileSet, ConvertEx.ChangeType<Color>(tileElem.Attribute<string>("color")), tileElem.Attribute<int>("tileIndex"));
 			}
 			else if (tileElem.HasAttribute("name"))
 			{
-				return new Tile(tileSet, ParseColor(tileElem.Attribute<string>("color")), tileElem.Attribute<string>("name"));
+				return new Tile(tileSet, ConvertEx.ChangeType<Color>(tileElem.Attribute<string>("color")), tileElem.Attribute<string>("name"));
+			}
+			else if (tileElem.HasAttribute("char"))
+			{
+				return new Tile(tileSet, ConvertEx.ChangeType<Color>(tileElem.Attribute<string>("color")), tileElem.Attribute<char>("char"));
 			}
 			else
 			{
@@ -151,14 +137,6 @@ namespace ASCIIWorld.IO
 			{
 				throw new InvalidOperationException($"{name} is not implemented.");
 			}
-		}
-
-		/// <summary>
-		/// Create a color from an HTML-style color string.
-		/// </summary>
-		private Color ParseColor(string argb)
-		{
-			return ColorTranslator.FromHtml(argb);
 		}
 	}
 }
