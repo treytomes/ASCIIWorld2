@@ -1,4 +1,4 @@
-﻿namespace ASCIIWorld.Data
+﻿namespace CommonCore.Math
 {
 	public struct Point
 	{

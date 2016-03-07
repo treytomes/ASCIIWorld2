@@ -1,6 +1,7 @@
 ﻿using ASCIIWorld.Data;
-using CommonCore;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace ASCIIWorld.Generation
 {
@@ -9,10 +10,10 @@ namespace ASCIIWorld.Generation
 		private int _grassId;
 		private int _waterId;
 
-		public SampleChunkGenerator(IObjectRegistryAccess blocks)
+		public SampleChunkGenerator(Dictionary<int, string> blocks)
 		{
-			_grassId = blocks.GetId("Grass");
-			_waterId = blocks.GetId("Water");
+			_grassId = blocks.Single(x => x.Value == "Grass").Key;
+			_waterId = blocks.Single(x => x.Value == "Water").Key;
 		}
 
 		public Chunk Generate(IProgress<string> progress)

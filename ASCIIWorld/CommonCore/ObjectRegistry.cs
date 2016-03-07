@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.Serialization;
 
 namespace CommonCore
 {
-	public class ObjectRegistry<TObject> : IObjectRegistryAccess, IEnumerable<TObject>
+	[DataContract]
+	public class ObjectRegistry<TObject> : IEnumerable<TObject>
 		where TObject : IRegisteredObject
 	{
 		#region Fields
@@ -25,6 +28,12 @@ namespace CommonCore
 		#endregion
 
 		#region Methods
+
+		public Dictionary<int, string> ToDictionary()
+		{
+			// Reverse the name index so that we have a mapping of object id to object name.
+			return _nameIndex.ToDictionary(x => x.Value, x => x.Key);
+		}
 
 		public void RegisterBlock(int id, TObject @object)
 		{
@@ -66,7 +75,7 @@ namespace CommonCore
 		{
 			return _nameIndex.ContainsKey(name);
 		}
-
+		
 		public IEnumerator<TObject> GetEnumerator()
 		{
 			foreach (var obj in _objects)

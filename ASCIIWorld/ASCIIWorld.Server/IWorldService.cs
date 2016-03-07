@@ -1,4 +1,6 @@
-﻿using System;
+﻿using ASCIIWorld.Data;
+using CommonCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
@@ -12,6 +14,11 @@ namespace ASCIIWorld.Server
 	public interface IWorldService
 	{
 		[OperationContract]
-		void DoWork();
+		[FaultContract(typeof(WorldServiceFault))]
+		Chunk GetChunk(int chunkId);
+
+		[OperationContract]
+		[FaultContract(typeof(WorldServiceFault))]
+		Chunk GenerateChunk(Dictionary<int, string> blocks, string seed);
 	}
 }

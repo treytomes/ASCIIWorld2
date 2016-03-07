@@ -1,5 +1,4 @@
 ﻿using ASCIIWorld.Data;
-using CommonCore;
 using CommonCore.Math;
 using System;
 using System.Collections.Generic;
@@ -31,14 +30,14 @@ namespace ASCIIWorld.Generation
 
 		#region Constructors
 
-		public CavernChunkGenerator(IObjectRegistryAccess blocks, string seed)
+		public CavernChunkGenerator(Dictionary<int, string> blocks, string seed)
 		{
 			if (blocks == null)
 			{
 				throw new ArgumentNullException("blocks");
 			}
 
-			_stoneId = blocks.GetId("Stone");
+			_stoneId = blocks.Single(x => x.Value == "Stone").Key;
 
 			_seed = seed ?? DateTime.Now.GetHashCode().ToString();
 			_random = new Random(_seed.GetHashCode());

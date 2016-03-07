@@ -4,15 +4,14 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{303DECA3-4B6A-4DA1-90B6-C19008A93BEB}</ProjectGuid>
+    <ProjectGuid>{8E763085-B8F7-469A-8FDB-E0359AB74B5D}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ASCIIWorld.Server</RootNamespace>
-    <AssemblyName>ASCIIWorld.Server</AssemblyName>
+    <RootNamespace>Client</RootNamespace>
+    <AssemblyName>Client</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-    <WcfConfigValidationEnabled>True</WcfConfigValidationEnabled>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -35,10 +34,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Runtime.Serialization" />
-    <Reference Include="System.ServiceModel" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -47,25 +43,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ErrorHandlerExtension.cs" />
-    <Compile Include="IWorldService.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="WorldService.cs" />
-    <Compile Include="WorldServiceErrorHandler.cs" />
-    <Compile Include="WorldServiceFault.cs" />
+    <Compile Include="StateObject.cs" />
+    <Compile Include="UdpClient.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ASCIIWorld.Data\ASCIIWorld.Data.csproj">
-      <Project>{aaae0789-1837-4044-9b0a-45c39555f8d4}</Project>
-      <Name>ASCIIWorld.Data</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\CommonCore\CommonCore.csproj">
-      <Project>{d200d9da-0b2e-434d-a1bc-9c21b26697fd}</Project>
-      <Name>CommonCore</Name>
+    <ProjectReference Include="..\CommonData\CommonData.csproj">
+      <Project>{5711a11b-ce97-4b9c-aa42-22d77a563c18}</Project>
+      <Name>CommonData</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -1,4 +1,6 @@
-﻿using System;
+﻿using CommonCore.Math;
+using System;
+using System.Runtime.Serialization;
 
 namespace ASCIIWorld.Data
 {
@@ -7,6 +9,7 @@ namespace ASCIIWorld.Data
 	/// A Level is composed of many Chunks, but only certain Chunks will be updated each frame.
 	/// A World is composed of many Levels, each of the same size, all stacked on top of eachother.
 	/// </summary>
+	[DataContract]
 	public class Chunk
 	{
 		#region Constants
@@ -18,6 +21,7 @@ namespace ASCIIWorld.Data
 
 		#region Fields
 
+		[DataMember]
 		private int[,,] _blockIndex;
 		
 		#endregion
@@ -32,6 +36,12 @@ namespace ASCIIWorld.Data
 		#endregion
 
 		#region Properties
+
+		/// <summary>
+		/// The chunk id is assigned by WorldService.
+		/// </summary>
+		[DataMember]
+		public int Id { get; set; }
 
 		public int Height
 		{

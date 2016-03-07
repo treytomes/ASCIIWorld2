@@ -33,6 +33,7 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -43,10 +44,10 @@
   <ItemGroup>
     <Compile Include="ConvertEx.cs" />
     <Compile Include="ICloneable.cs" />
-    <Compile Include="IObjectRegistryAccess.cs" />
     <Compile Include="IPoolable.cs" />
     <Compile Include="IRegisteredObject.cs" />
     <Compile Include="Math\MathHelper.cs" />
+    <Compile Include="Math\Point.cs" />
     <Compile Include="ObjectPool.cs" />
     <Compile Include="ObjectRegistry.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
