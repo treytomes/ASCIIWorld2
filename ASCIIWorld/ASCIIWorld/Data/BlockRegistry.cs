@@ -1,7 +1,5 @@
 ﻿using CommonCore;
 using System;
-using System.Runtime.Serialization;
-using System.ServiceModel;
 
 namespace ASCIIWorld.Data
 {

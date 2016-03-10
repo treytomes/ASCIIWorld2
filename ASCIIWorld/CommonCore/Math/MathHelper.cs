@@ -26,5 +26,10 @@ namespace CommonCore.Math
 				return value;
 			}
 		}
+
+		public static double Modulo(double a, double b)
+		{
+			return a - b * System.Math.Floor(a / b);
+		}
 	}
 }

@@ -11,10 +11,6 @@ namespace ASCIIWorld.Data
 	/// </summary>
 	public class Chunk : IChunkAccess
 	{
-		#region Constants
-
-		#endregion
-
 		#region Fields
 
 		private int _width;

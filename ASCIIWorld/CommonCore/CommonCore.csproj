@@ -46,8 +46,10 @@
     <Compile Include="ICloneable.cs" />
     <Compile Include="IPoolable.cs" />
     <Compile Include="IRegisteredObject.cs" />
+    <Compile Include="Math\Direction.cs" />
     <Compile Include="Math\MathHelper.cs" />
-    <Compile Include="Math\Point.cs" />
+    <Compile Include="Math\Vector2I.cs" />
+    <Compile Include="Math\RectI.cs" />
     <Compile Include="ObjectPool.cs" />
     <Compile Include="ObjectRegistry.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

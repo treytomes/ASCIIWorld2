@@ -22,7 +22,7 @@ namespace ASCIIWorld
 		private Camera<OrthographicProjection> _hudCamera;
 
 		private BlockRegistry _blocks;
-		private Chunk _chunk;
+		private Level _level;
 		private TileSet _ascii;
 
 		private ConcurrentStack<string> _progressMessages;
@@ -54,21 +54,13 @@ namespace ASCIIWorld
 			_ascii = content.Load<TileSet>("TileSets/ASCII.xml");
 			
 			var progress = new Progress<string>(message => _progressMessages.Push(message));
-			_blocks = new SampleBlockRegistry(content);
+			_blocks = content.Load<BlockRegistry>("Blocks/SampleBlockRegistry.xml");
 
-			_loadingTask = Task.Run(() => _chunk = new CavernChunkGenerator(_blocks.ToDictionary(), "hello!").Generate(progress))
-				.ContinueWith(x => SpawnBushes(progress))
-				.ContinueWith(x => Thread.Sleep(100));
-		}
-
-		private void SpawnBushes(IProgress<string> progress)
-		{
-			for (var n = 0; n < 10; n++)
+			_loadingTask = Task.Run(() =>
 			{
-				progress.Report($"Planting bush (x{n + 1})...");
-				var spawnPoint = _chunk.FindSpawnPoint();
-				_chunk[ChunkLayer.Blocking, spawnPoint.X, spawnPoint.Y] = _blocks.GetId("Bush");
-			}
+				_level = new Level(_blocks.ToDictionary());
+				var chunk = _level[ChunkLayer.Floor, 0, 0]; // generate the first chunk
+			}).ContinueWith(x => Thread.Sleep(100));
 		}
 
 		public override void Resize(Viewport viewport)
@@ -83,7 +75,7 @@ namespace ASCIIWorld
 
 			if (_loadingTask.IsCompleted)
 			{
-				Manager.SwitchStates(new GameplayState(Manager, _blocks, _chunk));
+				Manager.SwitchStates(new GameplayState(Manager, _blocks, _level));
 			}
 		}
 

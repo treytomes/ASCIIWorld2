@@ -65,7 +65,7 @@ namespace ASCIIWorld.Rendering
 			}
 		}
 
-		public virtual void Render(ITessellator tessellator, Chunk chunk, ChunkLayer layer, int x, int y)
+		public virtual void Render(ITessellator tessellator, IChunkAccess chunk, ChunkLayer layer, int x, int y)
 		{
 			Render(tessellator);
 		}

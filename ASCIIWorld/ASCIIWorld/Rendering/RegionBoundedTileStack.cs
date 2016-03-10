@@ -44,7 +44,7 @@ namespace ASCIIWorld.Rendering
 
 		#region Methosd
 
-		public override void Render(ITessellator tessellator, Chunk chunk, ChunkLayer layer, int x, int y)
+		public override void Render(ITessellator tessellator, IChunkAccess chunk, ChunkLayer layer, int x, int y)
 		{
 			base.Render(tessellator, chunk, layer, x, y);
 

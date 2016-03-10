@@ -74,7 +74,7 @@ namespace ASCIIWorld.Rendering
 			_tileSet.Render(tessellator, TileIndex);
 		}
 
-		public void Render(ITessellator tessellator, Chunk chunk, ChunkLayer layer, int x, int y)
+		public void Render(ITessellator tessellator, IChunkAccess chunk, ChunkLayer layer, int x, int y)
 		{
 			Render(tessellator);
 		}

@@ -67,12 +67,12 @@
     <Compile Include="AppSettings.cs" />
     <Compile Include="ASCIIWorldGameWindow.cs" />
     <Compile Include="Data\BlockRegistry.cs" />
+    <Compile Include="IO\BlockRegistryContentProvider.cs" />
     <Compile Include="Rendering\Animation.cs" />
     <Compile Include="Data\Block.cs" />
     <Compile Include="Rendering\IBlockRenderer.cs" />
     <Compile Include="Rendering\IRenderable.cs" />
     <Compile Include="Rendering\IUpdateable.cs" />
-    <Compile Include="Data\SampleBlockRegistry.cs" />
     <Compile Include="Rendering\RegionBoundedTileStack.cs" />
     <Compile Include="Rendering\TileStack.cs" />
     <Compile Include="Rendering\Tile.cs" />
@@ -98,7 +98,6 @@
     </None>
     <None Include="OpenTK.dll.config" />
     <None Include="packages.config" />
-    <None Include="Properties\DataSources\ASCIIWorld.Data.Chunk.datasource" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ASCIIWorld.Data\ASCIIWorld.Data.csproj">
@@ -172,6 +171,23 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Blocks\Bush.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Assets\Blocks\SampleBlockRegistry.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Assets\Blocks\Chest.xml">
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Assets\Blocks\WoodenDoor.xml">
+      <SubType>Designer</SubType>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>

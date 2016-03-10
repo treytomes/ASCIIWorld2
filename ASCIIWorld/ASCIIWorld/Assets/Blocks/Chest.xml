@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Block name="Chest" tileSet="TileSets/SampleBlocks.xml">
+	<Block.renderer>
+		<TileStack>
+			<Tile color="#88000000" name="Solid" />
+			<Tile color="#FFFFA500" name="Chest" />
+		</TileStack>
+	</Block.renderer>
+</Block>

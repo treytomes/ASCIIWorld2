@@ -48,6 +48,15 @@
     <Compile Include="Generation\Dugout\DugoutDungeonChunkGenerator.cs" />
     <Compile Include="Generation\Dugout\Tile.cs" />
     <Compile Include="Generation\IChunkGenerator.cs" />
+    <Compile Include="Generation\Labyrinth\Cell.cs" />
+    <Compile Include="Generation\Labyrinth\DirectionPicker.cs" />
+    <Compile Include="Generation\Labyrinth\LabyrinthChunkGenerator.cs" />
+    <Compile Include="Generation\Labyrinth\LabyrinthDungeon.cs" />
+    <Compile Include="Generation\Labyrinth\LabyrinthGenerator.cs" />
+    <Compile Include="Generation\Labyrinth\Map.cs" />
+    <Compile Include="Generation\Labyrinth\Room.cs" />
+    <Compile Include="Generation\Labyrinth\RoomGenerator.cs" />
+    <Compile Include="Generation\Labyrinth\SideType.cs" />
     <Compile Include="Generation\SampleChunkGenerator.cs" />
     <Compile Include="IChunkAccess.cs" />
     <Compile Include="Level.cs" />

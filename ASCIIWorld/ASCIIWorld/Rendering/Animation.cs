@@ -86,7 +86,7 @@ namespace ASCIIWorld.Rendering
 			_frames[_frameIndex].Render(tessellator);
 		}
 
-		public void Render(ITessellator tessellator, Chunk chunk, ChunkLayer layer, int x, int y)
+		public void Render(ITessellator tessellator, IChunkAccess chunk, ChunkLayer layer, int x, int y)
 		{
 			Render(tessellator);
 		}

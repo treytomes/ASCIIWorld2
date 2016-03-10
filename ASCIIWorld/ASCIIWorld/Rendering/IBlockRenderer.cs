@@ -8,6 +8,6 @@ namespace ASCIIWorld.Rendering
 		/// <summary>
 		/// Render the block, taking into account it's position in the chunk.
 		/// </summary>
-		void Render(ITessellator tessellator, Chunk chunk, ChunkLayer layer, int x, int y);
+		void Render(ITessellator tessellator, IChunkAccess chunk, ChunkLayer layer, int x, int y);
 	}
 }

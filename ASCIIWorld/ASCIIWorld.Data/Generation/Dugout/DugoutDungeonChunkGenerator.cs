@@ -352,8 +352,8 @@ namespace ASCIIWorld.Data.Generation.Dugout
 
 			// Check if there's enough space left for it
 			if (points.Any(s =>
-				!MathHelper.IsInRange(s.Y, 0, _rows) ||
-				!MathHelper.IsInRange(s.X, 0, _columns) ||
+				!MathHelper.IsInRange(s.Y, 0, _rows + 1) ||
+				!MathHelper.IsInRange(s.X, 0, _columns + 1) ||
 				GetCellType(s.X, s.Y) != Tile.Unused))
 			{
 				return false;

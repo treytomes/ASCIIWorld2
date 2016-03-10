@@ -27,7 +27,7 @@ namespace ASCIIWorld
 
 		private GLTextWriter _writer;
 		private BlockRegistry _blocks;
-		private Chunk _chunk;
+		private Level _level;
 		private ChunkRenderer _chunkRenderer;
 
 		private Camera<OrthographicProjection> _camera;
@@ -45,13 +45,13 @@ namespace ASCIIWorld
 
 		#region Constructors
 
-		public GameplayState(GameStateManager manager, BlockRegistry blocks, Chunk chunk)
+		public GameplayState(GameStateManager manager, BlockRegistry blocks, Level level)
 			: base(manager)
 		{
 			var viewport = new Viewport(0, 0, manager.GameWindow.Width, manager.GameWindow.Height);
 
 			_blocks = blocks;
-			_chunk = chunk;
+			_level = level;
 			_chunkRenderer = new ChunkRenderer(viewport, _blocks);
 
 			_frameCount = 0;
@@ -158,7 +158,7 @@ namespace ASCIIWorld
 			GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
 			_camera.Apply();
-			_chunkRenderer.Render(_camera, _chunk);
+			_chunkRenderer.Render(_camera, _level);
 
 			_hudCamera.Apply();
 

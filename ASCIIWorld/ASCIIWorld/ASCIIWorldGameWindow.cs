@@ -20,6 +20,7 @@ namespace ASCIIWorld
 		{
 			Load += ASCIIWorldGameWindow_Load;
 			Content.RegisterContentProvider(new BlockContentProvider());
+			Content.RegisterContentProvider(new BlockRegistryContentProvider());
 			
 			//_scriptManager = new ScriptManager();
 		}

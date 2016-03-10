@@ -29,7 +29,7 @@ namespace ASCIIWorld.Rendering
 
 		#region Methods
 
-		public void Render(Camera<OrthographicProjection> camera, Chunk chunk)
+		public void Render(Camera<OrthographicProjection> camera, IChunkAccess chunk)
 		{
 			var topLeft = Vector3.Transform(new Vector3(camera.Projection.Left, camera.Projection.Top, 0), camera.ModelViewMatrix.Inverted());
 			var bottomRight = Vector3.Transform(new Vector3(camera.Projection.Right, camera.Projection.Bottom, 0), camera.ModelViewMatrix.Inverted());
@@ -53,13 +53,13 @@ namespace ASCIIWorld.Rendering
 			_tessellator.End();
 		}
 
-		private void RenderLayer(ITessellator tessellator, Chunk chunk, ChunkLayer layer, int minX, int maxX, int minY, int maxY)
+		private void RenderLayer(ITessellator tessellator, IChunkAccess chunk, ChunkLayer layer, int minX, int maxX, int minY, int maxY)
 		{
 			for (var y = minY; y < maxY; y++)
 			{
 				for (var x = minX; x < maxX; x++)
 				{
-					if (chunk[layer, x, y] > 0)
+					if ((chunk[layer, x, y] > 0) && chunk.CanSeeSky(layer, x, y))
 					{
 						//var position = tessellator.WorldToScreenPoint(new Vector3(column, row, (int)layer));
 						var position = new Vector3(x, y, -1 * (int)layer);

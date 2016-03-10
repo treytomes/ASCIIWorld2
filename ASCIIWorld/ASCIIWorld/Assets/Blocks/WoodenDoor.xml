@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Block name="WoodenDoor" tileSet="TileSets/SampleBlocks.xml">
+	<Block.renderer>
+		<TileStack>
+			<Tile color="#FF685638" name="Solid" />
+			<Tile color="#FFA28756" name="Door" />
+		</TileStack>
+	</Block.renderer>
+</Block>

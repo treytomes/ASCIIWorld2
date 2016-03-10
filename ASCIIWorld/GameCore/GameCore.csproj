@@ -69,7 +69,6 @@
     <Compile Include="IO\XElementContentProvider.cs" />
     <Compile Include="IO\XmlBasedContentProvider.cs" />
     <Compile Include="Math\ViewCamera.cs" />
-    <Compile Include="Math\Direction.cs" />
     <Compile Include="Math\ICamera.cs" />
     <Compile Include="Platform\GdiPlus.cs" />
     <Compile Include="Platform\IGdiPlusInternals.cs" />
