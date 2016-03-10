@@ -91,11 +91,6 @@
     <Compile Include="ScriptManager.xaml.cs">
       <DependentUpon>ScriptManager.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Service References\WorldServiceReference\Reference.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Reference.svcmap</DependentUpon>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config">
@@ -104,19 +99,6 @@
     <None Include="OpenTK.dll.config" />
     <None Include="packages.config" />
     <None Include="Properties\DataSources\ASCIIWorld.Data.Chunk.datasource" />
-    <None Include="Service References\WorldServiceReference\item.xsd">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="Service References\WorldServiceReference\item1.xsd">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="Service References\WorldServiceReference\item2.xsd">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="Service References\WorldServiceReference\item3.xsd">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="Service References\WorldServiceReference\WorldService.wsdl" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ASCIIWorld.Data\ASCIIWorld.Data.csproj">
@@ -191,27 +173,6 @@
   <ItemGroup>
     <None Include="Assets\Blocks\Bush.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <WCFMetadata Include="Service References\" />
-  </ItemGroup>
-  <ItemGroup>
-    <WCFMetadataStorage Include="Service References\WorldServiceReference\" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Service References\WorldServiceReference\item.disco" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Service References\WorldServiceReference\configuration91.svcinfo" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Service References\WorldServiceReference\configuration.svcinfo" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Service References\WorldServiceReference\Reference.svcmap">
-      <Generator>WCF Proxy Generator</Generator>
-      <LastGenOutput>Reference.cs</LastGenOutput>
     </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

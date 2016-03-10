@@ -26,7 +26,6 @@ namespace ASCIIWorld
 		private TileSet _ascii;
 
 		private ConcurrentStack<string> _progressMessages;
-		private WorldServiceReference.WorldServiceClient _worldServer;
 		private Task _loadingTask;
 
 		#endregion
@@ -42,7 +41,6 @@ namespace ASCIIWorld
 			_tessellator = new VertexBufferTessellator() { Mode = VertexTessellatorMode.Render };
 
 			_progressMessages = new ConcurrentStack<string>();
-			_worldServer = new WorldServiceReference.WorldServiceClient();
 		}
 
 		#endregion
@@ -58,29 +56,20 @@ namespace ASCIIWorld
 			var progress = new Progress<string>(message => _progressMessages.Push(message));
 			_blocks = new SampleBlockRegistry(content);
 
-			_loadingTask = _worldServer.GenerateChunkAsync(_blocks.ToDictionary(), "hello!").ContinueWith(task => _chunk = task.Result);
-
-			//_loadingTask = Task.Run(() => _chunk = new CavernChunkGenerator(_blocks, "hello!").Generate(progress))
-			//	.ContinueWith(x => SpawnBushes(progress))
-			//	.ContinueWith(x => Thread.Sleep(100));
+			_loadingTask = Task.Run(() => _chunk = new CavernChunkGenerator(_blocks.ToDictionary(), "hello!").Generate(progress))
+				.ContinueWith(x => SpawnBushes(progress))
+				.ContinueWith(x => Thread.Sleep(100));
 		}
 
-		public override void UnloadContent()
+		private void SpawnBushes(IProgress<string> progress)
 		{
-			_worldServer.Close();
-
-			base.UnloadContent();
+			for (var n = 0; n < 10; n++)
+			{
+				progress.Report($"Planting bush (x{n + 1})...");
+				var spawnPoint = _chunk.FindSpawnPoint();
+				_chunk[ChunkLayer.Blocking, spawnPoint.X, spawnPoint.Y] = _blocks.GetId("Bush");
+			}
 		}
-
-		//private void SpawnBushes(IProgress<string> progress)
-		//{
-		//	for (var n = 0; n < 10; n++)
-		//	{
-		//		progress.Report($"Planting bush (x{n + 1})...");
-		//		var spawnPoint = _chunk.FindSpawnPoint();
-		//		_chunk[ChunkLayer.Blocking, spawnPoint.X, spawnPoint.Y] = _blocks.GetId("Bush");
-		//	}
-		//}
 
 		public override void Resize(Viewport viewport)
 		{
