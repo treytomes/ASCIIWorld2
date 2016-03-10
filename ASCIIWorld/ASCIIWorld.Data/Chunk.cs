@@ -6,56 +6,49 @@ namespace ASCIIWorld.Data
 {
 	/// <summary>
 	/// A Chunk is composed of a 3D array of Blocks.
-	/// A Level is composed of many Chunks, but only certain Chunks will be updated each frame.
+	/// A Level is composed of a 2D array of Chunks, but only certain Chunks will be updated each frame.
 	/// A World is composed of many Levels, each of the same size, all stacked on top of eachother.
 	/// </summary>
-	[DataContract]
-	public class Chunk
+	public class Chunk : IChunkAccess
 	{
 		#region Constants
-
-		private const int CHUNK_HEIGHT = 64;
-		private const int CHUNK_WIDTH = 64;
 
 		#endregion
 
 		#region Fields
 
-		[DataMember]
+		private int _width;
+		private int _height;
 		private int[,,] _blockIndex;
 		
 		#endregion
 
 		#region Constructors
 
-		public Chunk()
+		public Chunk(int width, int height)
 		{
-			_blockIndex = new int[Enum.GetValues(typeof(ChunkLayer)).Length, CHUNK_HEIGHT, CHUNK_WIDTH];
+			_width = width;
+			_height = height;
+			_blockIndex = new int[Enum.GetValues(typeof(ChunkLayer)).Length, _height, _width];
 		}
 
 		#endregion
 
 		#region Properties
 
-		/// <summary>
-		/// The chunk id is assigned by WorldService.
-		/// </summary>
-		[DataMember]
-		public int Id { get; set; }
+		public int Width
+		{
+			get
+			{
+				return _width;
+			}
+		}
 
 		public int Height
 		{
 			get
 			{
-				return CHUNK_HEIGHT;
-			}
-		}
-
-		public int Width
-		{
-			get
-			{
-				return CHUNK_WIDTH;
+				return _height;
 			}
 		}
 
@@ -63,22 +56,11 @@ namespace ASCIIWorld.Data
 		{
 			get
 			{
-				if ((y < 0) || (y >= CHUNK_HEIGHT) || (x < 0) || (x >= CHUNK_WIDTH))
-				{
-					return 0;
-				}
-				else
-				{
-					return _blockIndex[(int)layer, y, x];
-				}
+				return _blockIndex[(int)layer, y, x];
 			}
 			set
 			{
-				if ((y >= 0) && (y < CHUNK_HEIGHT) && (x >= 0) && (x < CHUNK_WIDTH))
-				{
-					_blockIndex[(int)layer, y, x] = value;
-				}
-				// TODO: Should this return 0 if out of range?
+				_blockIndex[(int)layer, y, x] = value;
 			}
 		}
 
@@ -89,17 +71,36 @@ namespace ASCIIWorld.Data
 		/// <summary>
 		/// Search the chunk randomly for a spot that isn't blocked.
 		/// </summary>
-		public Point FindSpawnPoint()
+		public Vector2I? FindSpawnPoint()
 		{
 			var random = new Random();
-			while (true)
+			for (var n = 0; n < 32; n++)
+			//while (true)
 			{
-				var x = random.Next(0, Width);
-				var y = random.Next(0, Height);
+				var x = random.Next(0, _width);
+				var y = random.Next(0, _height);
 				if (this[ChunkLayer.Blocking, x, y] == 0)
 				{
-					return new Point(x, y);
+					return new Vector2I(x, y);
 				}
+			}
+			return null;
+		}
+
+		public bool CanSeeSky(ChunkLayer layer, int blockX, int blockY)
+		{
+			switch (layer)
+			{
+				case ChunkLayer.Ceiling:
+					return true;
+				case ChunkLayer.Blocking:
+					return this[ChunkLayer.Ceiling, blockX, blockY] == 0;
+				case ChunkLayer.Floor:
+					return CanSeeSky(ChunkLayer.Blocking, blockX, blockY) && this[ChunkLayer.Blocking, blockX, blockY] == 0;
+				case ChunkLayer.Background:
+					return CanSeeSky(ChunkLayer.Floor, blockX, blockY) && this[ChunkLayer.Floor, blockX, blockY] == 0;
+				default:
+					return false;
 			}
 		}
 

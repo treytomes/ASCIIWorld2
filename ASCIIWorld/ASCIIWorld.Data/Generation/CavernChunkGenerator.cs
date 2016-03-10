@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace ASCIIWorld.Generation
 {
-	public class CavernChunkGenerator : IGenerator<Chunk>
+	public class CavernChunkGenerator : BaseChunkGenerator
 	{
 		#region Constants
 
@@ -16,6 +16,9 @@ namespace ASCIIWorld.Generation
 		#endregion
 
 		#region Fields
+
+		private int _width;
+		private int _height;
 
 		private int _randomFillPercent;
 		private string _seed;
@@ -30,12 +33,15 @@ namespace ASCIIWorld.Generation
 
 		#region Constructors
 
-		public CavernChunkGenerator(Dictionary<int, string> blocks, string seed)
+		public CavernChunkGenerator(Dictionary<int, string> blocks, int width, int height, string seed)
 		{
 			if (blocks == null)
 			{
 				throw new ArgumentNullException("blocks");
 			}
+
+			_width = width;
+			_height = height;
 
 			_stoneId = blocks.Single(x => x.Value == "Stone").Key;
 
@@ -45,18 +51,19 @@ namespace ASCIIWorld.Generation
 			_passageCount = 0;
 			_connectingRoomsCount = 0;
 
-			_randomFillPercent = _random.Next(0, 100); // 50 is a good number
+			_randomFillPercent = 50; // _random.Next(0, 100); // 50 is a good number
 		}
 
 		#endregion
 
 		#region Methods
 
-		public Chunk Generate(IProgress<string> progress)
+		public override Chunk Generate(IProgress<string> progress)
 		{
 			progress.Report("Generating chunk.");
 
-			var chunk = new Chunk();
+			var chunk = new Chunk(_width, _height);
+			
 			GenerateCavern(chunk);
 
 			progress.Report("Removing small regions...");
@@ -80,7 +87,8 @@ namespace ASCIIWorld.Generation
 				SmoothMap(chunk);
 			}
 
-			EnsureMapBorder(chunk);
+			// This is not needed in infinite maps.
+			//EnsureMapBorder(chunk);
 		}
 
 		private void RandomFillMap(Chunk chunk)
@@ -118,26 +126,19 @@ namespace ASCIIWorld.Generation
 			}
 		}
 
-		private int GetSurroundingWallCount(Chunk level, int gridX, int gridY)
+		private int GetSurroundingWallCount(Chunk chunk, int x, int y)
 		{
 			var wallCount = 0;
-			for (var neighbourX = gridX - 1; neighbourX <= gridX + 1; neighbourX++)
+			for (var neighbourX = x - 1; neighbourX <= x + 1; neighbourX++)
 			{
-				for (var neighbourY = gridY - 1; neighbourY <= gridY + 1; neighbourY++)
+				for (var neighbourY = y - 1; neighbourY <= y + 1; neighbourY++)
 				{
-					if (MathHelper.IsInRange(neighbourX, 0, level.Width) && MathHelper.IsInRange(neighbourY, 0, level.Height))
+					if ((neighbourX != x) || (neighbourY != y))
 					{
-						if ((neighbourX != gridX) || (neighbourY != gridY))
+						if (chunk[ChunkLayer.Blocking, (int)MathHelper.Modulo(neighbourX, chunk.Width), (int)MathHelper.Modulo(neighbourY, chunk.Height)] == _stoneId)
 						{
-							if (level[ChunkLayer.Blocking, neighbourX, neighbourY] == _stoneId)
-							{
-								wallCount++;
-							}
+							wallCount++;
 						}
-					}
-					else
-					{
-						wallCount++;
 					}
 				}
 			}
@@ -181,7 +182,7 @@ namespace ASCIIWorld.Generation
 		/// </remarks>
 		/// <param name="thresholdSize">If a region is &lt;= this size, delete it.</param>
 		/// <param name="revertPrototype">The tile prototype to use when deleting small regions.</param>
-		private void EnsureMinimumSize(Chunk chunk, ChunkLayer layer, List<List<Point>> regions, int thresholdSize)
+		private void EnsureMinimumSize(Chunk chunk, ChunkLayer layer, List<List<Vector2I>> regions, int thresholdSize)
 		{
 			for (var index = 0; index < regions.Count; index++)
 			{
@@ -209,10 +210,10 @@ namespace ASCIIWorld.Generation
 
 		#region Locate regions.
 
-		private List<List<Point>> GetRegions(Chunk chunk, ChunkLayer layer, int tileId)
+		private List<List<Vector2I>> GetRegions(Chunk chunk, ChunkLayer layer, int tileId)
 		{
 			// This is the collection of regions we have found..
-			var regions = new List<List<Point>>();
+			var regions = new List<List<Vector2I>>();
 
 			// Track whether a position has been checked.
 			var mapFlags = new bool[chunk.Height, chunk.Width];
@@ -242,10 +243,10 @@ namespace ASCIIWorld.Generation
 			return regions;
 		}
 
-		private static List<Point> GetRegionPoints(Chunk chunk, ChunkLayer layer, int startX, int startY)
+		private static List<Vector2I> GetRegionPoints(Chunk chunk, ChunkLayer layer, int startX, int startY)
 		{
 			// The list of tiles in this region.
-			var points = new List<Point>();
+			var points = new List<Vector2I>();
 
 			// Track whether a position has been checked.
 			var mapFlags = new bool[chunk.Height, chunk.Width];
@@ -254,9 +255,9 @@ namespace ASCIIWorld.Generation
 			var tileId = chunk[layer, startX, startY];
 
 			// The list of tiles to check.
-			var queue = new Queue<Point>();
+			var queue = new Queue<Vector2I>();
 
-			queue.Enqueue(new Point(startX, startY));
+			queue.Enqueue(new Vector2I(startX, startY));
 			mapFlags[startY, startX] = true;
 
 			while (queue.Count > 0)
@@ -276,7 +277,7 @@ namespace ASCIIWorld.Generation
 									((layer == ChunkLayer.Blocking) && (chunk[ChunkLayer.Floor, x, y] == tileId)))
 								{
 									mapFlags[y, x] = true;
-									queue.Enqueue(new Point(x, y));
+									queue.Enqueue(new Vector2I(x, y));
 								}
 							}
 						}
@@ -296,10 +297,13 @@ namespace ASCIIWorld.Generation
 			progress.Report("Collecting regions...");
 			var floorRegions = GetRegions(chunk, ChunkLayer.Floor, _stoneId).Select(x => new LevelRegion(x, chunk)).ToList();
 			floorRegions.Sort();
-			floorRegions[0].IsMainRegion = true;
-			floorRegions[0].IsAccessibleFromMainRegion = true;
+			if (floorRegions.Count > 0)
+			{
+				floorRegions[0].IsMainRegion = true;
+				floorRegions[0].IsAccessibleFromMainRegion = true;
 
-			ConnectClosestRooms(progress, floorRegions, chunk);
+				ConnectClosestRooms(progress, floorRegions, chunk);
+			}
 		}
 
 		private void ConnectClosestRooms(IProgress<string> progress, List<LevelRegion> floorRegions, Chunk chunk, bool forceAccessibilityFromMainRegion = false)
@@ -330,8 +334,8 @@ namespace ASCIIWorld.Generation
 			}
 
 			var bestDistance = 0;
-			var bestTileA = new Point();
-			var bestTileB = new Point();
+			var bestTileA = new Vector2I();
+			var bestTileB = new Vector2I();
 			LevelRegion bestRegionA = null;
 			LevelRegion bestRegionB = null;
 			var possibleConnectionFound = false;
@@ -395,7 +399,7 @@ namespace ASCIIWorld.Generation
 			}
 		}
 
-		private void CreatePassage(Chunk chunk, LevelRegion regionA, LevelRegion regionB, Point pointA, Point pointB)
+		private void CreatePassage(Chunk chunk, LevelRegion regionA, LevelRegion regionB, Vector2I pointA, Vector2I pointB)
 		{
 			LevelRegion.ConnectRegions(regionA, regionB);
 
@@ -406,7 +410,7 @@ namespace ASCIIWorld.Generation
 			}
 		}
 
-		private void DrawCircle(Chunk chunk, Point c, int passageSize)
+		private void DrawCircle(Chunk chunk, Vector2I c, int passageSize)
 		{
 			for (var x = -passageSize; x <= passageSize; x++)
 			{
@@ -425,9 +429,9 @@ namespace ASCIIWorld.Generation
 			}
 		}
 
-		private List<Point> GetLine(Point from, Point to)
+		private List<Vector2I> GetLine(Vector2I from, Vector2I to)
 		{
-			var line = new List<Point>();
+			var line = new List<Vector2I>();
 
 			var x = from.X;
 			var y = from.Y;
@@ -455,7 +459,7 @@ namespace ASCIIWorld.Generation
 			var gradientAccumulation = longest / 2;
 			for (var i = 0; i < longest; i++)
 			{
-				line.Add(new Point(x, y));
+				line.Add(new Vector2I(x, y));
 
 				if (inverted)
 				{
@@ -493,11 +497,11 @@ namespace ASCIIWorld.Generation
 		/// </summary>
 		private class LevelRegion : IComparable<LevelRegion>
 		{
-			public List<Point> Points;
-			public List<Point> EdgeTiles;
+			public List<Vector2I> Points;
+			public List<Vector2I> EdgeTiles;
 			public List<LevelRegion> ConnectedRegions;
 
-			public LevelRegion(List<Point> points, Chunk chunk)
+			public LevelRegion(List<Vector2I> points, Chunk chunk)
 			{
 				Points = points;
 				ConnectedRegions = new List<LevelRegion>();
@@ -563,7 +567,7 @@ namespace ASCIIWorld.Generation
 				// TODO: Make this configurable?
 				Func<int, int, bool> isOnEdge = (x, y) => chunk[ChunkLayer.Blocking, x, y] != 0;
 
-				EdgeTiles = new List<Point>();
+				EdgeTiles = new List<Vector2I>();
 				foreach (var tile in Points)
 				{
 					for (var x = tile.X - 1; x <= tile.X + 1; x++)

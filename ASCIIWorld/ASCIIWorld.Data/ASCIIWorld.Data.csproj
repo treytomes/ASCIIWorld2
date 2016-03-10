@@ -44,8 +44,13 @@
     <Compile Include="Chunk.cs" />
     <Compile Include="ChunkLayer.cs" />
     <Compile Include="Generation\CavernChunkGenerator.cs" />
-    <Compile Include="Generation\IGenerator.cs" />
+    <Compile Include="Generation\BaseChunkGenerator.cs" />
+    <Compile Include="Generation\Dugout\DugoutDungeonChunkGenerator.cs" />
+    <Compile Include="Generation\Dugout\Tile.cs" />
+    <Compile Include="Generation\IChunkGenerator.cs" />
     <Compile Include="Generation\SampleChunkGenerator.cs" />
+    <Compile Include="IChunkAccess.cs" />
+    <Compile Include="Level.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
