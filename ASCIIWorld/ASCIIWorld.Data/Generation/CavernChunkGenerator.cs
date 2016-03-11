@@ -17,12 +17,7 @@ namespace ASCIIWorld.Data.Generation
 
 		#region Fields
 
-		private int _width;
-		private int _height;
-
 		private int _randomFillPercent;
-		private string _seed;
-		private Random _random;
 
 		private int _passageCount;
 		private int _connectingRoomsCount;
@@ -34,19 +29,14 @@ namespace ASCIIWorld.Data.Generation
 		#region Constructors
 
 		public CavernChunkGenerator(Dictionary<int, string> blocks, int width, int height, string seed)
+			: base(width, height, seed)
 		{
 			if (blocks == null)
 			{
 				throw new ArgumentNullException("blocks");
 			}
 
-			_width = width;
-			_height = height;
-
 			_stoneId = blocks.Single(x => x.Value == "Stone").Key;
-
-			_seed = seed ?? DateTime.Now.GetHashCode().ToString();
-			_random = new Random(_seed.GetHashCode());
 
 			_passageCount = 0;
 			_connectingRoomsCount = 0;
@@ -62,7 +52,7 @@ namespace ASCIIWorld.Data.Generation
 		{
 			progress.Report("Generating chunk.");
 
-			var chunk = new Chunk(_width, _height);
+			var chunk = new Chunk(Width, Height);
 			
 			GenerateCavern(chunk);
 
@@ -97,7 +87,7 @@ namespace ASCIIWorld.Data.Generation
 			{
 				for (var y = 0; y < chunk.Height; y++)
 				{
-					if (_random.Next(0, 100) < _randomFillPercent)
+					if (Random.Next(0, 100) < _randomFillPercent)
 					{
 						chunk[ChunkLayer.Blocking, x, y] = _stoneId;
 					}

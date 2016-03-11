@@ -1,9 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<Block name="Grass" tileSet="TileSets/ASCII.xml">
+<Block name="Grass" tileSet="TileSets/SampleBlocks.xml">
 	<Block.renderer>
 		<TileStack>
-			<Tile color="#FF28B515" tileIndex="219" />
-			<Tile color="#FF68D361" tileIndex="176" />
+			<Tile color="#FF28B515" name="Solid" />
+			<Tile color="#FF68D361" name="Grass" />
 		</TileStack>
 	</Block.renderer>
 	<Properties>

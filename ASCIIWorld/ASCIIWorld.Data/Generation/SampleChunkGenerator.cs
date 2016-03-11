@@ -1,5 +1,4 @@
-﻿using ASCIIWorld.Data;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -7,17 +6,12 @@ namespace ASCIIWorld.Data.Generation
 {
 	public class SampleChunkGenerator : BaseChunkGenerator
 	{
-		private int _width;
-		private int _height;
-
 		private int _grassId;
 		private int _waterId;
 
-		public SampleChunkGenerator(Dictionary<int, string> blocks, int width, int height)
+		public SampleChunkGenerator(Dictionary<int, string> blocks, int width, int height, string seed)
+			: base(width, height, seed)
 		{
-			_width = width;
-			_height = height;
-
 			_grassId = blocks.Single(x => x.Value == "Grass").Key;
 			_waterId = blocks.Single(x => x.Value == "Water").Key;
 		}
@@ -26,7 +20,7 @@ namespace ASCIIWorld.Data.Generation
 		{
 			progress.Report("Generating chunk.");
 
-			var chunk = new Chunk(_width, _height);
+			var chunk = new Chunk(Width, Height);
 
 			var random = new Random();
 			for (var y = 0; y < chunk.Height; y++)

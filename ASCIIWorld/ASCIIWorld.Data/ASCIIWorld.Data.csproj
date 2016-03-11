@@ -63,6 +63,7 @@
     <Compile Include="Generation\Labyrinth\Room.cs" />
     <Compile Include="Generation\Labyrinth\RoomGenerator.cs" />
     <Compile Include="Generation\Labyrinth\SideType.cs" />
+    <Compile Include="Generation\OverworldChunkGenerator.cs" />
     <Compile Include="Generation\SampleChunkGenerator.cs" />
     <Compile Include="IChunkAccess.cs" />
     <Compile Include="Level.cs" />

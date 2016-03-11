@@ -5,6 +5,35 @@ namespace ASCIIWorld.Data.Generation
 {
 	public abstract class BaseChunkGenerator : IChunkGenerator
 	{
+		#region Fields
+
+		private string _seed;
+
+		#endregion
+
+		#region Constructors
+
+		public BaseChunkGenerator(int width, int height, string seed)
+		{
+			Width = width;
+			Height = height;
+
+			_seed = seed ?? DateTime.Now.GetHashCode().ToString();
+			Random = new Random(_seed.GetHashCode());
+		}
+
+		#endregion
+
+		#region Properties
+
+		protected int Width { get; private set; }
+
+		protected int Height { get; private set; }
+
+		protected Random Random { get; private set; }
+
+		#endregion
+
 		#region Methods
 
 		public abstract Chunk Generate(IProgress<string> progress);

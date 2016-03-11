@@ -48,6 +48,8 @@
     <Compile Include="IRegisteredObject.cs" />
     <Compile Include="Math\Direction.cs" />
     <Compile Include="Math\MathHelper.cs" />
+    <Compile Include="Math\PerlinNoise.cs" />
+    <Compile Include="Math\SimplexNoise.cs" />
     <Compile Include="Math\Vector2I.cs" />
     <Compile Include="Math\RectI.cs" />
     <Compile Include="ObjectPool.cs" />

@@ -43,32 +43,21 @@ namespace ASCIIWorld.Data.Generation.Dugout
 		// our map
 		private Tile[,] _dungeonMap;
 
-		private string _seed;
-		private Random _random;
-
 		private int _chestId;
 		private int _doorId;
 		private int _floorId;
 		private int _wallId;
-
-		private int _width;
-		private int _height;
 
 		#endregion
 
 		#region Constructors
 
 		public DugoutDungeonChunkGenerator(Dictionary<int, string> blocks, int width, int height, string seed)
+			: base(width, height, seed)
 		{
-			_seed = seed ?? DateTime.Now.GetHashCode().ToString();
-			_random = new Random(_seed.GetHashCode());
-
-			_width = width;
-			_height = height;
-
 			// Adjust the size of the map, if it's smaller or bigger than the limits.
-			_rows = MathHelper.Clamp(height, 3, _height);
-			_columns = width; MathHelper.Clamp(width, 3, _width);
+			_rows = MathHelper.Clamp(height, 3, Height);
+			_columns = width; MathHelper.Clamp(width, 3, Width);
 
 			_chestId = blocks.Single(x => x.Value == "Chest").Key;
 			_doorId = blocks.Single(x => x.Value == "WoodenDoor").Key;
@@ -208,7 +197,7 @@ namespace ASCIIWorld.Data.Generation.Dugout
 
 		private int GetRand(int min, int max)
 		{
-			return _random.Next(min, max);
+			return Random.Next(min, max);
 		}
 
 		private bool MakeCorridor(int x, int y, int length, Direction direction)
@@ -324,7 +313,7 @@ namespace ASCIIWorld.Data.Generation.Dugout
 		private bool InBounds(int x, int y)
 		{
 			// TODO: Use MathHelper.IsInRange.
-			return x > 0 && x < _width && y > 0 && y < _height;
+			return x > 0 && x < Width && y > 0 && y < Height;
 		}
 
 		private bool InBounds(Vector2I v)
@@ -402,7 +391,7 @@ namespace ASCIIWorld.Data.Generation.Dugout
 					Console.Write(GetCellTile(x, y));
 				}
 
-				if (this._columns <= _width) Console.WriteLine();
+				if (this._columns <= Width) Console.WriteLine();
 			}
 		}
 

@@ -25,6 +25,11 @@
 			<TileSetContentProvider tileSet="TileSets/ASCII.xml" tileIndex="176" />
 		</Tile.source>
 	</Tile>
+	<Tile name="Sand">
+		<Tile.source>
+			<TileSetContentProvider tileSet="TileSets/ASCII.xml" tileIndex="176" />
+		</Tile.source>
+	</Tile>
 	<Tile name="Water_1">
 		<Tile.source>
 			<TileSetContentProvider tileSet="TileSets/ASCII.xml" tileIndex="61" />

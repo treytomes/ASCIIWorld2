@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Block name="Sand" tileSet="TileSets/SampleBlocks.xml">
+	<Block.renderer>
+		<TileStack>
+			<Tile color="#FFFFEB59" name="Solid" />
+			<Tile color="#FFFFCD38" name="Sand" />
+		</TileStack>
+	</Block.renderer>
+	<Properties>
+		<Property name="Friction" value="0.5" />
+	</Properties>
+</Block>

@@ -11,29 +11,18 @@ namespace ASCIIWorld.Data.Generation.BSP
 
 		private RoomGenerator _roomGenerator;
 
-		private string _seed;
-		private Random _random;
-
 		private int _chestId;
 		private int _doorId;
 		private int _floorId;
 		private int _wallId;
-
-		private int _height;
-		private int _width;
 
 		#endregion
 
 		#region Constructors
 
 		public BSPDungeonChunkGenerator(Dictionary<int, string> blocks, int width, int height, string seed, RoomGenerator roomGenerator)
+			: base(width, height, seed)
 		{
-			_seed = seed ?? DateTime.Now.GetHashCode().ToString();
-			_random = new Random(_seed.GetHashCode());
-
-			_width = width;
-			_height = height;
-
 			_chestId = blocks.Single(x => x.Value == "Chest").Key;
 			_doorId = blocks.Single(x => x.Value == "WoodenDoor").Key;
 			_floorId = blocks.Single(x => x.Value == "Stone").Key;
@@ -53,13 +42,13 @@ namespace ASCIIWorld.Data.Generation.BSP
 
 		public override Chunk Generate(IProgress<string> progress)
 		{
-			var chunk = new Chunk(_width, _height);
+			var chunk = new Chunk(Width, Height);
 			Fill(chunk, ChunkLayer.Floor, _floorId);
 			Fill(chunk, ChunkLayer.Blocking, _wallId);
 
 			_roomGenerator.Reset();
 
-			var dungeonArea = new HorizontalArea(_roomGenerator, _random, 0, 0, _width, _height);
+			var dungeonArea = new HorizontalArea(_roomGenerator, Random, 0, 0, Width, Height);
 			RenderRooms(chunk, dungeonArea, progress);
 			RenderCorridors(chunk, dungeonArea, progress);
 

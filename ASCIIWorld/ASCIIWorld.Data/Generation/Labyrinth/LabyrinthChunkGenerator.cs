@@ -9,12 +9,6 @@ namespace ASCIIWorld.Data.Generation.Labyrinth
 	{
 		#region Fields
 
-		private int _height;
-		private int _width;
-
-		private string _seed;
-		private Random _random;
-
 		private int _doorId;
 		private int _floorId;
 		private int _wallId;
@@ -24,13 +18,8 @@ namespace ASCIIWorld.Data.Generation.Labyrinth
 		#region Constructors
 
 		public LabyrinthChunkGenerator(Dictionary<int, string> blocks, int width, int height, string seed)
+			: base(width, height, seed)
 		{
-			_seed = seed ?? DateTime.Now.GetHashCode().ToString();
-			_random = new Random(_seed.GetHashCode());
-
-			_height = height;
-			_width = width;
-
 			_doorId = blocks.Single(x => x.Value == "WoodenDoor").Key;
 			_floorId = blocks.Single(x => x.Value == "Stone").Key;
 			_wallId = blocks.Single(x => x.Value == "Stone").Key;
@@ -42,7 +31,7 @@ namespace ASCIIWorld.Data.Generation.Labyrinth
 
 		public override Chunk Generate(IProgress<string> progress)
 		{
-			var tileMap = new Chunk(_width, _height);
+			var tileMap = new Chunk(Width, Height);
 
 			progress.Report("Generating dungeon...");
 			var generator = CreateDungeonGenerator(tileMap);
@@ -180,19 +169,19 @@ namespace ASCIIWorld.Data.Generation.Labyrinth
 
 		private LabyrinthGenerator CreateDungeonGenerator(Chunk chunk)
 		{
-			return new LabyrinthGenerator(_random, CreateRoomGenerator())
+			return new LabyrinthGenerator(Random, CreateRoomGenerator())
 			{
 				Rows = (chunk.Height - 1) / 2,
 				Columns = (chunk.Width - 1) / 2,
-				ChangeDirectionModifier = _random.NextDouble(),
-				SparsenessFactor = _random.NextDouble(),
-				DeadEndRemovalModifier = _random.NextDouble()
+				ChangeDirectionModifier = Random.NextDouble(),
+				SparsenessFactor = Random.NextDouble(),
+				DeadEndRemovalModifier = Random.NextDouble()
 			};
 		}
 
 		private RoomGenerator CreateRoomGenerator()
 		{
-			return new RoomGenerator(_random)
+			return new RoomGenerator(Random)
 			{
 				NumRooms = 5,
 				MinRoomRows = 2,
