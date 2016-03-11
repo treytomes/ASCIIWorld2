@@ -4,7 +4,6 @@ using GameCore.StateManagement;
 using System;
 using System.Threading.Tasks;
 using GameCore.IO;
-using ASCIIWorld.Generation;
 using OpenTK.Graphics.OpenGL;
 using System.Drawing;
 using OpenTK;

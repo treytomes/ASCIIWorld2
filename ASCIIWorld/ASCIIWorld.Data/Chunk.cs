@@ -52,11 +52,21 @@ namespace ASCIIWorld.Data
 		{
 			get
 			{
-				return _blockIndex[(int)layer, y, x];
+				if (MathHelper.IsInRange(x, 0, Width) && MathHelper.IsInRange(y, 0, Height))
+				{
+					return _blockIndex[(int)layer, y, x];
+				}
+				else
+				{
+					return 0;
+				}
 			}
 			set
 			{
-				_blockIndex[(int)layer, y, x] = value;
+				if (MathHelper.IsInRange(x, 0, Width) && MathHelper.IsInRange(y, 0, Height))
+				{
+					_blockIndex[(int)layer, y, x] = value;
+				}
 			}
 		}
 

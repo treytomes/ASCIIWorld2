@@ -1,10 +1,7 @@
-﻿using ASCIIWorld.Generation;
-using CommonCore.Math;
+﻿using CommonCore.Math;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ASCIIWorld.Data.Generation.Labyrinth
 {

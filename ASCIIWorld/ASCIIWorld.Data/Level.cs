@@ -1,6 +1,7 @@
-﻿using ASCIIWorld.Data.Generation.Dugout;
+﻿using ASCIIWorld.Data.Generation.BSP;
+using ASCIIWorld.Data.Generation.Dugout;
 using ASCIIWorld.Data.Generation.Labyrinth;
-using ASCIIWorld.Generation;
+using ASCIIWorld.Data.Generation;
 using CommonCore.Math;
 using System;
 using System.Collections.Generic;
@@ -106,7 +107,8 @@ namespace ASCIIWorld.Data
 			//_chunks[chunkY, chunkX] = new CavernChunkGenerator(_blocks, CHUNK_WIDTH, CHUNK_HEIGHT, "hello!").Generate(progress);
 			//_chunks[chunkY, chunkX] = new CavernChunkGenerator(_blocks, CHUNK_WIDTH, CHUNK_HEIGHT, null).Generate(progress);
 			//_chunks[chunkY, chunkX] = new DugoutDungeonChunkGenerator(_blocks, CHUNK_WIDTH, CHUNK_HEIGHT, null).Generate(progress);
-			_chunks[chunkY, chunkX] = new LabyrinthChunkGenerator(_blocks, CHUNK_WIDTH, CHUNK_HEIGHT, null).Generate(progress);
+			//_chunks[chunkY, chunkX] = new LabyrinthChunkGenerator(_blocks, CHUNK_WIDTH, CHUNK_HEIGHT, null).Generate(progress);
+			_chunks[chunkY, chunkX] = new BSPDungeonChunkGenerator(_blocks, CHUNK_WIDTH, CHUNK_HEIGHT, null).Generate(progress);
 
 			for (var n = 0; n < 16; n++)
 			{

@@ -43,6 +43,12 @@
   <ItemGroup>
     <Compile Include="Chunk.cs" />
     <Compile Include="ChunkLayer.cs" />
+    <Compile Include="Generation\BSP\Area.cs" />
+    <Compile Include="Generation\BSP\BSPDungeonChunkGenerator.cs" />
+    <Compile Include="Generation\BSP\HorizontalArea.cs" />
+    <Compile Include="Generation\BSP\Room.cs" />
+    <Compile Include="Generation\BSP\RoomGenerator.cs" />
+    <Compile Include="Generation\BSP\VerticalArea.cs" />
     <Compile Include="Generation\CavernChunkGenerator.cs" />
     <Compile Include="Generation\BaseChunkGenerator.cs" />
     <Compile Include="Generation\Dugout\DugoutDungeonChunkGenerator.cs" />

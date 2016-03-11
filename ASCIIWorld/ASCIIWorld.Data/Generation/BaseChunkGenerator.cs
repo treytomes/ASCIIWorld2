@@ -1,21 +1,20 @@
-﻿using ASCIIWorld.Data;
-using CommonCore.Math;
+﻿using CommonCore.Math;
 using System;
 
-namespace ASCIIWorld.Generation
+namespace ASCIIWorld.Data.Generation
 {
-	public abstract class BaseChunkGenerator
+	public abstract class BaseChunkGenerator : IChunkGenerator
 	{
 		#region Methods
 
 		public abstract Chunk Generate(IProgress<string> progress);
 
-		protected void Fill(Chunk chunk, ChunkLayer layer, int blockId)
+		public void Fill(Chunk chunk, ChunkLayer layer, int blockId)
 		{
 			Fill(chunk, layer, new RectI(0, 0, chunk.Width, chunk.Height), blockId);
 		}
 
-		protected void Fill(Chunk chunk, ChunkLayer layer, RectI bounds, int blockId)
+		public void Fill(Chunk chunk, ChunkLayer layer, RectI bounds, int blockId)
 		{
 			for (var row = bounds.Top; row <= bounds.Bottom; row++)
 			{
@@ -26,7 +25,7 @@ namespace ASCIIWorld.Generation
 			}
 		}
 
-		protected void DrawVerticalLine(Chunk chunk, ChunkLayer layer, int top, int bottom, int x, int blockId)
+		public void DrawVerticalLine(Chunk chunk, ChunkLayer layer, int top, int bottom, int x, int blockId)
 		{
 			for (var row = top; row <= bottom; row++)
 			{
@@ -34,7 +33,7 @@ namespace ASCIIWorld.Generation
 			}
 		}
 
-		protected void DrawHorizontalLine(IChunkAccess chunk, ChunkLayer layer, int y, int left, int right, int blockId)
+		public void DrawHorizontalLine(IChunkAccess chunk, ChunkLayer layer, int y, int left, int right, int blockId)
 		{
 			for (var column = left; column <= right; column++)
 			{
