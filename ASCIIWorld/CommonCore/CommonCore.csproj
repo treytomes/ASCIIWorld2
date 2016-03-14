@@ -43,6 +43,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ConvertEx.cs" />
+    <Compile Include="EnumExtensions.cs" />
     <Compile Include="ICloneable.cs" />
     <Compile Include="IPoolable.cs" />
     <Compile Include="IRegisteredObject.cs" />

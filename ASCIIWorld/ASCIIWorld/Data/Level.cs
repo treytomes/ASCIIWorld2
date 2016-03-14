@@ -38,6 +38,9 @@ namespace ASCIIWorld.Data
 		private Dictionary<int, string> _blocks;
 		private Chunk[,] _chunks;
 
+		private int _grassId;
+		private int _bushId;
+
 		#endregion
 
 		#region Constructors
@@ -46,6 +49,9 @@ namespace ASCIIWorld.Data
 		{
 			_blocks = blocks;
 			_chunks = new Chunk[LEVEL_HEIGHT, LEVEL_WIDTH];
+
+			_grassId = _blocks.Single(x => x.Value == "Grass").Key;
+			_bushId = _blocks.Single(x => x.Value == "Bush").Key;
 		}
 
 		#endregion
@@ -92,12 +98,12 @@ namespace ASCIIWorld.Data
 
 		#region Methods
 
-		public bool CanSeeSky(ChunkLayer layer, int blockX, int blockY)
+		public bool CanSeeSky(BlockRegistry blocks, ChunkLayer layer, int blockX, int blockY)
 		{
 			var chunk = GetChunk(blockX, blockY);
 			var chunkX = (int)MathHelper.Modulo(blockX, CHUNK_WIDTH);
 			var chunkY = (int)MathHelper.Modulo(blockY, CHUNK_HEIGHT);
-			return chunk.CanSeeSky(layer, chunkX, chunkY);
+			return chunk.CanSeeSky(blocks, layer, chunkX, chunkY);
 		}
 
 		private void GenerateChunk(int chunkX, int chunkY)
@@ -111,13 +117,22 @@ namespace ASCIIWorld.Data
 			//_chunks[chunkY, chunkX] = new BSPDungeonChunkGenerator(_blocks, CHUNK_WIDTH, CHUNK_HEIGHT, null).Generate(progress);
 			_chunks[chunkY, chunkX] = new OverworldChunkGenerator(_blocks, CHUNK_WIDTH, CHUNK_HEIGHT, null, chunkX, chunkY).Generate(progress);
 
+			// This will try to plant 16 bushes on grass areas of the chunk.
 			for (var n = 0; n < 16; n++)
 			{
 				progress.Report($"Planting bush (x{n + 1})...");
-				var spawnPoint = _chunks[chunkY, chunkX].FindSpawnPoint();
+
+				Vector2I? spawnPoint = null;
+				while ((spawnPoint = _chunks[chunkY, chunkX].FindSpawnPoint()).HasValue)
+				{
+					if (_chunks[chunkY, chunkX][ChunkLayer.Floor, spawnPoint.Value.X, spawnPoint.Value.Y] == _grassId)
+					{
+						break;
+					}
+				}
 				if (spawnPoint.HasValue)
 				{
-					_chunks[chunkY, chunkX][ChunkLayer.Blocking, spawnPoint.Value.X, spawnPoint.Value.Y] = _blocks.Single(x => x.Value == "Bush").Key;
+					_chunks[chunkY, chunkX][ChunkLayer.Blocking, spawnPoint.Value.X, spawnPoint.Value.Y] = _bushId;
 				}
 				else
 				{

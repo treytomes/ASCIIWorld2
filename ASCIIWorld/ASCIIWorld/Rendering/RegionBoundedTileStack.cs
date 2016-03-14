@@ -48,7 +48,7 @@ namespace ASCIIWorld.Rendering
 		{
 			base.Render(tessellator, chunk, layer, x, y);
 
-			tessellator.BindColor(Color.DimGray);
+			tessellator.BindColor(OutlineColor);
 			if (chunk[layer, x - 1, y] != chunk[layer, x, y])
 			{
 				_connectedWallTiles.Render(tessellator, _connectedWallTiles.GetTileIndexFromName(_westWall));

@@ -67,6 +67,34 @@
     <Compile Include="AppSettings.cs" />
     <Compile Include="ASCIIWorldGameWindow.cs" />
     <Compile Include="Data\BlockRegistry.cs" />
+    <Compile Include="Data\Chunk.cs" />
+    <Compile Include="Data\ChunkLayer.cs" />
+    <Compile Include="Data\Generation\BaseChunkGenerator.cs" />
+    <Compile Include="Data\Generation\BSP\Area.cs" />
+    <Compile Include="Data\Generation\BSP\BSPDungeonChunkGenerator.cs" />
+    <Compile Include="Data\Generation\BSP\HorizontalArea.cs" />
+    <Compile Include="Data\Generation\BSP\Room.cs" />
+    <Compile Include="Data\Generation\BSP\RoomGenerator.cs" />
+    <Compile Include="Data\Generation\BSP\VerticalArea.cs" />
+    <Compile Include="Data\Generation\CavernChunkGenerator.cs" />
+    <Compile Include="Data\Generation\Dugout\DugoutDungeonChunkGenerator.cs" />
+    <Compile Include="Data\Generation\Dugout\Tile.cs" />
+    <Compile Include="Data\Generation\IChunkGenerator.cs" />
+    <Compile Include="Data\Generation\Labyrinth\Cell.cs" />
+    <Compile Include="Data\Generation\Labyrinth\DirectionPicker.cs" />
+    <Compile Include="Data\Generation\Labyrinth\LabyrinthChunkGenerator.cs" />
+    <Compile Include="Data\Generation\Labyrinth\LabyrinthDungeon.cs" />
+    <Compile Include="Data\Generation\Labyrinth\LabyrinthGenerator.cs" />
+    <Compile Include="Data\Generation\Labyrinth\Map.cs" />
+    <Compile Include="Data\Generation\Labyrinth\Room.cs" />
+    <Compile Include="Data\Generation\Labyrinth\RoomGenerator.cs" />
+    <Compile Include="Data\Generation\Labyrinth\SideType.cs" />
+    <Compile Include="Data\Generation\OverworldChunkGenerator.cs" />
+    <Compile Include="Data\Generation\SampleChunkGenerator.cs" />
+    <Compile Include="Data\IBlockAccess.cs" />
+    <Compile Include="Data\IBlockRegistryAccess.cs" />
+    <Compile Include="Data\IChunkAccess.cs" />
+    <Compile Include="Data\Level.cs" />
     <Compile Include="IO\BlockRegistryContentProvider.cs" />
     <Compile Include="Rendering\Animation.cs" />
     <Compile Include="Data\Block.cs" />
@@ -100,10 +128,6 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ASCIIWorld.Data\ASCIIWorld.Data.csproj">
-      <Project>{aaae0789-1837-4044-9b0a-45c39555f8d4}</Project>
-      <Name>ASCIIWorld.Data</Name>
-    </ProjectReference>
     <ProjectReference Include="..\CommonCore\CommonCore.csproj">
       <Project>{d200d9da-0b2e-434d-a1bc-9c21b26697fd}</Project>
       <Name>CommonCore</Name>
@@ -193,6 +217,11 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Blocks\Sand.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Assets\Blocks\Dirt.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>

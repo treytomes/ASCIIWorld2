@@ -1,10 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Block name="Grass" tileSet="TileSets/SampleBlocks.xml">
 	<Block.renderer>
-		<TileStack>
+		<RegionBoundedTileStack outlineColor="#FF249912" northWall="ConnectedWall_N" southWall="ConnectedWall_S" eastWall="ConnectedWall_E" westWall="ConnectedWall_W">
 			<Tile color="#FF28B515" name="Solid" />
 			<Tile color="#FF68D361" name="Grass" />
-		</TileStack>
+		</RegionBoundedTileStack>
 	</Block.renderer>
 	<Properties>
 		<Property name="Friction" value="1" />

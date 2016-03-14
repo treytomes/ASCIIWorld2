@@ -1,5 +1,6 @@
 ﻿using ASCIIWorld.Data;
 using ASCIIWorld.Rendering;
+using CommonCore;
 using GameCore;
 using GameCore.IO;
 using GameCore.Rendering;
@@ -39,7 +40,10 @@ namespace ASCIIWorld
 		private TimeSpan _totalGameTime;
 		private TimeSpan _lastRenderTime = TimeSpan.Zero;
 
-		private Vector3 _cameraMoveStart;
+		private Vector2 _cameraMoveStart;
+		private Vector2 _mouseBlockPosition;
+
+		private ITessellator _tessellator;
 
 		#endregion
 
@@ -61,6 +65,8 @@ namespace ASCIIWorld
 			_camera = Camera.CreateOrthographicCamera(viewport);
 			_hudCamera = Camera.CreateOrthographicCamera(viewport);
 			_hudCamera.Projection.OrthographicSize = viewport.Height / 2;
+
+			_tessellator = new VertexBufferTessellator() { Mode = VertexTessellatorMode.Render };
 		}
 
 		#endregion
@@ -160,6 +166,20 @@ namespace ASCIIWorld
 			_camera.Apply();
 			_chunkRenderer.Render(_camera, _level);
 
+
+			_tessellator.Begin(PrimitiveType.Quads);
+			_tessellator.LoadIdentity();
+			_tessellator.Translate(0, 0, -10);
+
+			_tessellator.BindTexture(null);
+			_tessellator.BindColor(Color.FromArgb(64, Color.Black));
+			_tessellator.AddPoint(_mouseBlockPosition.X, _mouseBlockPosition.Y);
+			_tessellator.AddPoint(_mouseBlockPosition.X, _mouseBlockPosition.Y + 1);
+			_tessellator.AddPoint(_mouseBlockPosition.X + 1, _mouseBlockPosition.Y + 1);
+			_tessellator.AddPoint(_mouseBlockPosition.X + 1, _mouseBlockPosition.Y);
+
+			_tessellator.End();
+
 			_hudCamera.Apply();
 
 			_writer.Color = Color.White;
@@ -173,6 +193,45 @@ namespace ASCIIWorld
 			_writer.Write("Render FPS: {0}", 1.0 / (_timer.Elapsed.TotalSeconds - _lastRenderTime.TotalSeconds));
 			_lastRenderTime = _timer.Elapsed;
         }
+
+		private void Destroy(int blockX, int blockY)
+		{
+			var layer = GetHighestVisibleLayer(blockX, blockY);
+			_level[layer, blockX, blockY] = 0;
+		}
+
+		private void Inspect(int blockX, int blockY)
+		{
+			var layer = GetHighestVisibleLayer(blockX, blockY);
+			var blockId = _level[ChunkLayer.Ceiling, blockX, blockY];
+			if (blockId > 0)
+			{
+				var block = _blocks.GetById(blockId);
+				Console.WriteLine($"{ChunkLayer.Ceiling.GetDescription()} block name: {block.Name}");
+			}
+		}
+		
+		// TODO: Add this to IChunkAccess.
+		private ChunkLayer GetHighestVisibleLayer(int blockX, int blockY)
+		{
+			if (_level[ChunkLayer.Ceiling, blockX, blockY] != 0)
+			{
+				return ChunkLayer.Ceiling;
+			}
+			else if (_level[ChunkLayer.Blocking, blockX, blockY] != 0)
+			{
+				return ChunkLayer.Blocking;
+			}
+			else if (_level[ChunkLayer.Floor, blockX, blockY] != 0)
+			{
+				return ChunkLayer.Floor;
+			}
+			else if (_level[ChunkLayer.Background, blockX, blockY] != 0)
+			{
+				return ChunkLayer.Background;
+			}
+			return ChunkLayer.Background;
+		}
 
 		#endregion
 
@@ -208,17 +267,17 @@ namespace ASCIIWorld
 		{
 			if (HasFocus)
 			{
-				switch (e.Key)
-				{
-					//case Key.Up:
-					//case Key.Down:
-					//	_cameraVelocity.Y = 0;
-					//	break;
-					//case Key.Left:
-					//case Key.Right:
-					//	_cameraVelocity.X = 0;
-					//	break;
-				}
+				//switch (e.Key)
+				//{
+				//	case Key.Up:
+				//	case Key.Down:
+				//		_cameraVelocity.Y = 0;
+				//		break;
+				//	case Key.Left:
+				//	case Key.Right:
+				//		_cameraVelocity.X = 0;
+				//		break;
+				//}
 			}
 		}
 
@@ -226,9 +285,17 @@ namespace ASCIIWorld
 		{
 			if (HasFocus)
 			{
+				if (e.Button == MouseButton.Left)
+				{
+					Destroy((int)_mouseBlockPosition.X, (int)_mouseBlockPosition.Y);
+				}
 				if (e.Button == MouseButton.Middle)
 				{
-					_cameraMoveStart = new Vector3(InputManager.Instance.Mouse.X, InputManager.Instance.Mouse.Y, 0);
+					_cameraMoveStart = _camera.UnProject(e.X, e.Y);
+				}
+				else if (e.Button == MouseButton.Right)
+				{
+					Inspect((int)_mouseBlockPosition.X, (int)_mouseBlockPosition.Y);
 				}
 			}
 		}
@@ -241,14 +308,18 @@ namespace ASCIIWorld
 		{
 			if (HasFocus)
 			{
+				_mouseBlockPosition = _camera.UnProject(e.X, e.Y);
+
 				if (e.Mouse.IsButtonDown(MouseButton.Middle))
 				{
-					var mousePosition = new Vector3(e.X, e.Y, 0);
-					var delta = (_cameraMoveStart - mousePosition) / _camera.Projection.OrthographicSize;
+					var delta = (_cameraMoveStart - _mouseBlockPosition);
 
 					_camera.MoveBy(delta);
-					_cameraMoveStart = mousePosition;
+					_cameraMoveStart = _mouseBlockPosition;
 				}
+
+				_mouseBlockPosition.X = (float)Math.Floor(_mouseBlockPosition.X);
+				_mouseBlockPosition.Y = (float)Math.Floor(_mouseBlockPosition.Y);
 			}
 		}
 

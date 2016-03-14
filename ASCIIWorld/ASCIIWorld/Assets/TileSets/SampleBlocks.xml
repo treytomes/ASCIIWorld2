@@ -20,6 +20,11 @@
 			<TileSetContentProvider tileSet="TileSets/ASCII.xml" tileIndex="8" />
 		</Tile.source>
 	</Tile>
+	<Tile name="Dirt">
+		<Tile.source>
+			<TileSetContentProvider tileSet="TileSets/ASCII.xml" tileIndex="177" />
+		</Tile.source>
+	</Tile>
 	<Tile name="Grass">
 		<Tile.source>
 			<TileSetContentProvider tileSet="TileSets/ASCII.xml" tileIndex="176" />

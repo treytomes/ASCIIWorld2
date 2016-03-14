@@ -12,6 +12,7 @@ namespace ASCIIWorld.Data.Generation
 		private int _chunkX;
 		private int _chunkY;
 
+		private int _dirtId;
 		private int _waterId;
 		private int _sandId;
 		private int _grassId;
@@ -27,6 +28,7 @@ namespace ASCIIWorld.Data.Generation
 			_chunkX = chunkX;
 			_chunkY = chunkY;
 
+			_dirtId = blocks.Single(x => x.Value == "Dirt").Key;
 			_waterId = blocks.Single(x => x.Value == "Water").Key;
 			_sandId = blocks.Single(x => x.Value == "Sand").Key;
 			_grassId = blocks.Single(x => x.Value == "Grass").Key;
@@ -40,6 +42,7 @@ namespace ASCIIWorld.Data.Generation
 		public override Chunk Generate(IProgress<string> progress)
 		{
 			var chunk = new Chunk(Width, Height);
+			Fill(chunk, ChunkLayer.Background, _dirtId);
 			Fill(chunk, ChunkLayer.Floor, _grassId);
 
 			for (var x = 0; x < Width; x++)
@@ -50,14 +53,17 @@ namespace ASCIIWorld.Data.Generation
 					if (value < -0.5)
 					{
 						chunk[ChunkLayer.Floor, x, y] = _waterId;
+						chunk[ChunkLayer.Background, x, y] = _waterId;
 					}
 					else if (value < -0.25)
 					{
 						chunk[ChunkLayer.Floor, x, y] = _sandId;
+						chunk[ChunkLayer.Background, x, y] = _sandId;
 					}
 					else if (value > 0.5)
 					{
 						chunk[ChunkLayer.Blocking, x, y] = _stoneId;
+						chunk[ChunkLayer.Background, x, y] = _dirtId;
 					}
 				}
 			}

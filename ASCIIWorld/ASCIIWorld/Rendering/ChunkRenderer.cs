@@ -59,7 +59,7 @@ namespace ASCIIWorld.Rendering
 			{
 				for (var x = minX; x < maxX; x++)
 				{
-					if ((chunk[layer, x, y] > 0) && chunk.CanSeeSky(layer, x, y))
+					if ((chunk[layer, x, y] > 0) && chunk.CanSeeSky(_blocks, layer, x, y))
 					{
 						//var position = tessellator.WorldToScreenPoint(new Vector3(column, row, (int)layer));
 						var position = new Vector3(x, y, -1 * (int)layer);

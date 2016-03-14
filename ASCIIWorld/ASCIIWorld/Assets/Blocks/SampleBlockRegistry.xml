@@ -2,9 +2,10 @@
 <BlockRegistry>
 	<Block id="1" source="Blocks/Water.xml" />
 	<Block id="2" source="Blocks/Sand.xml" />
-	<Block id="3" source="Blocks/Grass.xml" />
-	<Block id="4" source="Blocks/Stone.xml" />
-	<Block id="5" source="Blocks/Bush.xml" />
-	<Block id="6" source="Blocks/Chest.xml" />
-	<Block id="7" source="Blocks/WoodenDoor.xml" />
+	<Block id="3" source="Blocks/Dirt.xml" />
+	<Block id="4" source="Blocks/Grass.xml" />
+	<Block id="5" source="Blocks/Stone.xml" />
+	<Block id="6" source="Blocks/Bush.xml" />
+	<Block id="7" source="Blocks/Chest.xml" />
+	<Block id="8" source="Blocks/WoodenDoor.xml" />
 </BlockRegistry>

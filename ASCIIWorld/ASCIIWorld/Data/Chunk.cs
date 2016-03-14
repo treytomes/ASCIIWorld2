@@ -1,6 +1,5 @@
 ﻿using CommonCore.Math;
 using System;
-using System.Runtime.Serialization;
 
 namespace ASCIIWorld.Data
 {
@@ -11,6 +10,12 @@ namespace ASCIIWorld.Data
 	/// </summary>
 	public class Chunk : IChunkAccess
 	{
+		#region Constants
+
+		private const int NULL_BLOCK_ID = 0;
+
+		#endregion
+
 		#region Fields
 
 		private int _width;
@@ -79,13 +84,13 @@ namespace ASCIIWorld.Data
 		/// </summary>
 		public Vector2I? FindSpawnPoint()
 		{
+			const int MAX_SPAWN_ATTEMPTS = 32;
 			var random = new Random();
-			for (var n = 0; n < 32; n++)
-			//while (true)
+			for (var n = 0; n < MAX_SPAWN_ATTEMPTS; n++)
 			{
 				var x = random.Next(0, _width);
 				var y = random.Next(0, _height);
-				if (this[ChunkLayer.Blocking, x, y] == 0)
+				if (this[ChunkLayer.Blocking, x, y] == NULL_BLOCK_ID)
 				{
 					return new Vector2I(x, y);
 				}
@@ -93,20 +98,16 @@ namespace ASCIIWorld.Data
 			return null;
 		}
 
-		public bool CanSeeSky(ChunkLayer layer, int blockX, int blockY)
+		public bool CanSeeSky(BlockRegistry blocks, ChunkLayer layer, int blockX, int blockY)
 		{
-			switch (layer)
+			if (!layer.HasLayerAbove())
 			{
-				case ChunkLayer.Ceiling:
-					return true;
-				case ChunkLayer.Blocking:
-					return this[ChunkLayer.Ceiling, blockX, blockY] == 0;
-				case ChunkLayer.Floor:
-					return CanSeeSky(ChunkLayer.Blocking, blockX, blockY) && this[ChunkLayer.Blocking, blockX, blockY] == 0;
-				case ChunkLayer.Background:
-					return CanSeeSky(ChunkLayer.Floor, blockX, blockY) && this[ChunkLayer.Floor, blockX, blockY] == 0;
-				default:
-					return false;
+				return true;
+			}
+			else
+			{
+				var layerAbove = layer.GetLayerAbove();
+				return CanSeeSky(blocks, layerAbove, blockX, blockY) && ((this[layerAbove, blockX, blockY] == NULL_BLOCK_ID) || !blocks.GetById(this[layerAbove, blockX, blockY]).IsOpaque);
 			}
 		}
 

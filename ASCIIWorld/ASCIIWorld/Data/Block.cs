@@ -1,7 +1,5 @@
 ﻿using ASCIIWorld.Rendering;
 using CommonCore;
-using GameCore;
-using System;
 using System.Collections.Generic;
 
 namespace ASCIIWorld.Data
@@ -9,7 +7,7 @@ namespace ASCIIWorld.Data
 	/// <summary>
 	/// Many Blocks make a Chunk.
 	/// </summary>
-	public class Block : IRegisteredObject
+	public class Block : IBlockAccess
 	{
 		#region Fields
 
@@ -19,7 +17,7 @@ namespace ASCIIWorld.Data
 
 		#region Constructors
 
-		public Block(string name, IBlockRenderer renderer)
+		public Block(string name, bool isOpaque, IBlockRenderer renderer)
 		{
 			Name = name;
 			Renderer = renderer;
@@ -37,6 +35,8 @@ namespace ASCIIWorld.Data
 		public int Id { get; set; }
 
 		public string Name { get; private set; }
+
+		public bool IsOpaque { get; private set; }
 
 		public IBlockRenderer Renderer { get; private set; }
 
@@ -57,12 +57,6 @@ namespace ASCIIWorld.Data
 		public void SetProperty<T>(string propertyName, T value)
 		{
 			_properties[propertyName] = value;
-		}
-
-		public Animation GetAnimation(Chunk chunk, ChunkLayer layer, int x, int y)
-		{
-			// TODO: Call this from ChunkRenderer.RenderLayer to get a reference to the animation that needs to be rendered.
-			throw new NotImplementedException();
 		}
 
 		#endregion

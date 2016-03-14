@@ -39,6 +39,14 @@ namespace GameCore.Rendering
 
 		public int Height { get; set; }
 
+		public Size Size
+		{
+			get
+			{
+				return new Size(Width, Height);
+			}
+		}
+
 		public int Left
 		{
 			get

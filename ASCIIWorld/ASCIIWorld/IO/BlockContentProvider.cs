@@ -19,11 +19,13 @@ namespace ASCIIWorld.IO
 
 			var name = blockElem.Attribute<string>("name");
 
+			var isOpaque = blockElem.HasAttribute("isOpaque") ? blockElem.Attribute<bool>("isOpaque") : true;
+
 			var tileSet = LoadTileSet(content, blockElem.Attribute<string>("tileSet"));
 			
 			var rendererElem = blockElem.Element("Block.renderer").Elements().Single();
 			var renderer = LoadRenderer(tileSet, rendererElem);
-			var tile = new Block(name, renderer);
+			var tile = new Block(name, isOpaque, renderer);
 
 			var propertiesElem = blockElem.Element("Properties");
 			if (propertiesElem != null)

@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Block name="Dirt" tileSet="TileSets/SampleBlocks.xml">
+	<Block.renderer>
+		<RegionBoundedTileStack outlineColor="#FF4C3F29" northWall="ConnectedWall_N" southWall="ConnectedWall_S" eastWall="ConnectedWall_E" westWall="ConnectedWall_W">
+			<Tile color="#FF685638" name="Solid" />
+			<Tile color="#FFA28756" name="Dirt" />
+		</RegionBoundedTileStack>
+	</Block.renderer>
+	<Properties>
+		<Property name="Friction" value="1" />
+	</Properties>
+</Block>
