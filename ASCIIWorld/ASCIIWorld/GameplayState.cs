@@ -1,6 +1,8 @@
 ﻿using ASCIIWorld.Data;
 using ASCIIWorld.Rendering;
+using ASCIIWorld.UI;
 using CommonCore;
+using CommonCore.Math;
 using GameCore;
 using GameCore.IO;
 using GameCore.Rendering;
@@ -27,11 +29,7 @@ namespace ASCIIWorld
 		#region Fields
 
 		private GLTextWriter _writer;
-		private BlockRegistry _blocks;
-		private Level _level;
-		private ChunkRenderer _chunkRenderer;
 
-		private Camera<OrthographicProjection> _camera;
 		private Camera<OrthographicProjection> _hudCamera;
 
 		// These should be moved up to the GameWindow level.
@@ -45,6 +43,10 @@ namespace ASCIIWorld
 
 		private ITessellator _tessellator;
 
+		private Button _testButton;
+
+		private WorldManager _worldManager;
+
 		#endregion
 
 		#region Constructors
@@ -54,15 +56,12 @@ namespace ASCIIWorld
 		{
 			var viewport = new Viewport(0, 0, manager.GameWindow.Width, manager.GameWindow.Height);
 
-			_blocks = blocks;
-			_level = level;
-			_chunkRenderer = new ChunkRenderer(viewport, _blocks);
-
 			_frameCount = 0;
 			_totalGameTime = TimeSpan.Zero;
 			_timer = Stopwatch.StartNew();
 
-			_camera = Camera.CreateOrthographicCamera(viewport);
+			_worldManager = new WorldManager(viewport, blocks, level);
+
 			_hudCamera = Camera.CreateOrthographicCamera(viewport);
 			_hudCamera.Projection.OrthographicSize = viewport.Height / 2;
 
@@ -111,6 +110,11 @@ namespace ASCIIWorld
 
 			_writer = new GLTextWriter();
 
+			// TODO: If the UI has mouse hover, I don't want the game world to respond to it.
+			_testButton = new Button(_hudCamera, new Vector2(0, 0), "Save");
+			_testButton.LoadContent(content);
+			_testButton.Clicked += (sender, e) => Console.WriteLine("Clicked");
+
 			InputManager.Instance.Keyboard.KeyDown += Keyboard_KeyDown;
 			InputManager.Instance.Keyboard.KeyUp += Keyboard_KeyUp;
 			InputManager.Instance.Mouse.ButtonDown += Mouse_ButtonDown;
@@ -134,7 +138,7 @@ namespace ASCIIWorld
 		public override void Resize(Viewport viewport)
 		{
 			base.Resize(viewport);
-			_camera.Resize(viewport);
+			_worldManager.Resize(viewport);
 			_hudCamera.Resize(viewport);
 		}
 
@@ -148,7 +152,8 @@ namespace ASCIIWorld
 
 			if (HasFocus)
 			{
-				_blocks.Update(elapsed);
+				_worldManager.Update(elapsed);
+				_testButton.Update(elapsed);
 			}
 			else
 			{
@@ -163,13 +168,11 @@ namespace ASCIIWorld
 			GL.ClearColor(Color.FromArgb(48, 48, 48));
 			GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
-			_camera.Apply();
-			_chunkRenderer.Render(_camera, _level);
-
-
+			_worldManager.Render();
+			
 			_tessellator.Begin(PrimitiveType.Quads);
 			_tessellator.LoadIdentity();
-			_tessellator.Translate(0, 0, -10);
+			_tessellator.Translate(0, 0, -9); // map overlay render layer
 
 			_tessellator.BindTexture(null);
 			_tessellator.BindColor(Color.FromArgb(64, Color.Black));
@@ -181,6 +184,12 @@ namespace ASCIIWorld
 			_tessellator.End();
 
 			_hudCamera.Apply();
+
+			_tessellator.LoadIdentity();
+			_tessellator.Translate(0, 0, -10); // hud render layer
+			_tessellator.Begin(PrimitiveType.Quads);
+			_testButton.Render(_tessellator);
+			_tessellator.End();
 
 			_writer.Color = Color.White;
 			_writer.Position = new Vector2(256, 256);
@@ -197,16 +206,16 @@ namespace ASCIIWorld
 		private void Destroy(int blockX, int blockY)
 		{
 			var layer = GetHighestVisibleLayer(blockX, blockY);
-			_level[layer, blockX, blockY] = 0;
+			_worldManager.Level[layer, blockX, blockY] = 0;
 		}
 
 		private void Inspect(int blockX, int blockY)
 		{
 			var layer = GetHighestVisibleLayer(blockX, blockY);
-			var blockId = _level[ChunkLayer.Ceiling, blockX, blockY];
+			var blockId = _worldManager.Level[ChunkLayer.Ceiling, blockX, blockY];
 			if (blockId > 0)
 			{
-				var block = _blocks.GetById(blockId);
+				var block = _worldManager.Blocks.GetById(blockId);
 				Console.WriteLine($"{ChunkLayer.Ceiling.GetDescription()} block name: {block.Name}");
 			}
 		}
@@ -214,19 +223,19 @@ namespace ASCIIWorld
 		// TODO: Add this to IChunkAccess.
 		private ChunkLayer GetHighestVisibleLayer(int blockX, int blockY)
 		{
-			if (_level[ChunkLayer.Ceiling, blockX, blockY] != 0)
+			if (_worldManager.Level[ChunkLayer.Ceiling, blockX, blockY] != 0)
 			{
 				return ChunkLayer.Ceiling;
 			}
-			else if (_level[ChunkLayer.Blocking, blockX, blockY] != 0)
+			else if (_worldManager.Level[ChunkLayer.Blocking, blockX, blockY] != 0)
 			{
 				return ChunkLayer.Blocking;
 			}
-			else if (_level[ChunkLayer.Floor, blockX, blockY] != 0)
+			else if (_worldManager.Level[ChunkLayer.Floor, blockX, blockY] != 0)
 			{
 				return ChunkLayer.Floor;
 			}
-			else if (_level[ChunkLayer.Background, blockX, blockY] != 0)
+			else if (_worldManager.Level[ChunkLayer.Background, blockX, blockY] != 0)
 			{
 				return ChunkLayer.Background;
 			}
@@ -291,7 +300,7 @@ namespace ASCIIWorld
 				}
 				if (e.Button == MouseButton.Middle)
 				{
-					_cameraMoveStart = _camera.UnProject(e.X, e.Y);
+					_cameraMoveStart = _worldManager.Camera.UnProject(e.X, e.Y);
 				}
 				else if (e.Button == MouseButton.Right)
 				{
@@ -308,13 +317,13 @@ namespace ASCIIWorld
 		{
 			if (HasFocus)
 			{
-				_mouseBlockPosition = _camera.UnProject(e.X, e.Y);
+				_mouseBlockPosition = _worldManager.Camera.UnProject(e.X, e.Y);
 
 				if (e.Mouse.IsButtonDown(MouseButton.Middle))
 				{
 					var delta = (_cameraMoveStart - _mouseBlockPosition);
 
-					_camera.MoveBy(delta);
+					_worldManager.Camera.MoveBy(delta);
 					_cameraMoveStart = _mouseBlockPosition;
 				}
 
@@ -325,8 +334,8 @@ namespace ASCIIWorld
 
 		private void Mouse_WheelChanged(object sender, MouseWheelEventArgs e)
 		{
-			_camera.Projection.OrthographicSize = (float)Math.Ceiling(_camera.Projection.OrthographicSize - _camera.Projection.OrthographicSize * (e.DeltaPrecise / 10));
-			_camera.Projection.OrthographicSize = (float)Math.Floor(CommonCore.Math.MathHelper.Clamp(_camera.Projection.OrthographicSize, ZOOM_MIN, ZOOM_MAX));
+			_worldManager.Camera.Projection.OrthographicSize = (float)Math.Ceiling(_worldManager.Camera.Projection.OrthographicSize - _worldManager.Camera.Projection.OrthographicSize * (e.DeltaPrecise / 10));
+			_worldManager.Camera.Projection.OrthographicSize = (float)Math.Floor(CommonCore.Math.MathHelper.Clamp(_worldManager.Camera.Projection.OrthographicSize, ZOOM_MIN, ZOOM_MAX));
 		}
 
 		#endregion
