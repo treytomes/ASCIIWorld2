@@ -49,7 +49,7 @@ namespace ASCIIWorld.Data.Generation
 			{
 				for (var y = 0; y < Height; y++)
 				{
-					var value = SimplexNoise.Generate((_chunkX * Width + x) / 64.0f, (_chunkY * Height + y) / 64.0f);
+					var value = SimplexNoise.Generate((_chunkX * Width + x) / 256.0f, (_chunkY * Height + y) / 256.0f);
 					if (value < -0.5)
 					{
 						chunk[ChunkLayer.Floor, x, y] = _waterId;

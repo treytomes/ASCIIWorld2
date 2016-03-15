@@ -30,8 +30,6 @@ namespace ASCIIWorld
 
 		private GLTextWriter _writer;
 
-		private Camera<OrthographicProjection> _hudCamera;
-
 		// These should be moved up to the GameWindow level.
 		private int _frameCount;
 		private Stopwatch _timer;
@@ -43,8 +41,7 @@ namespace ASCIIWorld
 
 		private ITessellator _tessellator;
 
-		private Button _testButton;
-
+		private UIManager _uiManager;
 		private WorldManager _worldManager;
 
 		#endregion
@@ -61,9 +58,7 @@ namespace ASCIIWorld
 			_timer = Stopwatch.StartNew();
 
 			_worldManager = new WorldManager(viewport, blocks, level);
-
-			_hudCamera = Camera.CreateOrthographicCamera(viewport);
-			_hudCamera.Projection.OrthographicSize = viewport.Height / 2;
+			_uiManager = new UIManager(viewport);
 
 			_tessellator = new VertexBufferTessellator() { Mode = VertexTessellatorMode.Render };
 		}
@@ -93,6 +88,7 @@ namespace ASCIIWorld
 					{
 						if (!IsPaused)
 						{
+							// TODO: This is verbose.  Use EnterState<PauseState>().
 							Manager.EnterState(new PauseState(Manager));
 						}
 					}
@@ -109,11 +105,7 @@ namespace ASCIIWorld
 			base.LoadContent(content);
 
 			_writer = new GLTextWriter();
-
-			// TODO: If the UI has mouse hover, I don't want the game world to respond to it.
-			_testButton = new Button(_hudCamera, new Vector2(0, 0), "Save");
-			_testButton.LoadContent(content);
-			_testButton.Clicked += (sender, e) => Console.WriteLine("Clicked");
+			_uiManager.LoadContent(content);
 
 			InputManager.Instance.Keyboard.KeyDown += Keyboard_KeyDown;
 			InputManager.Instance.Keyboard.KeyUp += Keyboard_KeyUp;
@@ -139,7 +131,7 @@ namespace ASCIIWorld
 		{
 			base.Resize(viewport);
 			_worldManager.Resize(viewport);
-			_hudCamera.Resize(viewport);
+			_uiManager.Resize(viewport);
 		}
 
 
@@ -153,7 +145,7 @@ namespace ASCIIWorld
 			if (HasFocus)
 			{
 				_worldManager.Update(elapsed);
-				_testButton.Update(elapsed);
+				_uiManager.Update(elapsed);
 			}
 			else
 			{
@@ -170,26 +162,24 @@ namespace ASCIIWorld
 
 			_worldManager.Render();
 			
-			_tessellator.Begin(PrimitiveType.Quads);
-			_tessellator.LoadIdentity();
-			_tessellator.Translate(0, 0, -9); // map overlay render layer
+			if (!_uiManager.HasMouseHover)
+			{
+				_tessellator.Begin(PrimitiveType.Quads);
+				_tessellator.LoadIdentity();
+				_tessellator.Translate(0, 0, -9); // map overlay render layer
 
-			_tessellator.BindTexture(null);
-			_tessellator.BindColor(Color.FromArgb(64, Color.Black));
-			_tessellator.AddPoint(_mouseBlockPosition.X, _mouseBlockPosition.Y);
-			_tessellator.AddPoint(_mouseBlockPosition.X, _mouseBlockPosition.Y + 1);
-			_tessellator.AddPoint(_mouseBlockPosition.X + 1, _mouseBlockPosition.Y + 1);
-			_tessellator.AddPoint(_mouseBlockPosition.X + 1, _mouseBlockPosition.Y);
+				// Render the tile selector.
+				_tessellator.BindTexture(null);
+				_tessellator.BindColor(Color.FromArgb(64, Color.Black));
+				_tessellator.AddPoint(_mouseBlockPosition.X, _mouseBlockPosition.Y);
+				_tessellator.AddPoint(_mouseBlockPosition.X, _mouseBlockPosition.Y + 1);
+				_tessellator.AddPoint(_mouseBlockPosition.X + 1, _mouseBlockPosition.Y + 1);
+				_tessellator.AddPoint(_mouseBlockPosition.X + 1, _mouseBlockPosition.Y);
 
-			_tessellator.End();
+				_tessellator.End();
+			}
 
-			_hudCamera.Apply();
-
-			_tessellator.LoadIdentity();
-			_tessellator.Translate(0, 0, -10); // hud render layer
-			_tessellator.Begin(PrimitiveType.Quads);
-			_testButton.Render(_tessellator);
-			_tessellator.End();
+			_uiManager.Render();
 
 			_writer.Color = Color.White;
 			_writer.Position = new Vector2(256, 256);
@@ -292,7 +282,7 @@ namespace ASCIIWorld
 
 		private void Mouse_ButtonDown(object sender, MouseButtonEventArgs e)
 		{
-			if (HasFocus)
+			if (HasFocus && !_uiManager.HasMouseHover)
 			{
 				if (e.Button == MouseButton.Left)
 				{

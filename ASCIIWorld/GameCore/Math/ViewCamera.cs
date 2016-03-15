@@ -1,4 +1,5 @@
 ﻿using OpenTK;
+using System.Collections.Generic;
 
 namespace GameCore.Math
 {
@@ -9,6 +10,7 @@ namespace GameCore.Math
 	{
 		#region Fields
 
+		private Stack<Matrix4> _transformStack;
 		private Matrix4 _currentTransformation;
 
 		#endregion
@@ -17,6 +19,7 @@ namespace GameCore.Math
 
 		public ViewCamera()
 		{
+			_transformStack = new Stack<Matrix4>();
 			LoadIdentity();
 		}
 
@@ -35,6 +38,16 @@ namespace GameCore.Math
 		#endregion
 
 		#region Methods
+
+		public void PushTransform()
+		{
+			_transformStack.Push(_currentTransformation);
+		}
+
+		public void PopTransform()
+		{
+			_currentTransformation = _transformStack.Pop();
+		}
 
 		public void LoadIdentity()
 		{

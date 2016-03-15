@@ -6,6 +6,9 @@ namespace GameCore.Math
 	{
 		Matrix4 Transformation { get; }
 
+		void PushTransform();
+		void PopTransform();
+
 		void LoadIdentity();
 		void Rotate(float angle, float x, float y, float z);
 		void Scale(float x, float y);
