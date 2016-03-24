@@ -19,8 +19,7 @@ namespace ASCIIWorld
 
 		private ITessellator _tessellator;
 		private Camera<OrthographicProjection> _hudCamera;
-
-		private BlockRegistry _blocks;
+		
 		private Level _level;
 		private TileSet _ascii;
 
@@ -53,11 +52,11 @@ namespace ASCIIWorld
 			_ascii = content.Load<TileSet>("TileSets/ASCII.xml");
 			
 			var progress = new Progress<string>(message => _progressMessages.Push(message));
-			_blocks = content.Load<BlockRegistry>("Blocks/SampleBlockRegistry.xml");
+			content.Load<BlockRegistry>("Blocks/SampleBlockRegistry.xml");
 
 			_loadingTask = Task.Run(() =>
 			{
-				_level = new Level(_blocks.ToDictionary());
+				_level = new Level();
 				var chunk = _level[ChunkLayer.Floor, 0, 0]; // generate the first chunk
 			}).ContinueWith(x => Thread.Sleep(100));
 		}
@@ -74,7 +73,7 @@ namespace ASCIIWorld
 
 			if (_loadingTask.IsCompleted)
 			{
-				Manager.SwitchStates(new GameplayState(Manager, _blocks, _level));
+				Manager.SwitchStates(new GameplayState(Manager, _level));
 			}
 		}
 

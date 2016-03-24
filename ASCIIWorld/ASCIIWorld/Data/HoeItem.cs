@@ -17,13 +17,13 @@ namespace ASCIIWorld.Data
 
 		#region Constructors
 
-		public HoeItem(ContentManager content, BlockRegistry blocks)
+		public HoeItem(ContentManager content)
 			: base(GenerateRenderable(content))
 		{
-
-			_dirtId = blocks.GetByName("Dirt").Id;
-			_grassId = blocks.GetByName("Grass").Id;
-			_tilledSoil = blocks.GetByName("Tilled Soil").Id;
+			// TODO: Find a better way to get id by name.
+			_dirtId = BlockRegistry.Instance.GetByName("Dirt").Id;
+			_grassId = BlockRegistry.Instance.GetByName("Grass").Id;
+			_tilledSoil = BlockRegistry.Instance.GetByName("Tilled Soil").Id;
 		}
 
 		#endregion

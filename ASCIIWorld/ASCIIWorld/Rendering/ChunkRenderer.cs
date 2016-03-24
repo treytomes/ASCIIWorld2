@@ -10,18 +10,15 @@ namespace ASCIIWorld.Rendering
 	public class ChunkRenderer
 	{
 		#region Fields
-
-		private BlockRegistry _blocks;
+		
 		private ITessellator _tessellator;
 
 		#endregion
 
 		#region Constructors
 
-		public ChunkRenderer(Viewport viewport, BlockRegistry blocks)
+		public ChunkRenderer(Viewport viewport)
 		{
-			_blocks = blocks;
-
 			_tessellator = new VertexBufferTessellator() { Mode = VertexTessellatorMode.Render };
 		}
 
@@ -59,14 +56,14 @@ namespace ASCIIWorld.Rendering
 			{
 				for (var x = minX; x < maxX; x++)
 				{
-					if ((chunk[layer, x, y] > 0) && chunk.CanSeeSky(_blocks, layer, x, y))
+					if ((chunk[layer, x, y] > 0) && chunk.CanSeeSky(layer, x, y))
 					{
 						//var position = tessellator.WorldToScreenPoint(new Vector3(column, row, (int)layer));
 						var position = new Vector3(x, y, -1 * (int)layer);
 
 						tessellator.Translate(position);
-						var id = _blocks.GetById(chunk[layer, x, y]);
-						_blocks.GetById(chunk[layer, x, y]).Renderer.Render(tessellator, chunk, layer, x, y);
+						var id = BlockRegistry.Instance.GetById(chunk[layer, x, y]);
+						BlockRegistry.Instance.GetById(chunk[layer, x, y]).Renderer.Render(tessellator, chunk, layer, x, y);
 
 						tessellator.Translate(-position);
 					}

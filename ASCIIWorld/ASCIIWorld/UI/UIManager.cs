@@ -6,7 +6,6 @@ using OpenTK;
 using OpenTK.Graphics.OpenGL;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 
 namespace ASCIIWorld.UI
@@ -14,8 +13,7 @@ namespace ASCIIWorld.UI
 	public class UIManager
 	{
 		#region Fields
-
-		private BlockRegistry _blocks;
+		
 		private Camera<OrthographicProjection> _hudCamera;
 		private ITessellator _tessellator;
 
@@ -25,9 +23,8 @@ namespace ASCIIWorld.UI
 
 		#region Constructors
 
-		public UIManager(Viewport viewport, BlockRegistry blocks)
+		public UIManager(Viewport viewport)
 		{
-			_blocks = blocks;
 			_children = new List<UIElement>();
 
 			_hudCamera = Camera.CreateOrthographicCamera(viewport);
@@ -81,7 +78,7 @@ namespace ASCIIWorld.UI
 			_children.Add(itemButton);
 			ToolbarItems.Add(itemButton);
 
-			itemButton = new ItemButton(_hudCamera, new Vector2(164 + itemButton.Bounds.Width, 100), new HoeItem(content, _blocks));
+			itemButton = new ItemButton(_hudCamera, new Vector2(164 + itemButton.Bounds.Width, 100), new HoeItem(content));
 			itemButton.LoadContent(content);
 			itemButton.Clicked += ToolbarItemButton_Clicked;
 			_children.Add(itemButton);

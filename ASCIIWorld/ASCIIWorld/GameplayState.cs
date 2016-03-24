@@ -48,7 +48,7 @@ namespace ASCIIWorld
 
 		#region Constructors
 
-		public GameplayState(GameStateManager manager, BlockRegistry blocks, Level level)
+		public GameplayState(GameStateManager manager, Level level)
 			: base(manager)
 		{
 			var viewport = new Viewport(0, 0, manager.GameWindow.Width, manager.GameWindow.Height);
@@ -57,8 +57,8 @@ namespace ASCIIWorld
 			_totalGameTime = TimeSpan.Zero;
 			_timer = Stopwatch.StartNew();
 
-			_worldManager = new WorldManager(viewport, blocks, level);
-			_uiManager = new UIManager(viewport, blocks);
+			_worldManager = new WorldManager(viewport, level);
+			_uiManager = new UIManager(viewport);
 
 			_tessellator = new VertexBufferTessellator() { Mode = VertexTessellatorMode.Render };
 		}
@@ -186,8 +186,8 @@ namespace ASCIIWorld
 			_uiManager.Render();
 
 			_writer.Color = Color.White;
-			_writer.Position = new Vector2(256, 256);
-			_writer.Write("Hello, world!");
+			//_writer.Position = new Vector2(256, 256);
+			//_writer.Write("Hello, world!");
 
 			_writer.Position = new Vector2(256, 300);
 			_writer.Write("Update FPS: {0}", _frameCount / _totalGameTime.TotalSeconds);
@@ -203,7 +203,7 @@ namespace ASCIIWorld
 			var blockId = _worldManager.Level[ChunkLayer.Ceiling, blockX, blockY];
 			if (blockId > 0)
 			{
-				var block = _worldManager.Blocks.GetById(blockId);
+				var block = BlockRegistry.Instance.GetById(blockId);
 				Console.WriteLine($"{ChunkLayer.Ceiling.GetDescription()} block name: {block.Name}");
 			}
 		}
@@ -266,8 +266,6 @@ namespace ASCIIWorld
 					{
 						_uiManager.SelectedToolbarItem.Use(_worldManager.Level, _worldManager.Level.GetHighestVisibleLayer((int)_mouseBlockPosition.X, (int)_mouseBlockPosition.Y), (int)_mouseBlockPosition.X, (int)_mouseBlockPosition.Y);
 					}
-					//Destroy((int)_mouseBlockPosition.X, (int)_mouseBlockPosition.Y);
-					//Till((int)_mouseBlockPosition.X, (int)_mouseBlockPosition.Y);
 				}
 				if (e.Button == MouseButton.Middle)
 				{

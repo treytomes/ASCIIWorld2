@@ -119,7 +119,7 @@ namespace ASCIIWorld.Data
 			return ChunkLayer.Background;
 		}
 
-		public bool CanSeeSky(BlockRegistry blocks, ChunkLayer layer, int blockX, int blockY)
+		public bool CanSeeSky(ChunkLayer layer, int blockX, int blockY)
 		{
 			if (!layer.HasLayerAbove())
 			{
@@ -128,7 +128,7 @@ namespace ASCIIWorld.Data
 			else
 			{
 				var layerAbove = layer.GetLayerAbove();
-				return CanSeeSky(blocks, layerAbove, blockX, blockY) && ((this[layerAbove, blockX, blockY] == NULL_BLOCK_ID) || !blocks.GetById(this[layerAbove, blockX, blockY]).IsOpaque);
+				return CanSeeSky(layerAbove, blockX, blockY) && ((this[layerAbove, blockX, blockY] == NULL_BLOCK_ID) || !BlockRegistry.Instance.GetById(this[layerAbove, blockX, blockY]).IsOpaque);
 			}
 		}
 

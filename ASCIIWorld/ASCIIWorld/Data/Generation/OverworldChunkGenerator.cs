@@ -22,17 +22,17 @@ namespace ASCIIWorld.Data.Generation
 
 		#region Constructors
 
-		public OverworldChunkGenerator(Dictionary<int, string> blocks, int width, int height, string seed, int chunkX, int chunkY)
+		public OverworldChunkGenerator(int width, int height, string seed, int chunkX, int chunkY)
 			: base(width, height, seed)
 		{
 			_chunkX = chunkX;
 			_chunkY = chunkY;
 
-			_dirtId = blocks.Single(x => x.Value == "Dirt").Key;
-			_waterId = blocks.Single(x => x.Value == "Water").Key;
-			_sandId = blocks.Single(x => x.Value == "Sand").Key;
-			_grassId = blocks.Single(x => x.Value == "Grass").Key;
-			_stoneId = blocks.Single(x => x.Value == "Stone").Key;
+			_dirtId = BlockRegistry.Instance.GetByName("Dirt").Id;
+			_waterId = BlockRegistry.Instance.GetByName("Water").Id;
+			_sandId = BlockRegistry.Instance.GetByName("Sand").Id;
+			_grassId = BlockRegistry.Instance.GetByName("Grass").Id;
+			_stoneId = BlockRegistry.Instance.GetByName("Stone").Id;
 		}
 
 		#endregion

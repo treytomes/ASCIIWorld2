@@ -11,7 +11,7 @@ namespace ASCIIWorld.IO
 		{
 			elem.RequireElement("BlockRegistry");
 
-			var registry = new BlockRegistry();
+			var registry = BlockRegistry.Instance;
 			foreach (var blockElem in elem.Elements("Block"))
 			{
 				var id = blockElem.Attribute<int>("id");

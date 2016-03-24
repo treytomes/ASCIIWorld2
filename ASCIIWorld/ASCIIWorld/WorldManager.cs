@@ -23,13 +23,12 @@ namespace ASCIIWorld
 
 		#region Constructors
 
-		public WorldManager(Viewport viewport, BlockRegistry blocks, Level level)
+		public WorldManager(Viewport viewport, Level level)
 		{
-			Blocks = blocks;
 			Level = level;
 
 			Camera = GameCore.Camera.CreateOrthographicCamera(viewport);
-			_chunkRenderer = new ChunkRenderer(viewport, Blocks);
+			_chunkRenderer = new ChunkRenderer(viewport);
 		}
 
 		#endregion
@@ -39,8 +38,6 @@ namespace ASCIIWorld
 		public Camera<OrthographicProjection> Camera { get; private set; }
 
 		public Level Level { get; private set; }
-
-		public BlockRegistry Blocks { get; private set; }
 
 		#endregion
 
@@ -53,7 +50,7 @@ namespace ASCIIWorld
 
 		public void Update(TimeSpan elapsed)
 		{
-			Blocks.Update(elapsed);
+			BlockRegistry.Instance.Update(elapsed);
 		}
 
 		public void Render()
