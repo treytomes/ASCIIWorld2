@@ -59,6 +59,8 @@ namespace ASCIIWorld.UI
 			}
 		}
 
+		public Label FPSLabel { get; private set; }
+
 		#endregion
 
 		#region Methods
@@ -72,21 +74,31 @@ namespace ASCIIWorld.UI
 			_children.Add(testButton);
 
 			// TODO: Find a better was to manage user items.
-			var itemButton = new ItemButton(_hudCamera, new Vector2(164, 100), new PickaxeItem(content));
+			var itemButton = new ItemButton(_hudCamera, new Vector2(0, 0), new PickaxeItem(content));
 			itemButton.LoadContent(content);
 			itemButton.Clicked += ToolbarItemButton_Clicked;
 			_children.Add(itemButton);
 			ToolbarItems.Add(itemButton);
 
-			itemButton = new ItemButton(_hudCamera, new Vector2(164 + itemButton.Bounds.Width, 100), new HoeItem(content));
+			itemButton = new ItemButton(_hudCamera, new Vector2(0, 0), new HoeItem(content));
 			itemButton.LoadContent(content);
 			itemButton.Clicked += ToolbarItemButton_Clicked;
 			_children.Add(itemButton);
 			ToolbarItems.Add(itemButton);
 
-			var label = new Label(_hudCamera, new Vector2(-300, -300), "Hello");
-			label.LoadContent(content);
-			_children.Add(label);
+			var totalWidth = ToolbarItems.Count * ToolbarItems[0].Bounds.Width;
+			var buttonX = -totalWidth / 2.0f;
+			var height = ToolbarItems[0].Bounds.Height;
+			for (var index = 0; index < ToolbarItems.Count; index++)
+			{
+				var button = ToolbarItems[index];
+				button.MoveTo(new Vector2(buttonX, _hudCamera.Projection.Bottom - height));
+				buttonX += button.Bounds.Width;
+			}
+
+			FPSLabel = new Label(_hudCamera, new Vector2(256, 300), "FPS:");
+			FPSLabel.LoadContent(content);
+			_children.Add(FPSLabel);
 		}
 
 		public void Resize(Viewport viewport)

@@ -64,6 +64,11 @@ namespace ASCIIWorld.UI
 
 		#region Methods
 
+		public void MoveTo(Vector2 position)
+		{
+			Bounds = new RectangleF(position.X, position.Y, Bounds.Width, Bounds.Height);
+		}
+
 		public virtual void LoadContent(ContentManager content)
 		{
 			ASCII = content.Load<TileSet>("TileSets/UI-ASCII.xml");

@@ -22,6 +22,8 @@ namespace ASCIIWorld.UI
 
 		#region Fields
 
+		private string _text;
+
 		#endregion
 
 		#region Constructors
@@ -39,7 +41,21 @@ namespace ASCIIWorld.UI
 
 		#region Properties
 
-		public string Text { get; private set; }
+		public string Text
+		{
+			get
+			{
+				return _text;
+			}
+			set
+			{
+				if (_text != value)
+				{
+					_text = value;
+					ResetBounds();
+				}
+			}
+		}
 
 		public Color TextColor { get; set; }
 
@@ -54,8 +70,7 @@ namespace ASCIIWorld.UI
 		public override void LoadContent(ContentManager content)
 		{
 			base.LoadContent(content);
-
-			Bounds = new RectangleF(Bounds.X, Bounds.Y, ASCII.Width * Text.Length, ASCII.Height);
+			ResetBounds();
 		}
 
 		protected override void RenderContent(ITessellator tessellator)
@@ -70,6 +85,11 @@ namespace ASCIIWorld.UI
 
 			tessellator.BindColor(TextColor);
 			ASCII.RenderText(tessellator, Text);
+		}
+
+		private void ResetBounds()
+		{
+			Bounds = new RectangleF(Bounds.X, Bounds.Y, (ASCII?.Width??0) * Text.Length, (ASCII?.Height??0));
 		}
 
 		#endregion

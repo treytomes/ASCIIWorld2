@@ -28,7 +28,7 @@ namespace ASCIIWorld
 
 		#region Fields
 
-		private GLTextWriter _writer;
+		//private GLTextWriter _writer;
 
 		// These should be moved up to the GameWindow level.
 		private int _frameCount;
@@ -104,7 +104,7 @@ namespace ASCIIWorld
 		{
 			base.LoadContent(content);
 
-			_writer = new GLTextWriter();
+			//_writer = new GLTextWriter();
 			_uiManager.LoadContent(content);
 
 			InputManager.Instance.Keyboard.KeyDown += Keyboard_KeyDown;
@@ -146,6 +146,8 @@ namespace ASCIIWorld
 			{
 				_worldManager.Update(elapsed);
 				_uiManager.Update(elapsed);
+
+				_uiManager.FPSLabel.Text = string.Format("FPS: {0:0}", _frameCount / _totalGameTime.TotalSeconds);
 			}
 			else
 			{
@@ -177,24 +179,12 @@ namespace ASCIIWorld
 				_tessellator.AddPoint(_mouseBlockPosition.X + 1, _mouseBlockPosition.Y);
 
 				//_tessellator.Scale(0.125f, 0.125f);
-				// TODO: Why do I need this line active to make the UI render correctly?
 				//_uiManager.ToolbarItems[0].Render(_tessellator);
 
 				_tessellator.End();
 			}
 
 			_uiManager.Render();
-
-			_writer.Color = Color.White;
-			//_writer.Position = new Vector2(256, 256);
-			//_writer.Write("Hello, world!");
-
-			_writer.Position = new Vector2(256, 300);
-			_writer.Write("Update FPS: {0}", _frameCount / _totalGameTime.TotalSeconds);
-			
-			_writer.Position = new Vector2(256, 320);
-			_writer.Write("Render FPS: {0}", 1.0 / (_timer.Elapsed.TotalSeconds - _lastRenderTime.TotalSeconds));
-			_lastRenderTime = _timer.Elapsed;
         }
 
 		private void Inspect(int blockX, int blockY)
