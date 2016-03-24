@@ -6,6 +6,8 @@ using CommonCore.Math;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
 
 namespace ASCIIWorld.Data
 {
@@ -14,6 +16,7 @@ namespace ASCIIWorld.Data
 	/// A Level is composed of a 2D array of Chunks, but only certain Chunks will be updated each frame.
 	/// A World is composed of many Levels, each of the same size, all stacked on top of eachother.
 	/// </summary>
+	[Serializable]
 	public class Level : IChunkAccess
 	{
 		#region Constants
@@ -37,9 +40,6 @@ namespace ASCIIWorld.Data
 		
 		private Chunk[,] _chunks;
 
-		private int _grassId;
-		private int _bushId;
-
 		#endregion
 
 		#region Constructors
@@ -47,9 +47,6 @@ namespace ASCIIWorld.Data
 		public Level()
 		{
 			_chunks = new Chunk[LEVEL_HEIGHT, LEVEL_WIDTH];
-
-			_grassId = BlockRegistry.Instance.GetByName("Grass").Id;
-			_bushId = BlockRegistry.Instance.GetByName("Bush").Id;
 		}
 
 		#endregion
@@ -122,29 +119,6 @@ namespace ASCIIWorld.Data
 			//_chunks[chunkY, chunkX] = new LabyrinthChunkGenerator(_blocks, CHUNK_WIDTH, CHUNK_HEIGHT, null).Generate(progress);
 			//_chunks[chunkY, chunkX] = new BSPDungeonChunkGenerator(_blocks, CHUNK_WIDTH, CHUNK_HEIGHT, null).Generate(progress);
 			_chunks[chunkY, chunkX] = new OverworldChunkGenerator(CHUNK_WIDTH, CHUNK_HEIGHT, null, chunkX, chunkY).Generate(progress);
-
-			// This will try to plant 16 bushes on grass areas of the chunk.
-			for (var n = 0; n < 16; n++)
-			{
-				progress.Report($"Planting bush (x{n + 1})...");
-
-				Vector2I? spawnPoint = null;
-				while ((spawnPoint = _chunks[chunkY, chunkX].FindSpawnPoint()).HasValue)
-				{
-					if (_chunks[chunkY, chunkX][ChunkLayer.Floor, spawnPoint.Value.X, spawnPoint.Value.Y] == _grassId)
-					{
-						break;
-					}
-				}
-				if (spawnPoint.HasValue)
-				{
-					_chunks[chunkY, chunkX][ChunkLayer.Blocking, spawnPoint.Value.X, spawnPoint.Value.Y] = _bushId;
-				}
-				else
-				{
-					break;
-				}
-			}
 		}
 
 		/// <summary>

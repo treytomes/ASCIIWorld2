@@ -8,6 +8,7 @@ namespace ASCIIWorld.Data
 	/// A Level is composed of a 2D array of Chunks, but only certain Chunks will be updated each frame.
 	/// A World is composed of many Levels, each of the same size, all stacked on top of eachother.
 	/// </summary>
+	[Serializable]
 	public class Chunk : IChunkAccess
 	{
 		#region Constants

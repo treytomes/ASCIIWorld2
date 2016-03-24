@@ -1,12 +1,9 @@
 ﻿using ASCIIWorld.Data;
-using ASCIIWorld.Rendering;
 using ASCIIWorld.UI;
 using CommonCore;
-using CommonCore.Math;
 using GameCore;
 using GameCore.IO;
 using GameCore.Rendering;
-using GameCore.Rendering.Text;
 using GameCore.StateManagement;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
@@ -106,6 +103,8 @@ namespace ASCIIWorld
 
 			//_writer = new GLTextWriter();
 			_uiManager.LoadContent(content);
+			_uiManager.SaveButton.Clicked += (sender, e) => _worldManager.Save("test.sav");
+			_uiManager.LoadButton.Clicked += (sender, e) => _worldManager.Load("test.sav");
 
 			InputManager.Instance.Keyboard.KeyDown += Keyboard_KeyDown;
 			InputManager.Instance.Keyboard.KeyUp += Keyboard_KeyUp;
@@ -210,20 +209,22 @@ namespace ASCIIWorld
 				{
 					case Key.Escape:
 						EnterState(new PauseState(Manager));
-						//LeaveState();
 						break;
-					//case Key.Up:
-					//	_cameraVelocity.Y = -1;
-					//	break;
-					//case Key.Down:
-					//	_cameraVelocity.Y = 1;
-					//	break;
-					//case Key.Left:
-					//	_cameraVelocity.X = -1;
-					//	break;
-					//case Key.Right:
-					//	_cameraVelocity.X = 1;
-					//	break;
+					case Key.I:
+						Console.WriteLine("Show some inventory.");
+						break;
+					case Key.Up:
+						_worldManager.Camera.MoveBy(-Vector3.UnitY);
+						break;
+					case Key.Down:
+						_worldManager.Camera.MoveBy(Vector3.UnitY);
+						break;
+					case Key.Left:
+						_worldManager.Camera.MoveBy(-Vector3.UnitX);
+						break;
+					case Key.Right:
+						_worldManager.Camera.MoveBy(Vector3.UnitX);
+						break;
 				}
 			}
 		}

@@ -61,26 +61,34 @@ namespace ASCIIWorld.UI
 
 		public Label FPSLabel { get; private set; }
 
+		public TextButton SaveButton { get; private set; }
+
+		public TextButton LoadButton { get; private set; }
+
 		#endregion
 
 		#region Methods
 
 		public void LoadContent(ContentManager content)
 		{
+			// TODO: Create a Pause menu for saving and loading.
 			// TODO: If the UI has mouse hover, I don't want the game world to respond to it.
-			var testButton = new TextButton(_hudCamera, new Vector2(100, 100), "Save");
-			testButton.LoadContent(content);
-			testButton.Clicked += (sender, e) => Console.WriteLine("Clicked");
-			_children.Add(testButton);
+			SaveButton = new TextButton(_hudCamera, new Vector2(100, 100), "Save");
+			SaveButton.LoadContent(content);
+			_children.Add(SaveButton);
+
+			LoadButton = new TextButton(_hudCamera, new Vector2(100, SaveButton.Bounds.Bottom), "Load");
+			LoadButton.LoadContent(content);
+			_children.Add(LoadButton);
 
 			// TODO: Find a better was to manage user items.
-			var itemButton = new ItemButton(_hudCamera, new Vector2(0, 0), new PickaxeItem(content));
+			var itemButton = new ItemButton(_hudCamera, Vector2.Zero, new PickaxeItem(content));
 			itemButton.LoadContent(content);
 			itemButton.Clicked += ToolbarItemButton_Clicked;
 			_children.Add(itemButton);
 			ToolbarItems.Add(itemButton);
 
-			itemButton = new ItemButton(_hudCamera, new Vector2(0, 0), new HoeItem(content));
+			itemButton = new ItemButton(_hudCamera, Vector2.Zero, new HoeItem(content));
 			itemButton.LoadContent(content);
 			itemButton.Clicked += ToolbarItemButton_Clicked;
 			_children.Add(itemButton);

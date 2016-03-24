@@ -17,6 +17,7 @@ namespace ASCIIWorld.Data.Generation
 		private int _sandId;
 		private int _grassId;
 		private int _stoneId;
+		private int _bushId;
 
 		#endregion
 
@@ -33,6 +34,7 @@ namespace ASCIIWorld.Data.Generation
 			_sandId = BlockRegistry.Instance.GetByName("Sand").Id;
 			_grassId = BlockRegistry.Instance.GetByName("Grass").Id;
 			_stoneId = BlockRegistry.Instance.GetByName("Stone").Id;
+			_bushId = BlockRegistry.Instance.GetByName("Bush").Id;
 		}
 
 		#endregion
@@ -65,6 +67,51 @@ namespace ASCIIWorld.Data.Generation
 						chunk[ChunkLayer.Blocking, x, y] = _stoneId;
 						chunk[ChunkLayer.Background, x, y] = _dirtId;
 					}
+				}
+			}
+
+			chunk = GenerateBushes(progress, chunk);
+
+			return chunk;
+		}
+
+		private Chunk GenerateBushes(IProgress<string> progress, Chunk chunk)
+		{
+			// This will try to plant 16 bushes on grass areas of the chunk.
+			for (var bushIndex = 0; bushIndex < 16; bushIndex++)
+			{
+				progress.Report($"Planting bush (x{bushIndex + 1})...");
+
+				// Try to find a spawn point.
+				Vector2I? spawnPoint = null;
+				for (var spawnCheck = 0; spawnCheck < 16; spawnCheck++)
+				{
+					spawnPoint = chunk.FindSpawnPoint();
+					if (!spawnPoint.HasValue)
+					{
+						break;
+					}
+					else
+					{
+						if (chunk[ChunkLayer.Floor, spawnPoint.Value.X, spawnPoint.Value.Y] == _grassId)
+						{
+							break;
+						}
+						else
+						{
+							spawnPoint = null;
+						}
+					}
+				}
+
+				// If a spawn point was found, plan a bush.
+				if (spawnPoint.HasValue)
+				{
+					chunk[ChunkLayer.Blocking, spawnPoint.Value.X, spawnPoint.Value.Y] = _bushId;
+				}
+				else
+				{
+					break;
 				}
 			}
 

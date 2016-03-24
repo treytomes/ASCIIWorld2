@@ -4,7 +4,9 @@ using GameCore;
 using GameCore.Rendering;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -42,6 +44,42 @@ namespace ASCIIWorld
 		#endregion
 
 		#region Methods
+
+		public void Load(string filename)
+		{
+			var fileStream = new FileStream(filename, FileMode.Open);
+			var formatter = new BinaryFormatter();
+			try
+			{
+				Level = (Level)formatter.Deserialize(fileStream);
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine(ex.Message);
+			}
+			finally
+			{
+				fileStream.Close();
+			}
+		}
+
+		public void Save(string filename)
+		{
+			var fileStream = new FileStream(filename, FileMode.Create);
+			var formatter = new BinaryFormatter();
+			try
+			{
+				formatter.Serialize(fileStream, Level);
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine(ex.Message);
+			}
+			finally
+			{
+				fileStream.Close();
+			}
+		}
 
 		public void Resize(Viewport viewport)
 		{

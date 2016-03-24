@@ -34,7 +34,7 @@ namespace ASCIIWorld.Data
 		{
 			var ascii = content.Load<TileSet>("TileSets/UI-ASCII.xml");
 			return new TileStack(new[] {
-				new Tile(ascii, Color.Brown,  196),
+				new Tile(ascii, Color.Brown,  179),
 				new Tile(ascii, Color.Gray, (int)'`')
 			});
 		}
