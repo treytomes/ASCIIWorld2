@@ -58,7 +58,7 @@ namespace ASCIIWorld
 			_timer = Stopwatch.StartNew();
 
 			_worldManager = new WorldManager(viewport, blocks, level);
-			_uiManager = new UIManager(viewport);
+			_uiManager = new UIManager(viewport, blocks);
 
 			_tessellator = new VertexBufferTessellator() { Mode = VertexTessellatorMode.Render };
 		}
@@ -161,7 +161,7 @@ namespace ASCIIWorld
 			GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
 			_worldManager.Render();
-			
+
 			if (!_uiManager.HasMouseHover)
 			{
 				_tessellator.Begin(PrimitiveType.Quads);
@@ -175,6 +175,10 @@ namespace ASCIIWorld
 				_tessellator.AddPoint(_mouseBlockPosition.X, _mouseBlockPosition.Y + 1);
 				_tessellator.AddPoint(_mouseBlockPosition.X + 1, _mouseBlockPosition.Y + 1);
 				_tessellator.AddPoint(_mouseBlockPosition.X + 1, _mouseBlockPosition.Y);
+
+				//_tessellator.Scale(0.125f, 0.125f);
+				// TODO: Why do I need this line active to make the UI render correctly?
+				//_uiManager.ToolbarItems[0].Render(_tessellator);
 
 				_tessellator.End();
 			}
@@ -193,15 +197,9 @@ namespace ASCIIWorld
 			_lastRenderTime = _timer.Elapsed;
         }
 
-		private void Destroy(int blockX, int blockY)
-		{
-			var layer = GetHighestVisibleLayer(blockX, blockY);
-			_worldManager.Level[layer, blockX, blockY] = 0;
-		}
-
 		private void Inspect(int blockX, int blockY)
 		{
-			var layer = GetHighestVisibleLayer(blockX, blockY);
+			var layer = _worldManager.Level.GetHighestVisibleLayer(blockX, blockY);
 			var blockId = _worldManager.Level[ChunkLayer.Ceiling, blockX, blockY];
 			if (blockId > 0)
 			{
@@ -210,28 +208,6 @@ namespace ASCIIWorld
 			}
 		}
 		
-		// TODO: Add this to IChunkAccess.
-		private ChunkLayer GetHighestVisibleLayer(int blockX, int blockY)
-		{
-			if (_worldManager.Level[ChunkLayer.Ceiling, blockX, blockY] != 0)
-			{
-				return ChunkLayer.Ceiling;
-			}
-			else if (_worldManager.Level[ChunkLayer.Blocking, blockX, blockY] != 0)
-			{
-				return ChunkLayer.Blocking;
-			}
-			else if (_worldManager.Level[ChunkLayer.Floor, blockX, blockY] != 0)
-			{
-				return ChunkLayer.Floor;
-			}
-			else if (_worldManager.Level[ChunkLayer.Background, blockX, blockY] != 0)
-			{
-				return ChunkLayer.Background;
-			}
-			return ChunkLayer.Background;
-		}
-
 		#endregion
 
 		#region Event Handlers
@@ -286,7 +262,12 @@ namespace ASCIIWorld
 			{
 				if (e.Button == MouseButton.Left)
 				{
-					Destroy((int)_mouseBlockPosition.X, (int)_mouseBlockPosition.Y);
+					if (_uiManager.SelectedToolbarItem != null)
+					{
+						_uiManager.SelectedToolbarItem.Use(_worldManager.Level, _worldManager.Level.GetHighestVisibleLayer((int)_mouseBlockPosition.X, (int)_mouseBlockPosition.Y), (int)_mouseBlockPosition.X, (int)_mouseBlockPosition.Y);
+					}
+					//Destroy((int)_mouseBlockPosition.X, (int)_mouseBlockPosition.Y);
+					//Till((int)_mouseBlockPosition.X, (int)_mouseBlockPosition.Y);
 				}
 				if (e.Button == MouseButton.Middle)
 				{

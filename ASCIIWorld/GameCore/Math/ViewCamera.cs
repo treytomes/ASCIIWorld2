@@ -100,7 +100,7 @@ namespace GameCore.Math
 		/// <summary>
 		/// Transform <paramref name="vector"/> according to the current matrix stack.
 		/// </summary>
-		public Vector3 WorldToScreenPoint(Vector3 vector)
+		public Vector3 Transform(Vector3 vector)
 		{
 			return Vector3.TransformPosition(vector, _currentTransformation);
 		}
@@ -108,22 +108,22 @@ namespace GameCore.Math
 		/// <summary>
 		/// Transform <paramref name="vector"/> according to the current matrix stack.
 		/// </summary>
-		public Vector2 WorldToScreenPoint(Vector2 vector)
+		public Vector2 Transform(Vector2 vector)
 		{
-			var v3 = WorldToScreenPoint(new Vector3(vector));
+			var v3 = Transform(new Vector3(vector));
 			return new Vector2(v3.X, v3.Y);
 		}
 
-		public Vector3 ScreenToWorldPoint(Vector3 vector)
-		{
-			return Vector3.TransformPosition(vector, _currentTransformation.Inverted());
-		}
+		//public Vector3 ScreenToWorldPoint(Vector3 vector)
+		//{
+		//	return Vector3.TransformPosition(vector, _currentTransformation.Inverted());
+		//}
 
-		public Vector2 ScreenToWorldPoint(Vector2 vector)
-		{
-			var v3 = ScreenToWorldPoint(new Vector3(vector));
-			return new Vector2(v3.X, v3.Y);
-		}
+		//public Vector2 ScreenToWorldPoint(Vector2 vector)
+		//{
+		//	var v3 = ScreenToWorldPoint(new Vector3(vector));
+		//	return new Vector2(v3.X, v3.Y);
+		//}
 
 		#endregion
 	}

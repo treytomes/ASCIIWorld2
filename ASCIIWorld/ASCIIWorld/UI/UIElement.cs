@@ -35,6 +35,7 @@ namespace ASCIIWorld.UI
 
 			Camera = camera;
 			HasMouseHover = false;
+			CanHaveMouseHover = true;
 
 			Bounds = new RectangleF(position.X, position.Y, 0, 0);
 
@@ -50,6 +51,8 @@ namespace ASCIIWorld.UI
 		public RectangleF Bounds { get; protected set; }
 
 		public virtual bool HasMouseHover { get; private set; }
+
+		public bool CanHaveMouseHover { get; set; }
 
 		protected Camera<OrthographicProjection> Camera { get; private set; }
 
@@ -92,8 +95,11 @@ namespace ASCIIWorld.UI
 
 		private void UpdateMouseStatus(MouseEventArgs e)
 		{
-			var mousePosition = Camera.UnProject(e.X, e.Y);
-			HasMouseHover = Bounds.Contains(mousePosition.X, mousePosition.Y);
+			if (CanHaveMouseHover)
+			{
+				var mousePosition = Camera.UnProject(e.X, e.Y);
+				HasMouseHover = Bounds.Contains(mousePosition.X, mousePosition.Y);
+			}
 		}
 
 		/// <summary>
@@ -115,6 +121,39 @@ namespace ASCIIWorld.UI
 			tessellator.PopTransform();
 		}
 
+		protected virtual Color ModifyColorByState(Color color)
+		{
+			var hue = color.GetHue();
+			var saturation = color.GetSaturation();
+			var brightness = color.GetBrightness();
+
+			if (ClickStarted)
+			{
+				brightness *= 0.5f;
+			}
+			if (HasMouseHover)
+			{
+				brightness *= 1.5f;
+			}
+
+			return ColorHelper.FromAHSB(color.A, hue, saturation, brightness);
+		}
+
+		/// <summary>
+		/// Calculate a scale according to the current position.
+		/// </summary>
+		/// <remarks>
+		/// This assumes you are inside of RenderContent, and handles pushing and popping the current transformation accordingly.
+		/// </remarks>
+		protected void Scale(ITessellator tessellator, float scale)
+		{
+			var position = tessellator.Transform(Vector2.Zero);
+			tessellator.PopTransform();
+			tessellator.PushTransform();
+			tessellator.Scale(scale, scale);
+			tessellator.Translate(position);
+		}
+
 		#endregion
 
 		#region Event Handlers
@@ -124,12 +163,12 @@ namespace ASCIIWorld.UI
 			UpdateMouseStatus(e);
 			if (HasMouseHover && (e.Button == MouseButton.Left) && ClickStarted)
 			{
-				ClickStarted = false;
 				if (Clicked != null)
 				{
 					Clicked(this, EventArgs.Empty);
 				}
 			}
+			ClickStarted = false;
 		}
 
 		private void Mouse_ButtonDown(object sender, MouseButtonEventArgs e)

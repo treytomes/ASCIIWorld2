@@ -1,10 +1,12 @@
-﻿using GameCore;
+﻿using ASCIIWorld.Data;
+using GameCore;
 using GameCore.IO;
 using GameCore.Rendering;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 
 namespace ASCIIWorld.UI
@@ -13,6 +15,7 @@ namespace ASCIIWorld.UI
 	{
 		#region Fields
 
+		private BlockRegistry _blocks;
 		private Camera<OrthographicProjection> _hudCamera;
 		private ITessellator _tessellator;
 
@@ -22,14 +25,18 @@ namespace ASCIIWorld.UI
 
 		#region Constructors
 
-		public UIManager(Viewport viewport)
+		public UIManager(Viewport viewport, BlockRegistry blocks)
 		{
+			_blocks = blocks;
 			_children = new List<UIElement>();
 
 			_hudCamera = Camera.CreateOrthographicCamera(viewport);
 			_hudCamera.Projection.OrthographicSize = viewport.Height / 2;
 
+			//_tessellator = new ImmediateModeTessellator();
 			_tessellator = new VertexBufferTessellator() { Mode = VertexTessellatorMode.Render };
+
+			ToolbarItems = new List<ItemButton>();
 		}
 
 		#endregion
@@ -44,6 +51,17 @@ namespace ASCIIWorld.UI
 			}
 		}
 
+		// TODO: Need a better way of managing inventory.
+		public List<ItemButton> ToolbarItems { get; private set; }
+
+		public Item SelectedToolbarItem
+		{
+			get
+			{
+				return ToolbarItems.Where(x => x.IsSelected).DefaultIfEmpty(null).FirstOrDefault()?.Renderable;
+			}
+		}
+
 		#endregion
 
 		#region Methods
@@ -51,10 +69,23 @@ namespace ASCIIWorld.UI
 		public void LoadContent(ContentManager content)
 		{
 			// TODO: If the UI has mouse hover, I don't want the game world to respond to it.
-			var testButton = new Button(_hudCamera, new Vector2(100, 100), "Save");
+			var testButton = new TextButton(_hudCamera, new Vector2(100, 100), "Save");
 			testButton.LoadContent(content);
 			testButton.Clicked += (sender, e) => Console.WriteLine("Clicked");
 			_children.Add(testButton);
+
+			// TODO: Find a better was to manage user items.
+			var itemButton = new ItemButton(_hudCamera, new Vector2(164, 100), new PickaxeItem(content));
+			itemButton.LoadContent(content);
+			itemButton.Clicked += ToolbarItemButton_Clicked;
+			_children.Add(itemButton);
+			ToolbarItems.Add(itemButton);
+
+			itemButton = new ItemButton(_hudCamera, new Vector2(164 + itemButton.Bounds.Width, 100), new HoeItem(content, _blocks));
+			itemButton.LoadContent(content);
+			itemButton.Clicked += ToolbarItemButton_Clicked;
+			_children.Add(itemButton);
+			ToolbarItems.Add(itemButton);
 
 			var label = new Label(_hudCamera, new Vector2(-300, -300), "Hello");
 			label.LoadContent(content);
@@ -88,6 +119,22 @@ namespace ASCIIWorld.UI
 			}
 
 			_tessellator.End();
+		}
+
+		#endregion
+
+		#region Event Handlers
+
+		private void ToolbarItemButton_Clicked(object sender, EventArgs e)
+		{
+			foreach (var btn in ToolbarItems)
+			{
+				if (!btn.Equals(sender))
+				{
+					btn.IsSelected = false;
+				}
+			}
+			(sender as ItemButton).IsSelected = !(sender as ItemButton).IsSelected;
 		}
 
 		#endregion

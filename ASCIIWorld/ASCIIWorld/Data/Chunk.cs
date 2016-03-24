@@ -98,6 +98,27 @@ namespace ASCIIWorld.Data
 			return null;
 		}
 
+		public ChunkLayer GetHighestVisibleLayer(int blockX, int blockY)
+		{
+			if (this[ChunkLayer.Ceiling, blockX, blockY] != 0)
+			{
+				return ChunkLayer.Ceiling;
+			}
+			else if (this[ChunkLayer.Blocking, blockX, blockY] != 0)
+			{
+				return ChunkLayer.Blocking;
+			}
+			else if (this[ChunkLayer.Floor, blockX, blockY] != 0)
+			{
+				return ChunkLayer.Floor;
+			}
+			else if (this[ChunkLayer.Background, blockX, blockY] != 0)
+			{
+				return ChunkLayer.Background;
+			}
+			return ChunkLayer.Background;
+		}
+
 		public bool CanSeeSky(BlockRegistry blocks, ChunkLayer layer, int blockX, int blockY)
 		{
 			if (!layer.HasLayerAbove())

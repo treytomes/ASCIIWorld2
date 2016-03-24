@@ -1,5 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <AtlasTileSet>
+	<Tile name="TilledSoil">
+		<Tile.source>
+			<TileSetContentProvider tileSet="TileSets/ASCII.xml" tileIndex="205" />
+		</Tile.source>
+	</Tile>
 	<Tile name="Solid">
 		<Tile.source>
 			<TileSetContentProvider tileSet="TileSets/ASCII.xml" tileIndex="219" />

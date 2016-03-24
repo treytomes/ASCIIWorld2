@@ -1,5 +1,4 @@
 ﻿using ASCIIWorld.Data;
-using GameCore.IO;
 using GameCore.Rendering;
 using OpenTK;
 using System;
@@ -66,9 +65,13 @@ namespace ASCIIWorld.Rendering
 		public void Render(ITessellator tessellator)
 		{
 			// This will cause tile images to become darker as they move into the background layers.
-			var layer =  -tessellator.WorldToScreenPoint(Vector3.Zero).Z;
-			var multiplier = 1.0 - (_numChunkLayers - layer) / (_numChunkLayers * 2) + 0.25f;
-			var color = Color.FromArgb((int)(Color.R * multiplier), (int)(Color.G * multiplier), (int)(Color.B * multiplier));
+			var layer =  -tessellator.Transform(Vector3.Zero).Z;
+			var color = Color;
+			if (layer < _numChunkLayers)
+			{
+				var multiplier = 1.0 - (_numChunkLayers - layer) / (_numChunkLayers * 2) + 0.25f;
+				color = Color.FromArgb((int)(color.R * multiplier), (int)(color.G * multiplier), (int)(color.B * multiplier));
+			}
 
 			tessellator.BindColor(color);
 			_tileSet.Render(tessellator, TileIndex);

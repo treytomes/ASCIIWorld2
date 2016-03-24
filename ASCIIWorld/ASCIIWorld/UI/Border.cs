@@ -3,7 +3,6 @@ using GameCore.IO;
 using GameCore.Rendering;
 using OpenTK;
 using System.Drawing;
-using System;
 
 namespace ASCIIWorld.UI
 {
@@ -11,7 +10,8 @@ namespace ASCIIWorld.UI
 	{
 		#region Constants
 
-		private static readonly Color COLOR_BACKGROUND = Color.FromArgb(64, Color.Black);
+		private const int BACKGROUND_OPACITY = 255;
+		private static readonly Color COLOR_BACKGROUND = Color.FromArgb(BACKGROUND_OPACITY, Color.Black);
 		private static readonly Color COLOR_BORDER = Color.Blue;
 
 		private const int ASCII_DOUBLELINE_TOPLEFT = 201;
@@ -34,8 +34,8 @@ namespace ASCIIWorld.UI
 
 		#region Fields
 
-		private readonly int _tileWidth;
-		private readonly int _tileHeight;
+		private int _tileWidth;
+		private int _tileHeight;
 
 		#endregion
 
@@ -70,6 +70,13 @@ namespace ASCIIWorld.UI
 			Bounds = new RectangleF(Bounds.X, Bounds.Y, ASCII.Width * _tileWidth, ASCII.Height * _tileHeight);
 		}
 
+		public void Resize(int tileWidth, int tileHeight)
+		{
+			_tileWidth = tileWidth;
+			_tileHeight = tileHeight;
+			Bounds = new RectangleF(Bounds.X, Bounds.Y, ASCII.Width * _tileWidth, ASCII.Height * _tileHeight);
+		}
+
 		protected override void RenderContent(ITessellator tessellator)
 		{
 			RenderRectangle(tessellator, BackgroundColor, _tileWidth, _tileHeight);
@@ -87,7 +94,7 @@ namespace ASCIIWorld.UI
 			tessellator.Translate(ASCII.Width, 0);
 			ASCII.Render(tessellator, DOUBLELINED ? ASCII_DOUBLELINE_TOPRIGHT : ASCII_SINGLELINE_TOPRIGHT);
 
-			tessellator.Translate(0, ASCII.Height * 2);
+			tessellator.Translate(0, ASCII.Height * (_tileHeight - 1));
 			ASCII.Render(tessellator, DOUBLELINED ? ASCII_DOUBLELINE_BOTTOMRIGHT : ASCII_SINGLELINE_BOTTOMRIGHT);
 
 			for (var n = 0; n < _tileWidth - 2; n++)
@@ -99,11 +106,18 @@ namespace ASCIIWorld.UI
 			tessellator.Translate(-ASCII.Width, 0);
 			ASCII.Render(tessellator, DOUBLELINED ? ASCII_DOUBLELINE_BOTTOMLEFT : ASCII_SINGLELINE_BOTTOMLEFT);
 
-			tessellator.Translate(0, -ASCII.Height);
-			ASCII.Render(tessellator, DOUBLELINED ? ASCII_DOUBLELINE_VERTICAL : ASCII_SINGLELINE_VERTICAL); // left
+			for (var n = 0; n < _tileHeight - 2; n++)
+			{
+				tessellator.Translate(0, -ASCII.Height);
+				ASCII.Render(tessellator, DOUBLELINED ? ASCII_DOUBLELINE_VERTICAL : ASCII_SINGLELINE_VERTICAL); // left
+			}
 
 			tessellator.Translate(ASCII.Width * (_tileWidth - 1), 0);
-			ASCII.Render(tessellator, DOUBLELINED ? ASCII_DOUBLELINE_VERTICAL : ASCII_SINGLELINE_VERTICAL); // right
+			for (var n = 0; n < _tileHeight - 2; n++)
+			{
+				ASCII.Render(tessellator, DOUBLELINED ? ASCII_DOUBLELINE_VERTICAL : ASCII_SINGLELINE_VERTICAL); // right
+				tessellator.Translate(0, ASCII.Height);
+			}
 		}
 
 		#endregion

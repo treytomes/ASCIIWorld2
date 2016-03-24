@@ -132,7 +132,7 @@ namespace GameCore.Rendering
 
 		public void AddPoint(float x, float y, float z, float u, float v)
 		{
-			var position = WorldToScreenPoint(new Vector3(x, y, z));
+			var position = Transform(new Vector3(x, y, z));
 			AddTransformedPoint(position, u, v);
 		}
 

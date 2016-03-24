@@ -23,10 +23,10 @@ namespace GameCore.Math
 		/// </summary>
 		void Apply(Matrix4 matrix);
 
-		Vector3 WorldToScreenPoint(Vector3 vector);
-		Vector2 WorldToScreenPoint(Vector2 vector);
+		Vector3 Transform(Vector3 vector);
+		Vector2 Transform(Vector2 vector);
 
-		Vector3 ScreenToWorldPoint(Vector3 vector);
-		Vector2 ScreenToWorldPoint(Vector2 vector);
+		//Vector3 ScreenToWorldPoint(Vector3 vector);
+		//Vector2 ScreenToWorldPoint(Vector2 vector);
 	}
 }

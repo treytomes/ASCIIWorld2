@@ -5,14 +5,14 @@ namespace GameCore.Rendering
 {
 	public class ColorHelper
 	{
-		public static Color ColorFromAHSB(int alpha, float hue, float saturation, float brightness)
+		public static Color FromAHSB(int alpha, float hue, float saturation, float brightness)
 		{
 			if (alpha < 0) alpha = 0;
 			if (hue < 0) hue = 0;
 			if (saturation < 0) saturation = 0;
 			if (brightness < 0) brightness = 0;
 			if (alpha > 255) alpha = 255;
-			if (hue > 1) hue = 1;
+			if (hue >= 360) hue = 360.0f;
 			if (saturation > 1) saturation = 1;
 			if (brightness > 1) brightness = 1;
 
@@ -73,6 +73,7 @@ namespace GameCore.Rendering
 			}
 		}
 
+		// TODO: Remove this?  It seems redundant.
 		public static int ToArgb(Color color)
 		{
 			return (color.A << 24) + (color.R << 0) + (color.G << 8) + (color.B << 16);

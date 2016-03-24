@@ -1,6 +1,5 @@
 ﻿using ASCIIWorld.Data;
 using GameCore.Rendering;
-using OpenTK;
 using System;
 using System.Collections.Generic;
 using System.Linq;

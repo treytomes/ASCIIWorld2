@@ -102,7 +102,7 @@ namespace GameCore.Rendering
 
 		public void RenderText(ITessellator tessellator, string format, params object[] args)
 		{
-			Vector2 unitX = tessellator.WorldToScreenPoint(Vector2.UnitX * (IsNormalized ? 1 : Width)) - tessellator.WorldToScreenPoint(Vector2.Zero);
+			Vector2 unitX = tessellator.Transform(Vector2.UnitX * (IsNormalized ? 1 : Width)) - tessellator.Transform(Vector2.Zero);
 
 			format = string.Format(format, args);
 			for (var index = 0; index < format.Length; index++)

@@ -98,6 +98,14 @@ namespace ASCIIWorld.Data
 
 		#region Methods
 
+		public ChunkLayer GetHighestVisibleLayer(int blockX, int blockY)
+		{
+			var chunk = GetChunk(blockX, blockY);
+			var chunkX = (int)MathHelper.Modulo(blockX, CHUNK_WIDTH);
+			var chunkY = (int)MathHelper.Modulo(blockY, CHUNK_HEIGHT);
+			return chunk.GetHighestVisibleLayer(chunkX, chunkY);
+		}
+
 		public bool CanSeeSky(BlockRegistry blocks, ChunkLayer layer, int blockX, int blockY)
 		{
 			var chunk = GetChunk(blockX, blockY);

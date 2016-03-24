@@ -94,7 +94,10 @@
     <Compile Include="Data\IBlockAccess.cs" />
     <Compile Include="Data\IBlockRegistryAccess.cs" />
     <Compile Include="Data\IChunkAccess.cs" />
+    <Compile Include="Data\Item.cs" />
     <Compile Include="Data\Level.cs" />
+    <Compile Include="Data\HoeItem.cs" />
+    <Compile Include="Data\PickaxeItem.cs" />
     <Compile Include="IO\BlockRegistryContentProvider.cs" />
     <Compile Include="Rendering\Animation.cs" />
     <Compile Include="Data\Block.cs" />
@@ -119,8 +122,11 @@
     <Compile Include="ScriptManager.xaml.cs">
       <DependentUpon>ScriptManager.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UI\BaseButton.cs" />
     <Compile Include="UI\Border.cs" />
-    <Compile Include="UI\Button.cs" />
+    <Compile Include="UI\IconButton.cs" />
+    <Compile Include="UI\ItemButton.cs" />
+    <Compile Include="UI\TextButton.cs" />
     <Compile Include="UI\Label.cs" />
     <Compile Include="UI\UIElement.cs" />
     <Compile Include="UI\UIManager.cs" />
@@ -233,6 +239,11 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\TileSets\UI-ASCII.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Assets\Blocks\TilledSoil.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
