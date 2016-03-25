@@ -2,6 +2,7 @@
 using GameCore.Rendering;
 using System.Drawing;
 using ASCIIWorld.Rendering;
+using OpenTK;
 
 namespace ASCIIWorld.Data
 {
@@ -20,10 +21,9 @@ namespace ASCIIWorld.Data
 		public HoeItem(ContentManager content)
 			: base(GenerateRenderable(content))
 		{
-			// TODO: Find a better way to get id by name.
-			_dirtId = BlockRegistry.Instance.GetByName("Dirt").Id;
-			_grassId = BlockRegistry.Instance.GetByName("Grass").Id;
-			_tilledSoil = BlockRegistry.Instance.GetByName("Tilled Soil").Id;
+			_dirtId = BlockRegistry.Instance.GetId("Dirt");
+			_grassId = BlockRegistry.Instance.GetId("Grass");
+			_tilledSoil = BlockRegistry.Instance.GetId("Tilled Soil");
 		}
 
 		#endregion
@@ -33,11 +33,15 @@ namespace ASCIIWorld.Data
 		public static IRenderable GenerateRenderable(ContentManager content)
 		{
 			var ascii = content.Load<TileSet>("TileSets/UI-ASCII.xml");
-			return new TileStack(new[] {
-				new Tile(ascii, Color.Brown,  179),
-				new Tile(ascii, Color.Gray, (int)'`')
-			});
+
+			var rod = new Tile(ascii, Color.Brown, 179);
+			var head = new Tile(ascii, Color.Gray, (int)'`');
+			head.Transform = Transformer.New().SetTranslation(23, -4).SetRotation(90).SetMirrorY(true).Build();
+
+			return new TileStack(new[] { rod, head });
 		}
+
+		// TODO: I can make farmland; now I need something to plant.
 
 		/// <summary>
 		/// You can only till dirt or grass.
@@ -51,6 +55,11 @@ namespace ASCIIWorld.Data
 			{
 				chunk[layer, blockX, blockY] = _tilledSoil;
 			}
+		}
+
+		public override void Render(ITessellator tessellator)
+		{
+			base.Render(tessellator);
 		}
 
 		#endregion

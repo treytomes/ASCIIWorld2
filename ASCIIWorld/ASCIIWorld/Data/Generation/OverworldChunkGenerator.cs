@@ -29,12 +29,12 @@ namespace ASCIIWorld.Data.Generation
 			_chunkX = chunkX;
 			_chunkY = chunkY;
 
-			_dirtId = BlockRegistry.Instance.GetByName("Dirt").Id;
-			_waterId = BlockRegistry.Instance.GetByName("Water").Id;
-			_sandId = BlockRegistry.Instance.GetByName("Sand").Id;
-			_grassId = BlockRegistry.Instance.GetByName("Grass").Id;
-			_stoneId = BlockRegistry.Instance.GetByName("Stone").Id;
-			_bushId = BlockRegistry.Instance.GetByName("Bush").Id;
+			_dirtId = BlockRegistry.Instance.GetId("Dirt");
+			_waterId = BlockRegistry.Instance.GetId("Water");
+			_sandId = BlockRegistry.Instance.GetId("Sand");
+			_grassId = BlockRegistry.Instance.GetId("Grass");
+			_stoneId = BlockRegistry.Instance.GetId("Stone");
+			_bushId = BlockRegistry.Instance.GetId("Bush");
 		}
 
 		#endregion

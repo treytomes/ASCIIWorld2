@@ -1,6 +1,5 @@
 ﻿using ASCIIWorld.Rendering;
 using GameCore.Rendering;
-using System.Drawing;
 
 namespace ASCIIWorld.Data
 {
@@ -36,7 +35,7 @@ namespace ASCIIWorld.Data
 
 		// TODO: public virtual void Use(Entity entity) { }
 
-		public void Render(ITessellator tessellator)
+		public virtual void Render(ITessellator tessellator)
 		{
 			_renderable.Render(tessellator);
 		}

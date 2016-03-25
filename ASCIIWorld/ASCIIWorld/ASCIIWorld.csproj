@@ -119,6 +119,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="Rendering\ChunkRenderer.cs" />
+    <Compile Include="Rendering\Transformer.cs" />
     <Compile Include="ScriptManager.xaml.cs">
       <DependentUpon>ScriptManager.xaml</DependentUpon>
     </Compile>

@@ -54,6 +54,8 @@ namespace ASCIIWorld.Rendering
 
 		public int TileIndex { get; private set; }
 
+		public Transformer Transform { get; set; }
+
 		#endregion
 
 		#region Methods
@@ -74,7 +76,19 @@ namespace ASCIIWorld.Rendering
 			}
 
 			tessellator.BindColor(color);
-			_tileSet.Render(tessellator, TileIndex);
+
+			if (Transform != null)
+			{
+				tessellator.PushTransform();
+				Transform.Apply(tessellator);
+
+				_tileSet.Render(tessellator, TileIndex, Transform.MirrorX, Transform.MirrorY);
+				tessellator.PopTransform();
+			}
+			else
+			{
+				_tileSet.Render(tessellator, TileIndex);
+			}
 		}
 
 		public void Render(ITessellator tessellator, IChunkAccess chunk, ChunkLayer layer, int x, int y)

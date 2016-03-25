@@ -3,12 +3,8 @@ using ASCIIWorld.Rendering;
 using GameCore;
 using GameCore.Rendering;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ASCIIWorld
 {
@@ -52,6 +48,7 @@ namespace ASCIIWorld
 			try
 			{
 				Level = (Level)formatter.Deserialize(fileStream);
+				Console.WriteLine($"Loaded from '{filename}'.");
 			}
 			catch (Exception ex)
 			{
@@ -70,6 +67,7 @@ namespace ASCIIWorld
 			try
 			{
 				formatter.Serialize(fileStream, Level);
+				Console.WriteLine($"Saved to '{filename}'.");
 			}
 			catch (Exception ex)
 			{

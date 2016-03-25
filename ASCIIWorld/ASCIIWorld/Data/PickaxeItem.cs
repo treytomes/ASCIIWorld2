@@ -22,10 +22,10 @@ namespace ASCIIWorld.Data
 		public static IRenderable GenerateRenderable(ContentManager content)
 		{
 			var ascii = content.Load<TileSet>("TileSets/UI-ASCII.xml");
-			return new TileStack(new[] {
-				new Tile(ascii, Color.Brown,  196),
-				new Tile(ascii, Color.Gray, (int)'(')
-			});
+			var rod = new Tile(ascii, Color.Brown, 196);
+			var head = new Tile(ascii, Color.Gray, (int)'(');
+			head.Transform = Transformer.New().SetTranslation(-2, 1).Build();
+			return new TileStack(new[] { rod, head });
 		}
 
 		public override void Use(IChunkAccess chunk, ChunkLayer layer, int blockX, int blockY)
