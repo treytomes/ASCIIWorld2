@@ -133,7 +133,6 @@ namespace ASCIIWorld
 			_uiManager.Resize(viewport);
 		}
 
-
 		public override void Update(TimeSpan elapsed)
 		{
 			base.Update(elapsed);
@@ -172,13 +171,18 @@ namespace ASCIIWorld
 				// Render the tile selector.
 				_tessellator.BindTexture(null);
 				_tessellator.BindColor(Color.FromArgb(64, Color.Black));
-				_tessellator.AddPoint(_mouseBlockPosition.X, _mouseBlockPosition.Y);
-				_tessellator.AddPoint(_mouseBlockPosition.X, _mouseBlockPosition.Y + 1);
-				_tessellator.AddPoint(_mouseBlockPosition.X + 1, _mouseBlockPosition.Y + 1);
-				_tessellator.AddPoint(_mouseBlockPosition.X + 1, _mouseBlockPosition.Y);
 
-				//_tessellator.Scale(0.125f, 0.125f);
-				//_uiManager.ToolbarItems[0].Render(_tessellator);
+				_tessellator.Translate(_mouseBlockPosition.X, _mouseBlockPosition.Y);
+				_tessellator.AddPoint(0, 0);
+				_tessellator.AddPoint(0, 1);
+				_tessellator.AddPoint(1, 1);
+				_tessellator.AddPoint(1, 0);
+
+				if (_uiManager.SelectedToolbarItem != null)
+				{
+					_tessellator.BindColor(Color.FromArgb(128, Color.White));
+					_uiManager.SelectedToolbarItem.Render(_tessellator);
+				}
 
 				_tessellator.End();
 			}
@@ -189,11 +193,11 @@ namespace ASCIIWorld
 		private void Inspect(int blockX, int blockY)
 		{
 			var layer = _worldManager.Level.GetHighestVisibleLayer(blockX, blockY);
-			var blockId = _worldManager.Level[ChunkLayer.Ceiling, blockX, blockY];
+			var blockId = _worldManager.Level[layer, blockX, blockY];
 			if (blockId > 0)
 			{
 				var block = BlockRegistry.Instance.GetById(blockId);
-				Console.WriteLine($"{ChunkLayer.Ceiling.GetDescription()} block name: {block.Name}");
+				Console.WriteLine($"You found a {block.Name} on the {layer.GetDescription()} layer: {block.Description}");
 			}
 		}
 		

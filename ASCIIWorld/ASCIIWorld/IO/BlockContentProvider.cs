@@ -13,11 +13,19 @@ namespace ASCIIWorld.IO
 {
 	public class BlockContentProvider : XmlBasedContentProvider<Block>
 	{
+		private const string DEFAULT_DESCRIPTION = "// TODO: Describe me!";
+			
 		public override Block Parse(ContentManager content, XElement blockElem)
 		{
 			blockElem.RequireElement("Block");
 
 			var name = blockElem.Attribute<string>("name");
+
+			var description = DEFAULT_DESCRIPTION;
+			if (blockElem.HasAttribute("description"))
+			{
+				description = blockElem.Attribute<string>("description");
+			}
 
 			var isOpaque = blockElem.HasAttribute("isOpaque") ? blockElem.Attribute<bool>("isOpaque") : true;
 
@@ -25,7 +33,7 @@ namespace ASCIIWorld.IO
 			
 			var rendererElem = blockElem.Element("Block.renderer").Elements().Single();
 			var renderer = LoadRenderer(tileSet, rendererElem);
-			var tile = new Block(name, isOpaque, renderer);
+			var block = new Block(name, isOpaque, renderer, description);
 
 			var propertiesElem = blockElem.Element("Properties");
 			if (propertiesElem != null)
@@ -37,11 +45,11 @@ namespace ASCIIWorld.IO
 
 				foreach (var property in properties)
 				{
-					tile.SetProperty(property.Key, property.Value);
+					block.SetProperty(property.Key, property.Value);
 				}
 			}
 
-			return tile;
+			return block;
 		}
 
 		private IBlockRenderer LoadRenderer(TileSet tileSet, XElement rendererElem)
@@ -117,15 +125,15 @@ namespace ASCIIWorld.IO
 
 			if (tileElem.HasAttribute("tileIndex"))
 			{
-				return new Tile(tileSet, color, tileElem.Attribute<int>("tileIndex"));
+				return new Tile(tileSet, tileElem.Attribute<int>("tileIndex"));
 			}
 			else if (tileElem.HasAttribute("name"))
 			{
-				return new Tile(tileSet, color, tileElem.Attribute<string>("name"));
+				return new Tile(tileSet, tileElem.Attribute<string>("name"));
 			}
 			else if (tileElem.HasAttribute("char"))
 			{
-				return new Tile(tileSet, color, tileElem.Attribute<char>("char"));
+				return new Tile(tileSet, tileElem.Attribute<char>("char"));
 			}
 			else
 			{

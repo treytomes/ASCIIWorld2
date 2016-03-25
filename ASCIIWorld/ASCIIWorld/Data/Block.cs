@@ -17,10 +17,11 @@ namespace ASCIIWorld.Data
 
 		#region Constructors
 
-		public Block(string name, bool isOpaque, IBlockRenderer renderer)
+		public Block(string name, bool isOpaque, IBlockRenderer renderer, string description)
 		{
 			Name = name;
 			Renderer = renderer;
+			Description = description;
 
 			_properties = new Dictionary<string, object>();
 		}
@@ -35,6 +36,8 @@ namespace ASCIIWorld.Data
 		public int Id { get; set; }
 
 		public string Name { get; private set; }
+
+		public string Description { get; private set; }
 
 		public bool IsOpaque { get; private set; }
 
@@ -57,6 +60,18 @@ namespace ASCIIWorld.Data
 		public void SetProperty<T>(string propertyName, T value)
 		{
 			_properties[propertyName] = value;
+		}
+
+		public override string ToString()
+		{
+			if (!string.IsNullOrWhiteSpace(Description))
+			{
+				return $"{Name}: {Description}";
+			}
+			else
+			{
+				return $"{Name}";
+			}
 		}
 
 		#endregion

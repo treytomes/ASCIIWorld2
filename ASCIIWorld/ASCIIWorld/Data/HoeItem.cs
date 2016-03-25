@@ -1,8 +1,6 @@
 ﻿using GameCore.IO;
 using GameCore.Rendering;
-using System.Drawing;
 using ASCIIWorld.Rendering;
-using OpenTK;
 
 namespace ASCIIWorld.Data
 {
@@ -19,7 +17,7 @@ namespace ASCIIWorld.Data
 		#region Constructors
 
 		public HoeItem(ContentManager content)
-			: base(GenerateRenderable(content))
+			: base(new Tile(content.Load<AtlasTileSet>("TileSets/SampleBlocks.xml"), "Hoe"))
 		{
 			_dirtId = BlockRegistry.Instance.GetId("Dirt");
 			_grassId = BlockRegistry.Instance.GetId("Grass");
@@ -29,17 +27,6 @@ namespace ASCIIWorld.Data
 		#endregion
 
 		#region Methods
-
-		public static IRenderable GenerateRenderable(ContentManager content)
-		{
-			var ascii = content.Load<TileSet>("TileSets/UI-ASCII.xml");
-
-			var rod = new Tile(ascii, Color.Brown, 179);
-			var head = new Tile(ascii, Color.Gray, (int)'`');
-			head.Transform = Transformer.New().SetTranslation(23, -4).SetRotation(90).SetMirrorY(true).Build();
-
-			return new TileStack(new[] { rod, head });
-		}
 
 		// TODO: I can make farmland; now I need something to plant.
 
@@ -55,11 +42,6 @@ namespace ASCIIWorld.Data
 			{
 				chunk[layer, blockX, blockY] = _tilledSoil;
 			}
-		}
-
-		public override void Render(ITessellator tessellator)
-		{
-			base.Render(tessellator);
 		}
 
 		#endregion

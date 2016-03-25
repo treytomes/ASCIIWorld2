@@ -94,6 +94,24 @@
 		</Tile.source>
 	</Tile>
 
+	<Tile name="Pickaxe">
+		<Tile.source>
+			<TileStackContentSource>
+				<TileSetContentSource tileSet="TileSets/ASCII.xml" tileIndex="196" color="#FFA52A2A" />
+				<TileSetContentSource tileSet="TileSets/ASCII.xml" tileIndex="'('" color="#FF808080" translateX="-1" translateY="1" />
+			</TileStackContentSource>
+		</Tile.source>
+	</Tile>
+
+	<Tile name="Hoe">
+		<Tile.source>
+			<TileStackContentSource>
+				<TileSetContentSource tileSet="TileSets/ASCII.xml" tileIndex="179" color="#FFA52A2A" />
+				<TileSetContentSource tileSet="TileSets/ASCII.xml" tileIndex="'`'" color="#FF808080" rotate="90" translateX="-1" translateY="-1" />
+			</TileStackContentSource>
+		</Tile.source>
+	</Tile>
+
 	<Tile name="ConnectedWall_N">
 		<Tile.source>
 			<TileSetContentSource tileSet="TileSets/ConnectedWalls.xml" tileIndex="63" />

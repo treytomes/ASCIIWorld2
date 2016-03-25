@@ -68,8 +68,13 @@ namespace ASCIIWorld.UI
 
 			// TODO: Item.Renderer.Color = ModifyColorByState(_itemColor);
 			tessellator.Translate(ASCII.Width, ASCII.Height);
-			Scale(tessellator, 2.0f);
-			Renderable.Render(tessellator);
+			Scale(tessellator, 8.0f * 2.0f);
+
+			if (Renderable != null)
+			{
+				tessellator.BindColor(Color.White);
+				Renderable.Render(tessellator);
+			}
 		}
 
 		protected override Color ModifyColorByState(Color color)

@@ -1,6 +1,5 @@
 ﻿using GameCore.IO;
 using GameCore.Rendering;
-using System.Drawing;
 using ASCIIWorld.Rendering;
 
 namespace ASCIIWorld.Data
@@ -10,24 +9,13 @@ namespace ASCIIWorld.Data
 		#region Constructors
 
 		public PickaxeItem(ContentManager content)
-			: base(GenerateRenderable(content))
+			: base(new Tile(content.Load<AtlasTileSet>("TileSets/SampleBlocks.xml"), "Pickaxe"))
 		{
-
 		}
 
 		#endregion
 
 		#region Methods
-
-		public static IRenderable GenerateRenderable(ContentManager content)
-		{
-			// TODO: Pull item images from resource files.
-			var ascii = content.Load<TileSet>("TileSets/UI-ASCII.xml");
-			var rod = new Tile(ascii, Color.Brown, 196);
-			var head = new Tile(ascii, Color.Gray, (int)'(');
-			head.Transform = Transformer.New().SetTranslation(-2, 1).Build();
-			return new TileStack(new[] { rod, head });
-		}
 
 		public override void Use(IChunkAccess chunk, ChunkLayer layer, int blockX, int blockY)
 		{

@@ -28,27 +28,23 @@ namespace ASCIIWorld.Rendering
 			_numChunkLayers = Enum.GetValues(typeof(ChunkLayer)).Length;
 		}
 
-		public Tile(TileSet tileSet, Color color, string name)
+		public Tile(TileSet tileSet, int tileIndex)
 		{
 			_tileSet = tileSet;
-			Color = color;
-			Name = name;
-			TileIndex = tileSet.GetTileIndexFromName(Name);
-		}
-
-		public Tile(TileSet tileSet, Color color, int tileIndex)
-		{
-			_tileSet = tileSet;
-			Color = color;
 			TileIndex = tileIndex;
 			Name = tileSet.GetNameFromTileIndex(TileIndex);
+		}
+
+		public Tile(TileSet tileSet, string name)
+		{
+			_tileSet = tileSet;
+			Name = name;
+			TileIndex = tileSet.GetTileIndexFromName(Name);
 		}
 
 		#endregion
 
 		#region Properties
-
-		public Color Color { get; private set; }
 
 		public string Name { get; private set; }
 
@@ -68,14 +64,11 @@ namespace ASCIIWorld.Rendering
 		{
 			// This will cause tile images to become darker as they move into the background layers.
 			var layer =  -tessellator.Transform(Vector3.Zero).Z;
-			var color = Color;
 			if (layer < _numChunkLayers)
 			{
 				var multiplier = 1.0 - (_numChunkLayers - layer) / (_numChunkLayers * 2) + 0.25f;
-				color = Color.FromArgb((int)(color.R * multiplier), (int)(color.G * multiplier), (int)(color.B * multiplier));
+				tessellator.BindColor(Color.FromArgb((int)(255 * multiplier), (int)(255 * multiplier), (int)(255 * multiplier)));
 			}
-
-			tessellator.BindColor(color);
 
 			if (Transform != null)
 			{
