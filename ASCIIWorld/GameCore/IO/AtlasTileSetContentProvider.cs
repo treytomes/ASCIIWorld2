@@ -68,6 +68,12 @@ namespace GameCore.IO
 			var tileSetName = sourceElem.Attribute<string>("tileSet");
 			var tileIndex = sourceElem.Attribute<int>("tileIndex");
 
+			var color = Color.White;
+			if (sourceElem.HasAttribute("color"))
+			{
+				color = sourceElem.Attribute<Color>("color");
+			}
+
 			var tileSetElem = content.Load<XElement>(tileSetName, false);
 			var bitmap = content.Load<Bitmap>(tileSetElem.Attribute<string>("source"));
 			var rows = tileSetElem.Attribute<int>("rows");
@@ -75,18 +81,24 @@ namespace GameCore.IO
 
 			var tileSet = new BitmapTileSet(bitmap, rows, columns);
 
-			return new TileSetTileContentSource(tileSet, tileIndex);
+			return new TileSetTileContentSource(tileSet, tileIndex, color);
 		}
 
 		private BitmapTileContentSource LoadBitmapSource(ContentManager content, XElement sourceElem)
 		{
+			var color = Color.White;
+			if (sourceElem.HasAttribute("color"))
+			{
+				color = sourceElem.Attribute<Color>("color");
+			}
+
 			var bitmap = content.Load<Bitmap>(sourceElem.Attribute<string>("source"));
 			var x = sourceElem.Attribute<int>("x");
 			var y = sourceElem.Attribute<int>("y");
 			var width = sourceElem.Attribute<int>("width");
 			var height = sourceElem.Attribute<int>("height");
 
-			return new BitmapTileContentSource(bitmap, new RectangleF(x, y, width, height));
+			return new BitmapTileContentSource(bitmap, color, new RectangleF(x, y, width, height));
 		}
 	}
 }

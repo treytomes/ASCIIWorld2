@@ -21,6 +21,7 @@ namespace ASCIIWorld.Data
 
 		public static IRenderable GenerateRenderable(ContentManager content)
 		{
+			// TODO: Pull item images from resource files.
 			var ascii = content.Load<TileSet>("TileSets/UI-ASCII.xml");
 			var rod = new Tile(ascii, Color.Brown, 196);
 			var head = new Tile(ascii, Color.Gray, (int)'(');

@@ -109,17 +109,23 @@ namespace ASCIIWorld.IO
 
 		private Tile LoadTile(TileSet tileSet, XElement tileElem)
 		{
+			var color = Color.White;
+			if (tileElem.HasAttribute("color"))
+			{
+				color = tileElem.Attribute<Color>("color");
+			}
+
 			if (tileElem.HasAttribute("tileIndex"))
 			{
-				return new Tile(tileSet, ConvertEx.ChangeType<Color>(tileElem.Attribute<string>("color")), tileElem.Attribute<int>("tileIndex"));
+				return new Tile(tileSet, color, tileElem.Attribute<int>("tileIndex"));
 			}
 			else if (tileElem.HasAttribute("name"))
 			{
-				return new Tile(tileSet, ConvertEx.ChangeType<Color>(tileElem.Attribute<string>("color")), tileElem.Attribute<string>("name"));
+				return new Tile(tileSet, color, tileElem.Attribute<string>("name"));
 			}
 			else if (tileElem.HasAttribute("char"))
 			{
-				return new Tile(tileSet, ConvertEx.ChangeType<Color>(tileElem.Attribute<string>("color")), tileElem.Attribute<char>("char"));
+				return new Tile(tileSet, color, tileElem.Attribute<char>("char"));
 			}
 			else
 			{

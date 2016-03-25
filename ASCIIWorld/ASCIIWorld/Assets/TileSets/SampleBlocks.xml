@@ -37,7 +37,7 @@
 	</Tile>
 	<Tile name="Sand">
 		<Tile.source>
-			<TileSetContentProvider tileSet="TileSets/ASCII.xml" tileIndex="176" />
+			<TileSetContentProvider tileSet="TileSets/ASCII.xml" tileIndex="176" color="#FFFFCD38" />
 		</Tile.source>
 	</Tile>
 	<Tile name="Water_1">

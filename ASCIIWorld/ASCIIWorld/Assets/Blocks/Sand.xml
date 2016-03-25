@@ -3,7 +3,7 @@
 	<Block.renderer>
 		<RegionBoundedTileStack outlineColor="#FFE5D150" northWall="ConnectedWall_N" southWall="ConnectedWall_S" eastWall="ConnectedWall_E" westWall="ConnectedWall_W">
 			<Tile color="#FFFFEB59" name="Solid" />
-			<Tile color="#FFFFCD38" name="Sand" />
+			<Tile name="Sand" />
 		</RegionBoundedTileStack>
 	</Block.renderer>
 	<Properties>

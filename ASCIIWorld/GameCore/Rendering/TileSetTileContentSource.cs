@@ -6,11 +6,13 @@ namespace GameCore.Rendering
 	{
 		private BitmapTileSet _tileSet;
 		private int _tileIndex;
+		private Color _tint;
 
-		public TileSetTileContentSource(BitmapTileSet tileSet, int tileIndex)
+		public TileSetTileContentSource(BitmapTileSet tileSet, int tileIndex, Color tint)
 		{
 			_tileSet = tileSet;
 			_tileIndex = tileIndex;
+			_tint = tint;
 		}
 
 		public int Width
@@ -31,7 +33,7 @@ namespace GameCore.Rendering
 
 		public void Render(Graphics graphics, int x, int y)
 		{
-			_tileSet.Render(graphics, _tileIndex, x, y);
+			_tileSet.Render(graphics, _tileIndex, x, y, _tint);
 		}
 	}
 }
