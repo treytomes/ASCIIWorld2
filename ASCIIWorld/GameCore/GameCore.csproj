@@ -119,6 +119,7 @@
     <Compile Include="Rendering\TileInfo.cs" />
     <Compile Include="Rendering\TileSet.cs" />
     <Compile Include="Rendering\TileSetTileContentSource.cs" />
+    <Compile Include="Rendering\TileStackContentSource.cs" />
     <Compile Include="Rendering\VertexBufferElement.cs" />
     <Compile Include="Rendering\VertexBufferObject.cs" />
     <Compile Include="Rendering\VertexBufferTessellator.cs" />

@@ -2,8 +2,7 @@
 <Block name="Chest" tileSet="TileSets/SampleBlocks.xml">
 	<Block.renderer>
 		<TileStack>
-			<Tile color="#88000000" name="Solid" />
-			<Tile color="#FFFFA500" name="Chest" />
+			<Tile name="Chest" />
 		</TileStack>
 	</Block.renderer>
 </Block>

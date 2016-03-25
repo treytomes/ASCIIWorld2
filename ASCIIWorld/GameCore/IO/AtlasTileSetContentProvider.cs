@@ -35,7 +35,7 @@ namespace GameCore.IO
 			}
 			else
 			{
-				source = LoadSource(content, tileElem.Element("Tile.source"));
+				source = LoadSource(content, tileElem.Element("Tile.source").Elements().Single());
 			}
 
 			return new TileInfo(name, source);
@@ -46,16 +46,19 @@ namespace GameCore.IO
 			throw new NotImplementedException();
 		}
 
-		private ITileContentSource LoadSource(ContentManager content, XElement source)
+		private ITileContentSource LoadSource(ContentManager content, XElement sourceElem)
 		{
-			var sourceElem = source.Elements().Single();
-			if (sourceElem.Name == "TileSetContentProvider")
+			if (sourceElem.Name == "TileSetContentSource")
 			{
 				return LoadTileSetSource(content, sourceElem);
 			}
 			else if (sourceElem.Name == "BitmapTileContentSource")
 			{
 				return LoadBitmapSource(content, sourceElem);
+			}
+			else if (sourceElem.Name == "TileStackContentSource")
+			{
+				return LoadTileStackSource(content, sourceElem);
 			}
 			else
 			{
@@ -99,6 +102,16 @@ namespace GameCore.IO
 			var height = sourceElem.Attribute<int>("height");
 
 			return new BitmapTileContentSource(bitmap, color, new RectangleF(x, y, width, height));
+		}
+
+		private TileStackContentSource LoadTileStackSource(ContentManager content, XElement sourceElem)
+		{
+			var tiles = new List<ITileContentSource>();
+			foreach (var elem in sourceElem.Elements())
+			{
+				tiles.Add(LoadSource(content, elem));
+			}
+			return new TileStackContentSource(tiles);
 		}
 	}
 }

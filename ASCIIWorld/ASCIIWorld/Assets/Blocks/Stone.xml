@@ -2,8 +2,7 @@
 <Block name="Stone" tileSet="TileSets/SampleBlocks.xml">
 	<Block.renderer>
 		<RegionBoundedTileStack outlineColor="#FF696969" northWall="ConnectedWall_N" southWall="ConnectedWall_S" eastWall="ConnectedWall_E" westWall="ConnectedWall_W">
-			<Tile color="#FF878787" name="Solid" />
-			<Tile color="#FFB5B5B5" name="Stone" />
+			<Tile name="Stone" />
 		</RegionBoundedTileStack>
 	</Block.renderer>
 </Block>

@@ -1,79 +1,117 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <AtlasTileSet>
+	<Tile name="Bush">
+		<Tile.source>
+			<TileStackContentSource>
+				<TileSetContentSource tileSet="TileSets/ASCII.xml" tileIndex="254" color="#FF7F520F" />
+				<TileSetContentSource tileSet="TileSets/ASCII.xml" tileIndex="177" color="#FF387234" />
+			</TileStackContentSource>
+		</Tile.source>
+	</Tile>
 	<Tile name="TilledSoil">
 		<Tile.source>
-			<TileSetContentProvider tileSet="TileSets/ASCII.xml" tileIndex="205" />
+			<TileStackContentSource>
+				<TileSetContentSource tileSet="TileSets/ASCII.xml" tileIndex="219" color="#FF685638" />
+				<TileSetContentSource tileSet="TileSets/ASCII.xml" tileIndex="205" color="#FFA28756" />
+			</TileStackContentSource>
 		</Tile.source>
 	</Tile>
 	<Tile name="Solid">
 		<Tile.source>
-			<TileSetContentProvider tileSet="TileSets/ASCII.xml" tileIndex="219" />
+			<TileSetContentSource tileSet="TileSets/ASCII.xml" tileIndex="219" />
 		</Tile.source>
 	</Tile>
 	<Tile name="Stone">
 		<Tile.source>
-			<TileSetContentProvider tileSet="TileSets/ASCII.xml" tileIndex="178" />
+			<TileStackContentSource>
+				<TileSetContentSource tileSet="TileSets/ASCII.xml" tileIndex="219" color="#FF878787" />
+				<TileSetContentSource tileSet="TileSets/ASCII.xml" tileIndex="178" color="#FFB5B5B5" />
+			</TileStackContentSource>
 		</Tile.source>
 	</Tile>
 	<Tile name="Chest">
 		<Tile.source>
-			<TileSetContentProvider tileSet="TileSets/ASCII.xml" tileIndex="127" />
+			<TileStackContentSource>
+				<TileSetContentSource tileSet="TileSets/ASCII.xml" tileIndex="219" color="#88000000" />
+				<TileSetContentSource tileSet="TileSets/ASCII.xml" tileIndex="127" color="#FFFFA500" />
+			</TileStackContentSource>
 		</Tile.source>
 	</Tile>
-	<Tile name="Door">
+	<Tile name="WoodenDoor">
 		<Tile.source>
-			<TileSetContentProvider tileSet="TileSets/ASCII.xml" tileIndex="8" />
+			<TileStackContentSource>
+				<TileSetContentSource tileSet="TileSets/ASCII.xml" tileIndex="219" color="#FF685638" />
+				<TileSetContentSource tileSet="TileSets/ASCII.xml" tileIndex="8" color="#FFA28756" />
+			</TileStackContentSource>
 		</Tile.source>
 	</Tile>
 	<Tile name="Dirt">
 		<Tile.source>
-			<TileSetContentProvider tileSet="TileSets/ASCII.xml" tileIndex="177" />
+			<TileStackContentSource>
+				<TileSetContentSource tileSet="TileSets/ASCII.xml" tileIndex="219" color="#FF685638" />
+				<TileSetContentSource tileSet="TileSets/ASCII.xml" tileIndex="177" color="#FFA28756" />
+			</TileStackContentSource>
 		</Tile.source>
 	</Tile>
 	<Tile name="Grass">
 		<Tile.source>
-			<TileSetContentProvider tileSet="TileSets/ASCII.xml" tileIndex="176" />
+			<TileStackContentSource>
+				<TileSetContentSource tileSet="TileSets/ASCII.xml" tileIndex="219" color="#FF28B515" />
+				<TileSetContentSource tileSet="TileSets/ASCII.xml" tileIndex="176" color="#FF68D361" />
+			</TileStackContentSource>
 		</Tile.source>
 	</Tile>
 	<Tile name="Sand">
 		<Tile.source>
-			<TileSetContentProvider tileSet="TileSets/ASCII.xml" tileIndex="176" color="#FFFFCD38" />
+			<TileStackContentSource>
+				<TileSetContentSource tileSet="TileSets/ASCII.xml" tileIndex="219" color="#FFFFEB59" />
+				<TileSetContentSource tileSet="TileSets/ASCII.xml" tileIndex="176" color="#FFFFCD38" />
+			</TileStackContentSource>
 		</Tile.source>
 	</Tile>
 	<Tile name="Water_1">
 		<Tile.source>
-			<TileSetContentProvider tileSet="TileSets/ASCII.xml" tileIndex="61" />
+			<TileStackContentSource>
+				<TileSetContentSource tileSet="TileSets/ASCII.xml" tileIndex="219" color="#FF0026FF" />
+				<TileSetContentSource tileSet="TileSets/ASCII.xml" tileIndex="61" color="#FF3269FF" />
+			</TileStackContentSource>
 		</Tile.source>
 	</Tile>
 	<Tile name="Water_2">
 		<Tile.source>
-			<TileSetContentProvider tileSet="TileSets/ASCII.xml" tileIndex="205" />
+			<TileStackContentSource>
+				<TileSetContentSource tileSet="TileSets/ASCII.xml" tileIndex="219" color="#FF0026FF" />
+				<TileSetContentSource tileSet="TileSets/ASCII.xml" tileIndex="205" color="#FF3269FF" />
+			</TileStackContentSource>
 		</Tile.source>
 	</Tile>
 	<Tile name="Water_3">
 		<Tile.source>
-			<TileSetContentProvider tileSet="TileSets/ASCII.xml" tileIndex="45" />
+			<TileStackContentSource>
+				<TileSetContentSource tileSet="TileSets/ASCII.xml" tileIndex="219" color="#FF0026FF" />
+				<TileSetContentSource tileSet="TileSets/ASCII.xml" tileIndex="45" color="#FF3269FF" />
+			</TileStackContentSource>
 		</Tile.source>
 	</Tile>
 
 	<Tile name="ConnectedWall_N">
 		<Tile.source>
-			<TileSetContentProvider tileSet="TileSets/ConnectedWalls.xml" tileIndex="63" />
+			<TileSetContentSource tileSet="TileSets/ConnectedWalls.xml" tileIndex="63" />
 		</Tile.source>
 	</Tile>
 	<Tile name="ConnectedWall_E">
 		<Tile.source>
-			<TileSetContentProvider tileSet="TileSets/ConnectedWalls.xml" tileIndex="77" />
+			<TileSetContentSource tileSet="TileSets/ConnectedWalls.xml" tileIndex="77" />
 		</Tile.source>
 	</Tile>
 	<Tile name="ConnectedWall_S">
 		<Tile.source>
-			<TileSetContentProvider tileSet="TileSets/ConnectedWalls.xml" tileIndex="89" />
+			<TileSetContentSource tileSet="TileSets/ConnectedWalls.xml" tileIndex="89" />
 		</Tile.source>
 	</Tile>
 	<Tile name="ConnectedWall_W">
 		<Tile.source>
-			<TileSetContentProvider tileSet="TileSets/ConnectedWalls.xml" tileIndex="75" />
+			<TileSetContentSource tileSet="TileSets/ConnectedWalls.xml" tileIndex="75" />
 		</Tile.source>
 	</Tile>
 </AtlasTileSet>

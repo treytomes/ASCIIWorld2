@@ -1,23 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<Block name="Water" tileSet="TileSets/ASCII.xml">
+<Block name="Water" tileSet="TileSets/SampleBlocks.xml">
 	<Block.renderer>
 		<Animation framesPerSecond="3">
-			<TileStack>
-				<Tile color="#FF0026FF" tileIndex="219" />
-				<Tile color="#FF3269FF" tileIndex="61" />
-			</TileStack>
-			<TileStack>
-				<Tile color="#FF0026FF" tileIndex="219" />
-				<Tile color="#FF3269FF" tileIndex="205" />
-			</TileStack>
-			<TileStack>
-				<Tile color="#FF0026FF" tileIndex="219" />
-				<Tile color="#FF3269FF" tileIndex="45" />
-			</TileStack>
-			<TileStack>
-				<Tile color="#FF0026FF" tileIndex="219" />
-				<Tile color="#FF3269FF" tileIndex="205" />
-			</TileStack>
+			<Tile name="Water_1" />
+			<Tile name="Water_2" />
+			<Tile name="Water_3" />
 		</Animation>
 	</Block.renderer>
 	<Properties>

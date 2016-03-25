@@ -2,8 +2,7 @@
 <Block name="Dirt" tileSet="TileSets/SampleBlocks.xml">
 	<Block.renderer>
 		<RegionBoundedTileStack outlineColor="#FF4C3F29" northWall="ConnectedWall_N" southWall="ConnectedWall_S" eastWall="ConnectedWall_E" westWall="ConnectedWall_W">
-			<Tile color="#FF685638" name="Solid" />
-			<Tile color="#FFA28756" name="Dirt" />
+			<Tile name="Dirt" />
 		</RegionBoundedTileStack>
 	</Block.renderer>
 	<Properties>

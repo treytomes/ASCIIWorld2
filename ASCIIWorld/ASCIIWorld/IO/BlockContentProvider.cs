@@ -71,10 +71,10 @@ namespace ASCIIWorld.IO
 		private Animation LoadAnimation(TileSet tileSet, XElement animationElem)
 		{
 			var framesPerSecond = animationElem.Attribute<int>("framesPerSecond");
-			var tileStacks = new List<TileStack>();
-			foreach (var tileStackElem in animationElem.Elements("TileStack"))
+			var tileStacks = new List<IRenderable>();
+			foreach (var elem in animationElem.Elements())
 			{
-				tileStacks.Add(LoadTileStack(tileSet, tileStackElem));
+				tileStacks.Add(LoadRenderer(tileSet, elem));
 			}
 
 			return new Animation(framesPerSecond, tileStacks);

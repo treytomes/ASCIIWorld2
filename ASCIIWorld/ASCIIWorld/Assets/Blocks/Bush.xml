@@ -1,9 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<Block name="Bush" isOpaque="false" tileSet="TileSets/ASCII.xml">
+<Block name="Bush" isOpaque="false" tileSet="TileSets/SampleBlocks.xml">
 	<Block.renderer>
 		<TileStack>
-			<Tile color="#FF7F520F" tileIndex="254" />
-			<Tile color="#FF387234" tileIndex="177" />
+			<Tile name="Bush" />
 		</TileStack>
 	</Block.renderer>
 </Block>

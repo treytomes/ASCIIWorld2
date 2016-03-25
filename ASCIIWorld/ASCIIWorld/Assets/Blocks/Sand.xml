@@ -2,7 +2,6 @@
 <Block name="Sand" tileSet="TileSets/SampleBlocks.xml">
 	<Block.renderer>
 		<RegionBoundedTileStack outlineColor="#FFE5D150" northWall="ConnectedWall_N" southWall="ConnectedWall_S" eastWall="ConnectedWall_E" westWall="ConnectedWall_W">
-			<Tile color="#FFFFEB59" name="Solid" />
 			<Tile name="Sand" />
 		</RegionBoundedTileStack>
 	</Block.renderer>
