@@ -29,11 +29,16 @@ namespace ASCIIWorld.Data
 		/// <summary>
 		/// Use this item on the selected location.
 		/// </summary>
-		public virtual void Use(IChunkAccess chunk, ChunkLayer layer, int blockX, int blockY)
+		public virtual void Use(Level level, ChunkLayer layer, int blockX, int blockY)
 		{
 		}
 
-		// TODO: public virtual void Use(Entity entity) { }
+		/// <summary>
+		/// Use this item on the specified entity.
+		/// </summary>
+		public virtual void Use(Entity entity)
+		{
+		}
 
 		public virtual void Render(ITessellator tessellator)
 		{

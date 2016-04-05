@@ -1,6 +1,7 @@
 ﻿using GameCore.IO;
 using GameCore.Rendering;
 using ASCIIWorld.Rendering;
+using OpenTK;
 
 namespace ASCIIWorld.Data
 {
@@ -17,10 +18,19 @@ namespace ASCIIWorld.Data
 
 		#region Methods
 
-		public override void Use(IChunkAccess chunk, ChunkLayer layer, int blockX, int blockY)
+		public override void Use(Level level, ChunkLayer layer, int blockX, int blockY)
 		{
-			base.Use(chunk, layer, blockX, blockY);
-			chunk[layer, blockX, blockY] = 0;
+			base.Use(level, layer, blockX, blockY);
+
+			var blockId = level[layer, blockX, blockY];
+			if (blockId > 0)
+			{
+				var blockEntity = new BlockEntity(blockId);
+				blockEntity.MoveTo(level, new Vector2(blockX, blockY));
+				level.AddEntity(blockEntity);
+
+				level[layer, blockX, blockY] = 0;
+			}
 		}
 
 		#endregion

@@ -1,5 +1,6 @@
 ﻿using CommonCore.Math;
 using System;
+using System.Collections.Generic;
 
 namespace ASCIIWorld.Data
 {
@@ -22,6 +23,7 @@ namespace ASCIIWorld.Data
 		private int _width;
 		private int _height;
 		private int[,,] _blockIndex;
+		private List<Entity> _entities;
 		
 		#endregion
 
@@ -32,6 +34,7 @@ namespace ASCIIWorld.Data
 			_width = width;
 			_height = height;
 			_blockIndex = new int[Enum.GetValues(typeof(ChunkLayer)).Length, _height, _width];
+			_entities = new List<Entity>();
 		}
 
 		#endregion
@@ -75,10 +78,38 @@ namespace ASCIIWorld.Data
 				}
 			}
 		}
+		
+		public IEnumerable<Entity> Entities
+		{
+			get
+			{
+				foreach (var entity in _entities)
+				{
+					yield return entity;
+				}
+				yield break;
+			}
+		}
 
 		#endregion
 
 		#region Methods
+
+		public void AddEntity(Entity entity)
+		{
+			if (!_entities.Contains(entity))
+			{
+				_entities.Add(entity);
+			}
+		}
+
+		public void RemoveEntity(Entity entity)
+		{
+			if (_entities.Contains(entity))
+			{
+				_entities.Remove(entity);
+			}
+		}
 
 		/// <summary>
 		/// Search the chunk randomly for a spot that isn't blocked.

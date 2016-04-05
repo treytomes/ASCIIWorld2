@@ -45,7 +45,7 @@ namespace GameCore.Rendering
 
 		#region Methods
 
-		public void Render(Graphics graphics, int tileIndex, int x, int y, Color tint)
+		public void Render(Graphics graphics, int tileIndex, int x, int y, Color tint, float rotate = 0)
 		{
 			var imageAttrs = new ImageAttributes();
 			var m = new ColorMatrix(new float[][] {
@@ -57,8 +57,14 @@ namespace GameCore.Rendering
 			});
 			imageAttrs.SetColorMatrix(m);
 
-			graphics.DrawImage(_bitmap, new Rectangle(x, y, Width, Height), _tiles[tileIndex].X, _tiles[tileIndex].Y, _tiles[tileIndex].Width, _tiles[tileIndex].Height, GraphicsUnit.Pixel, imageAttrs);
-			//graphics.DrawImage(_bitmap, x, y, _tiles[tileIndex], GraphicsUnit.Pixel);
+			var tileBitmap = new Bitmap(Width, Height); // isolate the tile into it's own bitmap for rotation
+			using (var g2 = Graphics.FromImage(tileBitmap))
+			{
+				g2.DrawImage(_bitmap, 0, 0, _tiles[tileIndex], GraphicsUnit.Pixel);
+			}
+			graphics.RotateTransform(OpenTK.MathHelper.DegreesToRadians(rotate));
+			graphics.DrawImage(tileBitmap, new Rectangle(x, y, Width, Height), 0, 0, Width, Height, GraphicsUnit.Pixel, imageAttrs);
+			graphics.RotateTransform(OpenTK.MathHelper.DegreesToRadians(-rotate));
 		}
 
 		protected void Initialize(Bitmap bitmap, int rows, int columns)

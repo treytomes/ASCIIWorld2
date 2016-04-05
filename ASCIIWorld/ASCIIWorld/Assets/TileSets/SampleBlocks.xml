@@ -1,5 +1,13 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <AtlasTileSet>
+	<Tile name="Player">
+		<Tile.source>
+			<TileStackContentSource>
+				<TileSetContentSource tileSet="TileSets/ASCII.xml" tileIndex="254" color="#88000000" />
+				<TileSetContentSource tileSet="TileSets/ASCII.xml" tileIndex="2" color="#FFFFFFFF" />
+			</TileStackContentSource>
+		</Tile.source>
+	</Tile>
 	<Tile name="Bush">
 		<Tile.source>
 			<TileStackContentSource>

@@ -69,6 +69,7 @@
     <Compile Include="Data\BlockRegistry.cs" />
     <Compile Include="Data\Chunk.cs" />
     <Compile Include="Data\ChunkLayer.cs" />
+    <Compile Include="Data\Entity.cs" />
     <Compile Include="Data\Generation\BaseChunkGenerator.cs" />
     <Compile Include="Data\Generation\BSP\Area.cs" />
     <Compile Include="Data\Generation\BSP\BSPDungeonChunkGenerator.cs" />
@@ -98,6 +99,7 @@
     <Compile Include="Data\Level.cs" />
     <Compile Include="Data\HoeItem.cs" />
     <Compile Include="Data\PickaxeItem.cs" />
+    <Compile Include="Data\BlockEntity.cs" />
     <Compile Include="IO\BlockRegistryContentProvider.cs" />
     <Compile Include="Rendering\Animation.cs" />
     <Compile Include="Data\Block.cs" />
@@ -191,6 +193,7 @@
   <ItemGroup>
     <None Include="Assets\TileSets\SampleBlocks.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </None>
   </ItemGroup>
   <ItemGroup>

@@ -89,9 +89,41 @@ namespace ASCIIWorld.Data
 			}
 		}
 
+		public IEnumerable<Entity> Entities
+		{
+			get
+			{
+				foreach (var chunk in _chunks)
+				{
+					if (chunk == null)
+					{
+						continue;
+					}
+
+					foreach (var entity in chunk.Entities)
+					{
+						yield return entity;
+					}
+				}
+				yield break;
+			}
+		}
+
 		#endregion
 
 		#region Methods
+
+		public void AddEntity(Entity entity)
+		{
+			var chunk = GetChunk((int)entity.Position.X, (int)entity.Position.Y);
+			chunk.AddEntity(entity);
+		}
+
+		public void RemoveEntity(Entity entity)
+		{
+			var chunk = GetChunk((int)entity.Position.X, (int)entity.Position.Y);
+			chunk.RemoveEntity(entity);
+		}
 
 		public ChunkLayer GetHighestVisibleLayer(int blockX, int blockY)
 		{
@@ -127,7 +159,7 @@ namespace ASCIIWorld.Data
 		/// <remarks>
 		/// The chunk will be generated if it doesn't exist yet.
 		/// </remarks>
-		private Chunk GetChunk(int blockX, int blockY)
+		public Chunk GetChunk(int blockX, int blockY)
 		{
 			var levelX = (int)MathHelper.Modulo(Math.Floor((float)blockX / CHUNK_WIDTH), LEVEL_WIDTH);
 			var levelY = (int)MathHelper.Modulo(Math.Floor((float)blockY / CHUNK_HEIGHT), LEVEL_HEIGHT);

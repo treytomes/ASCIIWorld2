@@ -1,6 +1,7 @@
 ﻿using OpenTK.Graphics.OpenGL;
 using System;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Linq;
 
 namespace GameCore.Rendering
@@ -21,6 +22,7 @@ namespace GameCore.Rendering
 
 			using (var graphics = Graphics.FromImage(atlasBitmap))
 			{
+				graphics.InterpolationMode = InterpolationMode.NearestNeighbor;
 				for (var n = 0; n < tiles.Length; n++)
 				{
 					tiles[n].Source.Render(graphics, x, y);

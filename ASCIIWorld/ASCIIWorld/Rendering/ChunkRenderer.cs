@@ -4,6 +4,7 @@ using GameCore.Rendering;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
 using System;
+using System.Linq;
 
 namespace ASCIIWorld.Rendering
 {
@@ -42,12 +43,29 @@ namespace ASCIIWorld.Rendering
 			RenderLayer(_tessellator, chunk, ChunkLayer.Background, minX, maxX, minY, maxY);
 			RenderLayer(_tessellator, chunk, ChunkLayer.Floor, minX, maxX, minY, maxY);
 
-			// TODO: Render entities here.
+			RenderEntities(_tessellator, chunk);
 
 			RenderLayer(_tessellator, chunk, ChunkLayer.Blocking, minX, maxX, minY, maxY);
 			RenderLayer(_tessellator, chunk, ChunkLayer.Ceiling, minX, maxX, minY, maxY);
 
 			_tessellator.End();
+		}
+
+		private void RenderEntities(ITessellator tessellator, IChunkAccess chunk)
+		{
+			tessellator.Translate(0, 0, -2 * (int)ChunkLayer.Blocking);
+			//if (!chunk.Entities.Any())
+			//{
+			//	return;
+			//}
+
+			// TODO: Only render entities in the active chunk.
+			foreach (var entity in chunk.Entities)
+			{
+				entity.Render(tessellator);
+			}
+
+			tessellator.Translate(0, 0, 2 * (int)ChunkLayer.Blocking);
 		}
 
 		private void RenderLayer(ITessellator tessellator, IChunkAccess chunk, ChunkLayer layer, int minX, int maxX, int minY, int maxY)

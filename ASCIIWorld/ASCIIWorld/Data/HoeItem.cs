@@ -33,14 +33,14 @@ namespace ASCIIWorld.Data
 		/// <summary>
 		/// You can only till dirt or grass.
 		/// </summary>
-		public override void Use(IChunkAccess chunk, ChunkLayer layer, int blockX, int blockY)
+		public override void Use(Level level, ChunkLayer layer, int blockX, int blockY)
 		{
-			base.Use(chunk, layer, blockX, blockY);
-			layer = chunk.GetHighestVisibleLayer(blockX, blockY);
-			var blockId = chunk[layer, blockX, blockY];
+			base.Use(level, layer, blockX, blockY);
+			layer = level.GetHighestVisibleLayer(blockX, blockY);
+			var blockId = level[layer, blockX, blockY];
 			if ((blockId == _dirtId) || (blockId == _grassId))
 			{
-				chunk[layer, blockX, blockY] = _tilledSoil;
+				level[layer, blockX, blockY] = _tilledSoil;
 			}
 		}
 

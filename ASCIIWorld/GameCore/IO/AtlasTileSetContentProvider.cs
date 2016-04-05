@@ -5,6 +5,8 @@ using System.Drawing;
 using System.Linq;
 using System.Xml.Linq;
 using CommonCore;
+using OpenTK;
+using CommonCore.Math;
 
 namespace GameCore.IO
 {
@@ -77,6 +79,24 @@ namespace GameCore.IO
 				color = sourceElem.Attribute<Color>("color");
 			}
 
+			var translateX = 0;
+			if (sourceElem.HasAttribute("translateX"))
+			{
+				translateX = sourceElem.Attribute<int>("translateX");
+			}
+
+			var translateY = 0;
+			if (sourceElem.HasAttribute("translateY"))
+			{
+				translateY = sourceElem.Attribute<int>("translateY");
+			}
+
+			var rotate = 0.0f;
+			if (sourceElem.HasAttribute("rotate"))
+			{
+				rotate = sourceElem.Attribute<float>("rotate");
+			}
+
 			var tileSetElem = content.Load<XElement>(tileSetName, false);
 			var bitmap = content.Load<Bitmap>(tileSetElem.Attribute<string>("source"));
 			var rows = tileSetElem.Attribute<int>("rows");
@@ -84,7 +104,7 @@ namespace GameCore.IO
 
 			var tileSet = new BitmapTileSet(bitmap, rows, columns);
 
-			return new TileSetTileContentSource(tileSet, tileIndex, color);
+			return new TileSetTileContentSource(tileSet, tileIndex, color, rotate, new Vector2I(translateX, translateY));
 		}
 
 		private BitmapTileContentSource LoadBitmapSource(ContentManager content, XElement sourceElem)

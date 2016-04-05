@@ -1,4 +1,7 @@
-﻿using System.Drawing;
+﻿using CommonCore.Math;
+using OpenTK;
+using System.Drawing;
+using System.Drawing.Imaging;
 
 namespace GameCore.Rendering
 {
@@ -7,12 +10,16 @@ namespace GameCore.Rendering
 		private BitmapTileSet _tileSet;
 		private int _tileIndex;
 		private Color _tint;
+		private Vector2I _translate;
+		private float _rotate;
 
-		public TileSetTileContentSource(BitmapTileSet tileSet, int tileIndex, Color tint)
+		public TileSetTileContentSource(BitmapTileSet tileSet, int tileIndex, Color tint, float rotate, Vector2I translate)
 		{
 			_tileSet = tileSet;
 			_tileIndex = tileIndex;
 			_tint = tint;
+			_translate = translate;
+			_rotate = rotate;
 		}
 
 		public int Width
@@ -33,7 +40,7 @@ namespace GameCore.Rendering
 
 		public void Render(Graphics graphics, int x, int y)
 		{
-			_tileSet.Render(graphics, _tileIndex, x, y, _tint);
+			_tileSet.Render(graphics, _tileIndex, x + _translate.X, y + _translate.Y, _tint, _rotate);
 		}
 	}
 }

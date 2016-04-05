@@ -11,6 +11,21 @@ namespace CommonCore
 			{
 				value = ParseColor(value.ToString());
 			}
+			else
+			{
+				if (value.ToString().StartsWith("'"))
+				{
+					var text = value.ToString();
+					if (!text.EndsWith("'") || (text.Length != 3))
+					{
+						throw new Exception($"Expected a character literal: {text}");
+					}
+					else
+					{
+						value = text[1];
+					}
+				}
+			}
 			return (T)Convert.ChangeType(value, typeof(T));
 		}
 
