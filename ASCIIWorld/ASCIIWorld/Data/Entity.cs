@@ -67,6 +67,15 @@ namespace ASCIIWorld.Data
 			}
 		}
 
+		public virtual bool ContainsPoint(Vector2 position)
+		{
+			return Math.Abs((_position - position).Length) <= 0.5;
+		}
+
+		public virtual void Touch(Entity touchedBy)
+		{
+		}
+
 		#endregion
 	}
 }

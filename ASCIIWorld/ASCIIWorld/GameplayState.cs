@@ -11,6 +11,7 @@ using OpenTK.Input;
 using System;
 using System.Diagnostics;
 using System.Drawing;
+using System.Linq;
 
 namespace ASCIIWorld
 {
@@ -257,9 +258,20 @@ namespace ASCIIWorld
 			{
 				if (e.Button == MouseButton.Left)
 				{
-					if (_uiManager.SelectedToolbarItem != null)
+					// TODO: Level.Entities should only return the entities for the active chunk.  The active chunk will need to be tracked somehow.
+					var hoverEntity = _worldManager.Level.Entities.FirstOrDefault(x => x.ContainsPoint(_mouseBlockPosition));
+					if (hoverEntity == null)
 					{
-						_uiManager.SelectedToolbarItem.Use(_worldManager.Level, _worldManager.Level.GetHighestVisibleLayer((int)_mouseBlockPosition.X, (int)_mouseBlockPosition.Y), (int)_mouseBlockPosition.X, (int)_mouseBlockPosition.Y);
+						if (_uiManager.SelectedToolbarItem != null)
+						{
+							_uiManager.SelectedToolbarItem.Use(_worldManager.Level, _worldManager.Level.GetHighestVisibleLayer((int)_mouseBlockPosition.X, (int)_mouseBlockPosition.Y), (int)_mouseBlockPosition.X, (int)_mouseBlockPosition.Y);
+						}
+					}
+					else
+					{
+						// TODO: Need a player entity.
+						hoverEntity.Touch(null);
+						Console.WriteLine(hoverEntity.ToString());
 					}
 				}
 				if (e.Button == MouseButton.Middle)

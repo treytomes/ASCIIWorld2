@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using GameCore.Rendering;
 using OpenTK;
+using System.Drawing;
 
 namespace ASCIIWorld.Data
 {
@@ -15,6 +16,8 @@ namespace ASCIIWorld.Data
 		private int _blockId;
 		private float _rotation;
 
+		private Color _color;
+
 		#endregion
 
 		#region Constructors
@@ -24,6 +27,7 @@ namespace ASCIIWorld.Data
 		{
 			_blockId = blockId;
 			_rotation = 0.0f;
+			_color = Color.White;
 		}
 
 		#endregion
@@ -32,7 +36,7 @@ namespace ASCIIWorld.Data
 
 		public override void Render(ITessellator tessellator)
 		{
-			tessellator.BindColor(System.Drawing.Color.FromArgb(196, System.Drawing.Color.White));
+			tessellator.BindColor(Color.FromArgb(196, _color));
 			tessellator.PushTransform();
 
 			var position = tessellator.Transform(Vector3.Zero);
@@ -48,6 +52,25 @@ namespace ASCIIWorld.Data
 			base.Render(tessellator);
 
 			tessellator.PopTransform();
+		}
+
+		public override void Touch(Entity touchedBy)
+		{
+			base.Touch(touchedBy);
+
+			if (_color == Color.White)
+			{
+				_color = Color.Red;
+			}
+			else
+			{
+				_color = Color.White;
+			}
+		}
+
+		public override string ToString()
+		{
+			return $"BlockEntity(blockId:={_blockId})";
 		}
 
 		#endregion
