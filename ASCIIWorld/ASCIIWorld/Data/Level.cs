@@ -170,6 +170,16 @@ namespace ASCIIWorld.Data
 			return _chunks[levelY, levelX];
 		}
 
+		public Chunk GetChunk(OpenTK.Vector2 position)
+		{
+			return GetChunk((int)position.X, (int)position.Y);
+		}
+
+		public Chunk GetChunk(Entity entity)
+		{
+			return GetChunk(entity.Position);
+		}
+
 		#endregion
 	}
 }

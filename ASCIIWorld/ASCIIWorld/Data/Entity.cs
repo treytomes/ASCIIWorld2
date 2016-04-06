@@ -16,6 +16,7 @@ namespace ASCIIWorld.Data
 
 		private IRenderable _renderable;
 		private Vector2 _position;
+		private bool _isAlive;
 
 		#endregion
 
@@ -24,6 +25,7 @@ namespace ASCIIWorld.Data
 		public Entity(IRenderable renderable)
 		{
 			_renderable = renderable;
+			_isAlive = true;
 		}
 
 		#endregion
@@ -35,6 +37,14 @@ namespace ASCIIWorld.Data
 			get
 			{
 				return _position;
+			}
+		}
+
+		public bool IsAlive
+		{
+			get
+			{
+				return _isAlive;
 			}
 		}
 
@@ -74,6 +84,14 @@ namespace ASCIIWorld.Data
 
 		public virtual void Touch(Entity touchedBy)
 		{
+		}
+
+		/// <summary>
+		/// Mark this entity to be removed from the world.
+		/// </summary>
+		public void Die()
+		{
+			_isAlive = false;
 		}
 
 		#endregion

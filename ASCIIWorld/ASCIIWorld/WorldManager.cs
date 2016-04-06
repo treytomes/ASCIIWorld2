@@ -3,6 +3,7 @@ using ASCIIWorld.Rendering;
 using GameCore;
 using GameCore.Rendering;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 
@@ -87,6 +88,21 @@ namespace ASCIIWorld
 		public void Update(TimeSpan elapsed)
 		{
 			BlockRegistry.Instance.Update(elapsed);
+
+			var deadEntities = new List<Entity>();
+			foreach (var entity in Level.Entities)
+			{
+				entity.Update(elapsed);
+				if (!entity.IsAlive)
+				{
+					deadEntities.Add(entity);
+				}
+			}
+
+			foreach (var entity in deadEntities)
+			{
+				Level.GetChunk(entity).RemoveEntity(entity);
+			}
 		}
 
 		public void Render()

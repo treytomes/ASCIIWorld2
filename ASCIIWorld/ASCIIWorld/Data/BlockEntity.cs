@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using GameCore.Rendering;
+﻿using GameCore.Rendering;
 using OpenTK;
 using System.Drawing;
+using System;
 
 namespace ASCIIWorld.Data
 {
@@ -34,13 +30,18 @@ namespace ASCIIWorld.Data
 
 		#region Methods
 
+		public override void Update(TimeSpan elapsed)
+		{
+			base.Update(elapsed);
+			_rotation += 0.4f;
+		}
+
 		public override void Render(ITessellator tessellator)
 		{
 			tessellator.BindColor(Color.FromArgb(196, _color));
 			tessellator.PushTransform();
 
 			var position = tessellator.Transform(Vector3.Zero);
-			_rotation += 0.4f;
 
 			tessellator.LoadIdentity();
 			tessellator.Scale(0.5f, 0.5f);
@@ -64,7 +65,7 @@ namespace ASCIIWorld.Data
 			}
 			else
 			{
-				_color = Color.White;
+				Die();
 			}
 		}
 
