@@ -38,6 +38,7 @@ namespace ASCIIWorld.Rendering
 
 		private void Render(ITessellator tessellator, BlockEntity entity)
 		{
+			var color = tessellator.CurrentColor;
 			tessellator.BindColor(Color.FromArgb(196, entity.IsSelected ? Color.Red : Color.White));
 			tessellator.PushTransform();
 
@@ -54,6 +55,7 @@ namespace ASCIIWorld.Rendering
 			BlockRegistry.Instance.GetById(entity.BlockID).Renderer.Render(tessellator);
 
 			tessellator.PopTransform();
+			tessellator.BindColor(color);
 		}
 
 		#endregion

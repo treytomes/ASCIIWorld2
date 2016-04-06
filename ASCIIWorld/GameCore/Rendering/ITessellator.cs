@@ -7,6 +7,7 @@ namespace GameCore.Rendering
 	public interface ITessellator : ICamera
 	{
 		PrimitiveType PrimitiveType { get; }
+		Color CurrentColor { get; }
 
 		void Begin(PrimitiveType primitiveType);
 		void End();

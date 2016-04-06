@@ -4,6 +4,7 @@ using GameCore.Rendering;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
 using System;
+using System.Drawing;
 using System.Linq;
 
 namespace ASCIIWorld.Rendering
@@ -36,6 +37,8 @@ namespace ASCIIWorld.Rendering
 			var maxX = (int)Math.Ceiling(bottomRight.X);
 			var minY = (int)Math.Floor(topLeft.Y);
 			var maxY = (int)Math.Ceiling(bottomRight.Y);
+
+			_tessellator.BindColor(Color.White);
 
 			_tessellator.LoadIdentity();
 			_tessellator.Begin(PrimitiveType.Quads);

@@ -62,12 +62,14 @@ namespace ASCIIWorld.Rendering
 
 		public void Render(ITessellator tessellator)
 		{
+			var color = tessellator.CurrentColor;
+
 			// This will cause tile images to become darker as they move into the background layers.
 			var layer =  -tessellator.Transform(Vector3.Zero).Z;
 			if (layer < _numChunkLayers)
 			{
 				var multiplier = 1.0 - (_numChunkLayers - layer) / (_numChunkLayers * 2) + 0.25f;
-				tessellator.BindColor(Color.FromArgb((int)(255 * multiplier), (int)(255 * multiplier), (int)(255 * multiplier)));
+				tessellator.BindColor(Color.FromArgb((int)(color.R * multiplier), (int)(color.G * multiplier), (int)(color.B * multiplier)));
 			}
 
 			if (Transform != null)
@@ -82,6 +84,8 @@ namespace ASCIIWorld.Rendering
 			{
 				_tileSet.Render(tessellator, TileIndex);
 			}
+
+			tessellator.BindColor(color);
 		}
 
 		public void Render(ITessellator tessellator, IChunkAccess chunk, ChunkLayer layer, int x, int y)

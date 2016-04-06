@@ -44,6 +44,7 @@ namespace ASCIIWorld.Rendering
 		{
 			base.Render(tessellator, chunk, layer, x, y);
 
+			var color = tessellator.CurrentColor;
 			tessellator.BindColor(OutlineColor);
 			if (chunk[layer, x - 1, y] != chunk[layer, x, y])
 			{
@@ -61,6 +62,7 @@ namespace ASCIIWorld.Rendering
 			{
 				_connectedWallTiles.Render(tessellator, _connectedWallTiles.GetTileIndexFromName(_southWall));
 			}
+			tessellator.BindColor(color);
 		}
 
 		#endregion

@@ -34,9 +34,9 @@ namespace GameCore.Rendering
 
 		public PrimitiveType PrimitiveType { get; private set; }
 
-		protected Texture2D CurrentTexture { get; private set; }
+		public Color CurrentColor { get; private set; }
 
-		protected Color CurrentColor { get; private set; }
+		protected Texture2D CurrentTexture { get; private set; }
 
 		protected int CurrentTextureID
 		{
@@ -84,6 +84,7 @@ namespace GameCore.Rendering
 
 		public abstract void End();
 
+		// TODO: Implement Rx-style events.
 		public void BindColor(Color color)
 		{
 			if (CurrentColor != color)
