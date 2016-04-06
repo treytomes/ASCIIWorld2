@@ -103,6 +103,7 @@
     <Compile Include="IO\BlockRegistryContentProvider.cs" />
     <Compile Include="Rendering\Animation.cs" />
     <Compile Include="Data\Block.cs" />
+    <Compile Include="Rendering\EntityRendererFactory.cs" />
     <Compile Include="Rendering\IBlockRenderer.cs" />
     <Compile Include="Rendering\IRenderable.cs" />
     <Compile Include="Rendering\IUpdateable.cs" />

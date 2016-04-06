@@ -1,20 +1,15 @@
 ﻿using ASCIIWorld.Rendering;
-using GameCore.IO;
 using GameCore.Rendering;
 using OpenTK;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ASCIIWorld.Data
 {
-	public class Entity : IUpdateable, IRenderable
+	[Serializable]
+	public class Entity : IUpdateable
 	{
 		#region Fields
 
-		private IRenderable _renderable;
 		private Vector2 _position;
 		private bool _isAlive;
 
@@ -22,9 +17,8 @@ namespace ASCIIWorld.Data
 
 		#region Constructors
 
-		public Entity(IRenderable renderable)
+		public Entity()
 		{
-			_renderable = renderable;
 			_isAlive = true;
 		}
 
@@ -54,14 +48,6 @@ namespace ASCIIWorld.Data
 
 		public virtual void Update(TimeSpan elapsed)
 		{
-		}
-
-		public virtual void Render(ITessellator tessellator)
-		{
-			tessellator.PushTransform();
-			tessellator.Translate(Position);
-			_renderable.Render(tessellator);
-			tessellator.PopTransform();
 		}
 
 		public void MoveTo(Level level, Vector2 position)

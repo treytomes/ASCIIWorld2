@@ -43,7 +43,7 @@ namespace ASCIIWorld.Rendering
 			RenderLayer(_tessellator, chunk, ChunkLayer.Background, minX, maxX, minY, maxY);
 			RenderLayer(_tessellator, chunk, ChunkLayer.Floor, minX, maxX, minY, maxY);
 
-			RenderEntities(_tessellator, chunk);
+			RenderEntities(_tessellator, chunk, minX, maxX, minY, maxY);
 
 			RenderLayer(_tessellator, chunk, ChunkLayer.Blocking, minX, maxX, minY, maxY);
 			RenderLayer(_tessellator, chunk, ChunkLayer.Ceiling, minX, maxX, minY, maxY);
@@ -51,21 +51,20 @@ namespace ASCIIWorld.Rendering
 			_tessellator.End();
 		}
 
-		private void RenderEntities(ITessellator tessellator, IChunkAccess chunk)
+		private void RenderEntities(ITessellator tessellator, IChunkAccess chunk, int minX, int maxX, int minY, int maxY)
 		{
-			tessellator.Translate(0, 0, -2 * (int)ChunkLayer.Blocking);
-			//if (!chunk.Entities.Any())
-			//{
-			//	return;
-			//}
-
-			// TODO: Only render entities in the active chunk.
+			tessellator.Translate(0, 0, -1 * (int)ChunkLayer.Blocking);
+			
 			foreach (var entity in chunk.Entities)
 			{
-				entity.Render(tessellator);
+				if (CommonCore.Math.MathHelper.IsInRange(entity.Position.X, minX, maxX + 1) &&
+					CommonCore.Math.MathHelper.IsInRange(entity.Position.Y, minY, maxY + 1))
+				{
+					EntityRendererFactory.Instance.Render(tessellator, entity);
+				}
 			}
 
-			tessellator.Translate(0, 0, 2 * (int)ChunkLayer.Blocking);
+			tessellator.Translate(0, 0, (int)ChunkLayer.Blocking);
 		}
 
 		private void RenderLayer(ITessellator tessellator, IChunkAccess chunk, ChunkLayer layer, int minX, int maxX, int minY, int maxY)
