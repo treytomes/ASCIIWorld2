@@ -66,6 +66,7 @@
   <ItemGroup>
     <Compile Include="AppSettings.cs" />
     <Compile Include="ASCIIWorldGameWindow.cs" />
+    <Compile Include="Data\BlockItem.cs" />
     <Compile Include="Data\BlockRegistry.cs" />
     <Compile Include="Data\Chunk.cs" />
     <Compile Include="Data\ChunkLayer.cs" />
@@ -95,17 +96,22 @@
     <Compile Include="Data\IBlockAccess.cs" />
     <Compile Include="Data\IBlockRegistryAccess.cs" />
     <Compile Include="Data\IChunkAccess.cs" />
+    <Compile Include="Data\InventoryContainer.cs" />
     <Compile Include="Data\Item.cs" />
+    <Compile Include="Data\ItemRegistry.cs" />
+    <Compile Include="Data\ItemStack.cs" />
     <Compile Include="Data\Level.cs" />
     <Compile Include="Data\HoeItem.cs" />
     <Compile Include="Data\PickaxeItem.cs" />
     <Compile Include="Data\BlockEntity.cs" />
+    <Compile Include="Data\PlayerEntity.cs" />
     <Compile Include="IO\BlockRegistryContentProvider.cs" />
     <Compile Include="Rendering\Animation.cs" />
     <Compile Include="Data\Block.cs" />
-    <Compile Include="Rendering\EntityRendererFactory.cs" />
+    <Compile Include="Rendering\EntityRenderManager.cs" />
     <Compile Include="Rendering\IBlockRenderer.cs" />
     <Compile Include="Rendering\IRenderable.cs" />
+    <Compile Include="Rendering\ItemRenderManager.cs" />
     <Compile Include="Rendering\IUpdateable.cs" />
     <Compile Include="Rendering\RegionBoundedTileStack.cs" />
     <Compile Include="Rendering\TileStack.cs" />
@@ -129,7 +135,8 @@
     <Compile Include="UI\BaseButton.cs" />
     <Compile Include="UI\Border.cs" />
     <Compile Include="UI\IconButton.cs" />
-    <Compile Include="UI\ItemButton.cs" />
+    <Compile Include="UI\InventorySlotButton.cs" />
+    <Compile Include="UI\ItemStackButton.cs" />
     <Compile Include="UI\TextButton.cs" />
     <Compile Include="UI\Label.cs" />
     <Compile Include="UI\UIElement.cs" />

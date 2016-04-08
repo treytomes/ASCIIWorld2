@@ -26,6 +26,8 @@ namespace ASCIIWorld
 		{
 			Level = level;
 
+			GeneratePlayer();
+
 			Camera = GameCore.Camera.CreateOrthographicCamera(viewport);
 			_chunkRenderer = new ChunkRenderer(viewport);
 		}
@@ -38,6 +40,8 @@ namespace ASCIIWorld
 
 		public Level Level { get; private set; }
 
+		public PlayerEntity Player { get; private set; }
+
 		#endregion
 
 		#region Methods
@@ -48,7 +52,9 @@ namespace ASCIIWorld
 			var formatter = new BinaryFormatter();
 			try
 			{
+				// The player is not loaded from the level file.
 				Level = (Level)formatter.Deserialize(fileStream);
+				Level.AddEntity(Player);
 				Console.WriteLine($"Loaded from '{filename}'.");
 			}
 			catch (Exception ex)
@@ -59,6 +65,8 @@ namespace ASCIIWorld
 			{
 				fileStream.Close();
 			}
+
+			// TODO: Load the player from it's own file.
 		}
 
 		public void Save(string filename)
@@ -67,7 +75,10 @@ namespace ASCIIWorld
 			var formatter = new BinaryFormatter();
 			try
 			{
+				// Don't save the player with the level!
+				Level.GetChunk(Player).RemoveEntity(Player);
 				formatter.Serialize(fileStream, Level);
+				Level.AddEntity(Player);
 				Console.WriteLine($"Saved to '{filename}'.");
 			}
 			catch (Exception ex)
@@ -78,6 +89,8 @@ namespace ASCIIWorld
 			{
 				fileStream.Close();
 			}
+
+			// TODO: Save the player to it's own file.
 		}
 
 		public void Resize(Viewport viewport)
@@ -87,28 +100,32 @@ namespace ASCIIWorld
 
 		public void Update(TimeSpan elapsed)
 		{
-			BlockRegistry.Instance.Update(elapsed);
+			BlockRegistry.Instance.UpdateRenderer(elapsed);
 
-			var deadEntities = new List<Entity>();
-			foreach (var entity in Level.Entities)
+			Camera.MoveTo(Player.Position);
+			if (!Player.IsAlive)
 			{
-				entity.Update(elapsed);
-				if (!entity.IsAlive)
-				{
-					deadEntities.Add(entity);
-				}
+				throw new NotImplementedException("The player is dead.");
 			}
 
-			foreach (var entity in deadEntities)
-			{
-				Level.GetChunk(entity).RemoveEntity(entity);
-			}
+			Level.Update(elapsed, Player);
 		}
 
 		public void Render()
 		{
 			Camera.Apply();
 			_chunkRenderer.Render(Camera, Level);
+		}
+
+		private void GeneratePlayer()
+		{
+			Player = new PlayerEntity();
+
+			Player.Toolbelt.SetFirstCompatibleSlot(new ItemStack(ItemRegistry.Instance.GetId("Pickaxe")));
+			Player.Toolbelt.SetFirstCompatibleSlot(new ItemStack(ItemRegistry.Instance.GetId("Hoe")));
+			Player.Toolbelt.SetFirstCompatibleSlot(new ItemStack(ItemRegistry.Instance.GetId("Grass")));
+
+			Level.GetChunk(Player).AddEntity(Player);
 		}
 
 		#endregion

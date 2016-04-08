@@ -36,10 +36,10 @@ namespace ASCIIWorld.UI
 		public override void LoadContent(ContentManager content)
 		{
 			base.LoadContent(content);
-			Bounds = new RectangleF(Bounds.X, Bounds.Y, ASCII.Width * (Text.Length + 2), ASCII.Height * 3);
+			Bounds = new RectangleF(Bounds.X, Bounds.Y, UI_ASCII.Width * (Text.Length + 2), UI_ASCII.Height * 3);
 			SetBorderSize(Text.Length + 2, 3);
 
-			_label = new Label(Camera, new Vector2(ASCII.Width, ASCII.Height), Text);
+			_label = new Label(Camera, new Vector2(UI_ASCII.Width, UI_ASCII.Height), Text);
 			_label.LoadContent(content);
 			_label.CanHaveMouseHover = false;
 			_labelColor = _label.TextColor;

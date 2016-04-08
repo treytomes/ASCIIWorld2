@@ -53,6 +53,7 @@ namespace ASCIIWorld
 			
 			var progress = new Progress<string>(message => _progressMessages.Push(message));
 			content.Load<BlockRegistry>("Blocks/SampleBlockRegistry.xml");
+			ItemRegistry.Instance.Initialize();
 
 			_loadingTask = Task.Run(() =>
 			{

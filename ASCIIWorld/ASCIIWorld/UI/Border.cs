@@ -67,14 +67,14 @@ namespace ASCIIWorld.UI
 		{
 			base.LoadContent(content);
 
-			Bounds = new RectangleF(Bounds.X, Bounds.Y, ASCII.Width * _tileWidth, ASCII.Height * _tileHeight);
+			Bounds = new RectangleF(Bounds.X, Bounds.Y, UI_ASCII.Width * _tileWidth, UI_ASCII.Height * _tileHeight);
 		}
 
 		public void Resize(int tileWidth, int tileHeight)
 		{
 			_tileWidth = tileWidth;
 			_tileHeight = tileHeight;
-			Bounds = new RectangleF(Bounds.X, Bounds.Y, ASCII.Width * _tileWidth, ASCII.Height * _tileHeight);
+			Bounds = new RectangleF(Bounds.X, Bounds.Y, UI_ASCII.Width * _tileWidth, UI_ASCII.Height * _tileHeight);
 		}
 
 		protected override void RenderContent(ITessellator tessellator)
@@ -83,40 +83,40 @@ namespace ASCIIWorld.UI
 
 			tessellator.BindColor(BorderColor);
 
-			ASCII.Render(tessellator, DOUBLELINED ? ASCII_DOUBLELINE_TOPLEFT : ASCII_SINGLELINE_TOPLEFT);
+			UI_ASCII.Render(tessellator, DOUBLELINED ? ASCII_DOUBLELINE_TOPLEFT : ASCII_SINGLELINE_TOPLEFT);
 
 			for (var n = 0; n < _tileWidth - 2; n++)
 			{
-				tessellator.Translate(ASCII.Width, 0);
-				ASCII.Render(tessellator, DOUBLELINED ? ASCII_DOUBLELINE_HORIZONTAL : ASCII_SINGLELINE_HORIZONTAL); // top
+				tessellator.Translate(UI_ASCII.Width, 0);
+				UI_ASCII.Render(tessellator, DOUBLELINED ? ASCII_DOUBLELINE_HORIZONTAL : ASCII_SINGLELINE_HORIZONTAL); // top
 			}
 
-			tessellator.Translate(ASCII.Width, 0);
-			ASCII.Render(tessellator, DOUBLELINED ? ASCII_DOUBLELINE_TOPRIGHT : ASCII_SINGLELINE_TOPRIGHT);
+			tessellator.Translate(UI_ASCII.Width, 0);
+			UI_ASCII.Render(tessellator, DOUBLELINED ? ASCII_DOUBLELINE_TOPRIGHT : ASCII_SINGLELINE_TOPRIGHT);
 
-			tessellator.Translate(0, ASCII.Height * (_tileHeight - 1));
-			ASCII.Render(tessellator, DOUBLELINED ? ASCII_DOUBLELINE_BOTTOMRIGHT : ASCII_SINGLELINE_BOTTOMRIGHT);
+			tessellator.Translate(0, UI_ASCII.Height * (_tileHeight - 1));
+			UI_ASCII.Render(tessellator, DOUBLELINED ? ASCII_DOUBLELINE_BOTTOMRIGHT : ASCII_SINGLELINE_BOTTOMRIGHT);
 
 			for (var n = 0; n < _tileWidth - 2; n++)
 			{
-				tessellator.Translate(-ASCII.Width, 0);
-				ASCII.Render(tessellator, DOUBLELINED ? ASCII_DOUBLELINE_HORIZONTAL : ASCII_SINGLELINE_HORIZONTAL); // bottom
+				tessellator.Translate(-UI_ASCII.Width, 0);
+				UI_ASCII.Render(tessellator, DOUBLELINED ? ASCII_DOUBLELINE_HORIZONTAL : ASCII_SINGLELINE_HORIZONTAL); // bottom
 			}
 
-			tessellator.Translate(-ASCII.Width, 0);
-			ASCII.Render(tessellator, DOUBLELINED ? ASCII_DOUBLELINE_BOTTOMLEFT : ASCII_SINGLELINE_BOTTOMLEFT);
+			tessellator.Translate(-UI_ASCII.Width, 0);
+			UI_ASCII.Render(tessellator, DOUBLELINED ? ASCII_DOUBLELINE_BOTTOMLEFT : ASCII_SINGLELINE_BOTTOMLEFT);
 
 			for (var n = 0; n < _tileHeight - 2; n++)
 			{
-				tessellator.Translate(0, -ASCII.Height);
-				ASCII.Render(tessellator, DOUBLELINED ? ASCII_DOUBLELINE_VERTICAL : ASCII_SINGLELINE_VERTICAL); // left
+				tessellator.Translate(0, -UI_ASCII.Height);
+				UI_ASCII.Render(tessellator, DOUBLELINED ? ASCII_DOUBLELINE_VERTICAL : ASCII_SINGLELINE_VERTICAL); // left
 			}
 
-			tessellator.Translate(ASCII.Width * (_tileWidth - 1), 0);
+			tessellator.Translate(UI_ASCII.Width * (_tileWidth - 1), 0);
 			for (var n = 0; n < _tileHeight - 2; n++)
 			{
-				ASCII.Render(tessellator, DOUBLELINED ? ASCII_DOUBLELINE_VERTICAL : ASCII_SINGLELINE_VERTICAL); // right
-				tessellator.Translate(0, ASCII.Height);
+				UI_ASCII.Render(tessellator, DOUBLELINED ? ASCII_DOUBLELINE_VERTICAL : ASCII_SINGLELINE_VERTICAL); // right
+				tessellator.Translate(0, UI_ASCII.Height);
 			}
 		}
 

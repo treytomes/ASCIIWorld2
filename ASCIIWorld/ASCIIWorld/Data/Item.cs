@@ -1,26 +1,30 @@
-﻿using ASCIIWorld.Rendering;
-using GameCore.Rendering;
+﻿using CommonCore;
 
 namespace ASCIIWorld.Data
 {
-	public class Item : IRenderable
+	public abstract class Item : IRegisteredObject
 	{
 		#region Fields
-
-		private IRenderable _renderable;
 
 		#endregion
 
 		#region Constructors
 
-		public Item(IRenderable renderable)
+		public Item(string name)
 		{
-			_renderable = renderable;
+			Name = name;
 		}
 
 		#endregion
 
 		#region Properties
+
+		/// <summary>
+		/// This will be assigned by the ItemRegistry.
+		/// </summary>
+		public int Id { get; set; }
+
+		public string Name { get; private set; }
 
 		#endregion
 
@@ -29,20 +33,17 @@ namespace ASCIIWorld.Data
 		/// <summary>
 		/// Use this item on the selected location.
 		/// </summary>
-		public virtual void Use(Level level, ChunkLayer layer, int blockX, int blockY)
+		public virtual void Use(Level level, ChunkLayer layer, int blockX, int blockY, out bool isConsumed)
 		{
+			isConsumed = false;
 		}
 
 		/// <summary>
 		/// Use this item on the specified entity.
 		/// </summary>
-		public virtual void Use(Entity entity)
+		public virtual void Use(Entity target, out bool isConsumed)
 		{
-		}
-
-		public virtual void Render(ITessellator tessellator)
-		{
-			_renderable.Render(tessellator);
+			isConsumed = false;
 		}
 
 		#endregion

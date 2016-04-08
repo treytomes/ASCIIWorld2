@@ -5,7 +5,6 @@ using OpenTK;
 using OpenTK.Graphics.OpenGL;
 using System;
 using System.Drawing;
-using System.Linq;
 
 namespace ASCIIWorld.Rendering
 {
@@ -63,7 +62,8 @@ namespace ASCIIWorld.Rendering
 				if (CommonCore.Math.MathHelper.IsInRange(entity.Position.X, minX, maxX + 1) &&
 					CommonCore.Math.MathHelper.IsInRange(entity.Position.Y, minY, maxY + 1))
 				{
-					EntityRendererFactory.Instance.Render(tessellator, entity);
+					tessellator.BindColor(Color.White);
+					EntityRenderManager.Instance.Render(tessellator, entity);
 				}
 			}
 

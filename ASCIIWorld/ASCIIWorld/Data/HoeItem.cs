@@ -16,8 +16,8 @@ namespace ASCIIWorld.Data
 
 		#region Constructors
 
-		public HoeItem(ContentManager content)
-			: base(new Tile(content.Load<AtlasTileSet>("TileSets/SampleBlocks.xml"), "Hoe"))
+		public HoeItem()
+			: base("Hoe")
 		{
 			_dirtId = BlockRegistry.Instance.GetId("Dirt");
 			_grassId = BlockRegistry.Instance.GetId("Grass");
@@ -33,15 +33,19 @@ namespace ASCIIWorld.Data
 		/// <summary>
 		/// You can only till dirt or grass.
 		/// </summary>
-		public override void Use(Level level, ChunkLayer layer, int blockX, int blockY)
+		public override void Use(Level level, ChunkLayer layer, int blockX, int blockY, out bool isConsumed)
 		{
-			base.Use(level, layer, blockX, blockY);
+			base.Use(level, layer, blockX, blockY, out isConsumed);
+
 			layer = level.GetHighestVisibleLayer(blockX, blockY);
 			var blockId = level[layer, blockX, blockY];
 			if ((blockId == _dirtId) || (blockId == _grassId))
 			{
 				level[layer, blockX, blockY] = _tilledSoil;
 			}
+
+			// TODO: If durability <= 0, isConsumed = true.
+			isConsumed = false;
 		}
 
 		#endregion

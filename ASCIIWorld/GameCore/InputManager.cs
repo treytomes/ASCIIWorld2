@@ -1,4 +1,5 @@
-﻿using OpenTK;
+﻿using CommonCore;
+using OpenTK;
 using OpenTK.Input;
 using System;
 
@@ -14,7 +15,9 @@ namespace GameCore
 			//Joysticks = game.Joysticks;
 			Mouse = game.Mouse;
 
-			Keyboard.KeyRepeat = true;
+			Keyboard.KeyRepeat = false;
+
+			ConvertEx.AddConversion<Key, char>(KeyExtensions.ToChar);
 		}
 
 		#endregion

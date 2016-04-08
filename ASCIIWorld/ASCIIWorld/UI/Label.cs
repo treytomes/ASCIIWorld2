@@ -79,17 +79,17 @@ namespace ASCIIWorld.UI
 			{
 				tessellator.Translate(1, 1);
 				tessellator.BindColor(ShadowColor);
-				ASCII.RenderText(tessellator, Text);
+				UI_ASCII.RenderText(tessellator, Text);
 				tessellator.Translate(-1, -1);
 			}
 
 			tessellator.BindColor(TextColor);
-			ASCII.RenderText(tessellator, Text);
+			UI_ASCII.RenderText(tessellator, Text);
 		}
 
 		private void ResetBounds()
 		{
-			Bounds = new RectangleF(Bounds.X, Bounds.Y, (ASCII?.Width??0) * Text.Length, (ASCII?.Height??0));
+			Bounds = new RectangleF(Bounds.X, Bounds.Y, (UI_ASCII?.Width??0) * Text.Length, (UI_ASCII?.Height??0));
 		}
 
 		#endregion

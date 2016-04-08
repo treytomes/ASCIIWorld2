@@ -23,6 +23,7 @@ namespace ASCIIWorld.Data
 		private int _width;
 		private int _height;
 		private int[,,] _blockIndex;
+		private int[,,] _blockMetadata;
 		private List<Entity> _entities;
 		
 		#endregion
@@ -34,6 +35,7 @@ namespace ASCIIWorld.Data
 			_width = width;
 			_height = height;
 			_blockIndex = new int[Enum.GetValues(typeof(ChunkLayer)).Length, _height, _width];
+			_blockMetadata = new int[Enum.GetValues(typeof(ChunkLayer)).Length, _height, _width];
 			_entities = new List<Entity>();
 		}
 
@@ -75,6 +77,11 @@ namespace ASCIIWorld.Data
 				if (MathHelper.IsInRange(x, 0, Width) && MathHelper.IsInRange(y, 0, Height))
 				{
 					_blockIndex[(int)layer, y, x] = value;
+
+					if (value == 0)
+					{
+						SetMetadata(layer, x, y, 0);
+					}
 				}
 			}
 		}
@@ -83,7 +90,7 @@ namespace ASCIIWorld.Data
 		{
 			get
 			{
-				foreach (var entity in _entities)
+				foreach (var entity in _entities.ToArray())
 				{
 					yield return entity;
 				}
@@ -95,11 +102,71 @@ namespace ASCIIWorld.Data
 
 		#region Methods
 
+		public void Update(TimeSpan elapsed, Level level)
+		{
+			UpdateBlocks(elapsed, level, ChunkLayer.Background);
+			UpdateBlocks(elapsed, level, ChunkLayer.Floor);
+
+			UpdateEntities(elapsed, level);
+
+			UpdateBlocks(elapsed, level, ChunkLayer.Blocking);
+			UpdateBlocks(elapsed, level, ChunkLayer.Ceiling);
+		}
+
+		/// <summary>
+		/// This allows us to either update all of the entities in the level, or only the entities in the given chunk, i.e. the player's chunk.
+		/// This may not be necessary, or it may need to be expanded to the nearest 3 chunks, etc.
+		/// Looking up the player's chunk every frame may slow things down more than just updating every entity.  I'm not sure yet.
+		/// </summary>
+		private void UpdateEntities(TimeSpan elapsed, Level level)
+		{
+			var deadEntities = new List<Entity>();
+			foreach (var entity in Entities)
+			{
+				entity.Update(level, elapsed);
+				if (!entity.IsAlive)
+				{
+					deadEntities.Add(entity);
+				}
+			}
+
+			foreach (var entity in deadEntities)
+			{
+				level.GetChunk(entity).RemoveEntity(entity);
+			}
+		}
+
+		private void UpdateBlocks(TimeSpan elapsed, Level level, ChunkLayer layer)
+		{
+			for (var blockX = 0; blockX < Width; blockX++)
+			{
+				for (var blockY = 0; blockY < Height; blockY++)
+				{
+					var blockId = _blockIndex[(int)layer, blockX, blockY];
+					if (blockId != NULL_BLOCK_ID)
+					{
+						BlockRegistry.Instance.GetById(blockId).Update(elapsed, level, layer, blockX, blockY);
+					}
+				}
+			}
+		}
+
+		public void SetMetadata(ChunkLayer layer, int x, int y, int metadata)
+		{
+			_blockMetadata[(int)layer, x, y] = metadata;
+		}
+
+		public int GetMetadata(ChunkLayer layer, int x, int y)
+		{
+			return _blockMetadata[(int)layer, x, y];
+		}
+
 		public void AddEntity(Entity entity)
 		{
 			if (!_entities.Contains(entity))
 			{
 				_entities.Add(entity);
+				Console.WriteLine($"Adding entity: {entity.GetType()}");
 			}
 		}
 
@@ -108,6 +175,7 @@ namespace ASCIIWorld.Data
 			if (_entities.Contains(entity))
 			{
 				_entities.Remove(entity);
+				Console.WriteLine($"Removing entity: {entity.GetType()}");
 			}
 		}
 
@@ -122,12 +190,17 @@ namespace ASCIIWorld.Data
 			{
 				var x = random.Next(0, _width);
 				var y = random.Next(0, _height);
-				if (this[ChunkLayer.Blocking, x, y] == NULL_BLOCK_ID)
+				if (IsBlockedAt(x, y))
 				{
 					return new Vector2I(x, y);
 				}
 			}
 			return null;
+		}
+
+		public bool IsBlockedAt(int blockX, int blockY)
+		{
+			return this[ChunkLayer.Blocking, blockX, blockY] != NULL_BLOCK_ID;
 		}
 
 		public ChunkLayer GetHighestVisibleLayer(int blockX, int blockY)

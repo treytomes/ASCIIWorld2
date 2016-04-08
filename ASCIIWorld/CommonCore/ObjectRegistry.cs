@@ -27,6 +27,25 @@ namespace CommonCore
 
 		#endregion
 
+		#region Properties
+
+		public int NextId
+		{
+			get
+			{
+				if (_objects.Count == 0)
+				{
+					return 1;
+				}
+				else
+				{
+					return _objects.Keys.Max() + 1;
+				}
+			}
+		}
+
+		#endregion
+
 		#region Methods
 
 		public Dictionary<int, string> ToDictionary()
@@ -35,7 +54,12 @@ namespace CommonCore
 			return _nameIndex.ToDictionary(x => x.Value, x => x.Key);
 		}
 
-		public void RegisterBlock(int id, TObject @object)
+		public void Register(TObject @object)
+		{
+			Register(NextId, @object);
+		}
+
+		public void Register(int id, TObject @object)
 		{
 			if (_objects.ContainsKey(id))
 			{

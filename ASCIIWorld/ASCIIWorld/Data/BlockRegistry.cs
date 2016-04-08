@@ -20,7 +20,7 @@ namespace ASCIIWorld.Data
 
 		public static BlockRegistry Instance { get; private set; }
 
-		public void Update(TimeSpan elapsed)
+		public void UpdateRenderer(TimeSpan elapsed)
 		{
 			foreach (var block in this)
 			{

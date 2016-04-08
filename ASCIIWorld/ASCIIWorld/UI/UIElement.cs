@@ -56,7 +56,7 @@ namespace ASCIIWorld.UI
 
 		protected Camera<OrthographicProjection> Camera { get; private set; }
 
-		protected TileSet ASCII { get; private set; }
+		protected TileSet UI_ASCII { get; private set; }
 
 		protected bool ClickStarted { get; private set; }
 
@@ -71,8 +71,8 @@ namespace ASCIIWorld.UI
 
 		public virtual void LoadContent(ContentManager content)
 		{
-			ASCII = content.Load<TileSet>("TileSets/UI-ASCII.xml");
-			ASCII.IsNormalized = false;
+			UI_ASCII = content.Load<TileSet>("TileSets/UI-ASCII.xml");
+			UI_ASCII.IsNormalized = false;
 		}
 
 		public virtual void Dispose()
@@ -118,10 +118,10 @@ namespace ASCIIWorld.UI
 			{
 				for (var x = 0; x < tileWidth; x++)
 				{
-					ASCII.Render(tessellator, ASCII_SOLID);
-					tessellator.Translate(ASCII.Width, 0);
+					UI_ASCII.Render(tessellator, ASCII_SOLID);
+					tessellator.Translate(UI_ASCII.Width, 0);
 				}
-				tessellator.Translate(-ASCII.Width * tileWidth, ASCII.Height);
+				tessellator.Translate(-UI_ASCII.Width * tileWidth, UI_ASCII.Height);
 			}
 			tessellator.PopTransform();
 		}
@@ -157,6 +157,14 @@ namespace ASCIIWorld.UI
 			tessellator.PushTransform();
 			tessellator.Scale(scale, scale);
 			tessellator.Translate(position);
+		}
+
+		protected void RaiseClickedEvent()
+		{
+			if (Clicked != null)
+			{
+				Clicked(this, EventArgs.Empty);
+			}
 		}
 
 		#endregion

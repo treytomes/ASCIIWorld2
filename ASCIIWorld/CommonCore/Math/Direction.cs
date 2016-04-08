@@ -117,7 +117,7 @@ namespace CommonCore.Math
 			return North;
 		}
 
-		public Vector2I ToVector()
+		public Vector2I ToVector2I()
 		{
 			return _vector;
 		}

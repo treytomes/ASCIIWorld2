@@ -126,6 +126,11 @@ namespace GameCore
 			Eye = position;
 		}
 
+		public void MoveTo(Vector2 position)
+		{
+			Eye = new Vector3(position.X, position.Y, Eye.Z);
+		}
+
 		public void MoveBy(Vector3 amount)
 		{
 			Eye = Vector3.Add(Eye, amount);

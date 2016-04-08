@@ -16,7 +16,7 @@ namespace ASCIIWorld.IO
 			{
 				var id = blockElem.Attribute<int>("id");
 				var source = blockElem.Attribute<string>("source");
-				registry.RegisterBlock(id, content.Load<Block>(source));
+				registry.Register(id, content.Load<Block>(source));
 			}
 
 			return registry;

@@ -1,5 +1,6 @@
 ﻿using ASCIIWorld.Rendering;
 using CommonCore;
+using System;
 using System.Collections.Generic;
 
 namespace ASCIIWorld.Data
@@ -60,6 +61,11 @@ namespace ASCIIWorld.Data
 		public void SetProperty<T>(string propertyName, T value)
 		{
 			_properties[propertyName] = value;
+		}
+
+		public virtual void Update(TimeSpan elapsed, Level level, ChunkLayer layer, int blockX, int blockY)
+		{
+			// TODO: Blocks need behavioral components.  Best if written in Lua.
 		}
 
 		public override string ToString()

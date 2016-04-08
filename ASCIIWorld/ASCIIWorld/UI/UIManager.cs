@@ -4,6 +4,7 @@ using GameCore.IO;
 using GameCore.Rendering;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
+using OpenTK.Input;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,12 +20,16 @@ namespace ASCIIWorld.UI
 
 		private List<UIElement> _children;
 
+		private WorldManager _worldManager;
+
 		#endregion
 
 		#region Constructors
 
-		public UIManager(Viewport viewport)
+		public UIManager(Viewport viewport, WorldManager worldManager)
 		{
+			_worldManager = worldManager;
+
 			_children = new List<UIElement>();
 
 			_hudCamera = Camera.CreateOrthographicCamera(viewport);
@@ -33,7 +38,7 @@ namespace ASCIIWorld.UI
 			//_tessellator = new ImmediateModeTessellator();
 			_tessellator = new VertexBufferTessellator() { Mode = VertexTessellatorMode.Render };
 
-			ToolbarItems = new List<ItemButton>();
+			ToolbarItems = new List<ItemStackButton>();
 		}
 
 		#endregion
@@ -49,13 +54,13 @@ namespace ASCIIWorld.UI
 		}
 
 		// TODO: Need a better way of managing inventory.
-		public List<ItemButton> ToolbarItems { get; private set; }
+		public List<ItemStackButton> ToolbarItems { get; private set; }
 
-		public Item SelectedToolbarItem
+		public ItemStack SelectedToolbarSlot
 		{
 			get
 			{
-				return ToolbarItems.Where(x => x.IsSelected).DefaultIfEmpty(null).FirstOrDefault()?.Renderable;
+				return ToolbarItems.Where(x => x.IsSelected).DefaultIfEmpty(null).FirstOrDefault()?.ItemStack;
 			}
 		}
 
@@ -82,18 +87,39 @@ namespace ASCIIWorld.UI
 			_children.Add(LoadButton);
 
 			// TODO: Find a better was to manage user items.
-			var itemButton = new ItemButton(_hudCamera, Vector2.Zero, new PickaxeItem(content));
-			itemButton.LoadContent(content);
-			itemButton.Clicked += ToolbarItemButton_Clicked;
-			_children.Add(itemButton);
-			ToolbarItems.Add(itemButton);
+			BuildItemToolbar(content);
 
-			itemButton = new ItemButton(_hudCamera, Vector2.Zero, new HoeItem(content));
-			itemButton.LoadContent(content);
-			itemButton.Clicked += ToolbarItemButton_Clicked;
-			_children.Add(itemButton);
-			ToolbarItems.Add(itemButton);
+			FPSLabel = new Label(_hudCamera, new Vector2(256, 300), "FPS:");
+			FPSLabel.LoadContent(content);
+			_children.Add(FPSLabel);
+		}
 
+		// TODO: Move UnloadContent to Dispose.  Create a Disposable base class.
+		public void UnloadContent()
+		{
+			foreach (var child in _children)
+			{
+				child.Dispose();
+			}
+			_children.Clear();
+		}
+
+		// TODO: This is only used in LoadContent.  Is there a better place for it?
+		private void BuildItemToolbar(ContentManager content)
+		{
+			// TODO: Bind buttons directly to the inventory slot.
+			AddToolbarItem(content, 0, Key.Number1);
+			AddToolbarItem(content, 1, Key.Number2);
+			AddToolbarItem(content, 2, Key.Number3);
+			AddToolbarItem(content, 3, Key.Number4);
+			AddToolbarItem(content, 4, Key.Number5);
+			AddToolbarItem(content, 5, Key.Number6);
+			AddToolbarItem(content, 6, Key.Number7);
+			AddToolbarItem(content, 7, Key.Number8);
+			AddToolbarItem(content, 8, Key.Number9);
+			AddToolbarItem(content, 9, Key.Number0);
+
+			// Center the toolbar at the bottom of the screen.
 			var totalWidth = ToolbarItems.Count * ToolbarItems[0].Bounds.Width;
 			var buttonX = -totalWidth / 2.0f;
 			var height = ToolbarItems[0].Bounds.Height;
@@ -103,10 +129,16 @@ namespace ASCIIWorld.UI
 				button.MoveTo(new Vector2(buttonX, _hudCamera.Projection.Bottom - height));
 				buttonX += button.Bounds.Width;
 			}
+		}
 
-			FPSLabel = new Label(_hudCamera, new Vector2(256, 300), "FPS:");
-			FPSLabel.LoadContent(content);
-			_children.Add(FPSLabel);
+		// TODO: This is only used in BuildItemToolbar.  Is there a better place for it?
+		private void AddToolbarItem(ContentManager content, int slotIndex, Key hotkey)
+		{
+			var itemButton = new InventorySlotButton(_hudCamera, Vector2.Zero, _worldManager.Player.Toolbelt, slotIndex, hotkey);
+			itemButton.LoadContent(content);
+			itemButton.Clicked += ToolbarItemButton_Clicked;
+			_children.Add(itemButton);
+			ToolbarItems.Add(itemButton);
 		}
 
 		public void Resize(Viewport viewport)
@@ -138,20 +170,25 @@ namespace ASCIIWorld.UI
 			_tessellator.End();
 		}
 
+		private void SelectToolbarItem(ItemStackButton itemButton)
+		{
+			foreach (var btn in ToolbarItems)
+			{
+				if (!btn.Equals(itemButton))
+				{
+					btn.IsSelected = false;
+				}
+			}
+			itemButton.IsSelected = !itemButton.IsSelected;
+		}
+
 		#endregion
 
 		#region Event Handlers
 
 		private void ToolbarItemButton_Clicked(object sender, EventArgs e)
 		{
-			foreach (var btn in ToolbarItems)
-			{
-				if (!btn.Equals(sender))
-				{
-					btn.IsSelected = false;
-				}
-			}
-			(sender as ItemButton).IsSelected = !(sender as ItemButton).IsSelected;
+			SelectToolbarItem(sender as ItemStackButton);
 		}
 
 		#endregion

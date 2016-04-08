@@ -1,6 +1,8 @@
 ﻿using ASCIIWorld.Data;
+using ASCIIWorld.Rendering;
 using ASCIIWorld.UI;
 using CommonCore;
+using CommonCore.Math;
 using GameCore;
 using GameCore.IO;
 using GameCore.Rendering;
@@ -56,7 +58,7 @@ namespace ASCIIWorld
 			_timer = Stopwatch.StartNew();
 
 			_worldManager = new WorldManager(viewport, level);
-			_uiManager = new UIManager(viewport);
+			_uiManager = new UIManager(viewport, _worldManager);
 
 			_tessellator = new VertexBufferTessellator() { Mode = VertexTessellatorMode.Render };
 		}
@@ -65,6 +67,7 @@ namespace ASCIIWorld
 
 		#region Properties
 
+		// TODO: This freaks out if you pause by alt-tabbing.
 		public bool IsPaused
 		{
 			get
@@ -101,6 +104,9 @@ namespace ASCIIWorld
 		public override void LoadContent(ContentManager content)
 		{
 			base.LoadContent(content);
+
+			EntityRenderManager.Instance.LoadContent(content);
+			ItemRenderManager.Instance.LoadContent(content);
 
 			//_writer = new GLTextWriter();
 			_uiManager.LoadContent(content);
@@ -150,7 +156,8 @@ namespace ASCIIWorld
 			}
 			else
 			{
-				IsPaused = true;
+				// TODO: This should be attached to the window's Focus Lost event.
+				//IsPaused = true;
 			}
 		}
 
@@ -165,27 +172,30 @@ namespace ASCIIWorld
 
 			if (!_uiManager.HasMouseHover)
 			{
-				_tessellator.Begin(PrimitiveType.Quads);
-				_tessellator.LoadIdentity();
-				_tessellator.Translate(0, 0, -9); // map overlay render layer
-
-				// Render the tile selector.
-				_tessellator.BindTexture(null);
-				_tessellator.BindColor(Color.FromArgb(64, Color.Black));
-
-				_tessellator.Translate(_mouseBlockPosition.X, _mouseBlockPosition.Y);
-				_tessellator.AddPoint(0, 0);
-				_tessellator.AddPoint(0, 1);
-				_tessellator.AddPoint(1, 1);
-				_tessellator.AddPoint(1, 0);
-
-				if (_uiManager.SelectedToolbarItem != null)
+				if (_worldManager.Player.CanReach((int)_mouseBlockPosition.X, (int)_mouseBlockPosition.Y))
 				{
-					_tessellator.BindColor(Color.FromArgb(128, Color.White));
-					_uiManager.SelectedToolbarItem.Render(_tessellator);
-				}
+					_tessellator.Begin(PrimitiveType.Quads);
+					_tessellator.LoadIdentity();
+					_tessellator.Translate(0, 0, -9); // map overlay render layer
 
-				_tessellator.End();
+					// Render the tile selector.
+					_tessellator.BindTexture(null);
+					_tessellator.BindColor(Color.FromArgb(64, Color.Black));
+
+					_tessellator.Translate(_mouseBlockPosition.X, _mouseBlockPosition.Y);
+					_tessellator.AddPoint(0, 0);
+					_tessellator.AddPoint(0, 1);
+					_tessellator.AddPoint(1, 1);
+					_tessellator.AddPoint(1, 0);
+
+					if (_uiManager.SelectedToolbarSlot != null)
+					{
+						_tessellator.BindColor(Color.FromArgb(128, Color.White));
+						ItemRenderManager.Instance.Render(_tessellator, _uiManager.SelectedToolbarSlot.GetItem());
+					}
+
+					_tessellator.End();
+				}
 			}
 
 			_uiManager.Render();
@@ -213,22 +223,26 @@ namespace ASCIIWorld
 				switch (e.Key)
 				{
 					case Key.Escape:
-						EnterState(new PauseState(Manager));
+						IsPaused = true;
 						break;
 					case Key.I:
 						Console.WriteLine("Show some inventory.");
 						break;
-					case Key.Up:
-						_worldManager.Camera.MoveBy(-Vector3.UnitY);
+					case Key.W:
+						_worldManager.Player.Orientation = Direction.North;
+						_worldManager.Player.IsMoving = true;
 						break;
-					case Key.Down:
-						_worldManager.Camera.MoveBy(Vector3.UnitY);
+					case Key.S:
+						_worldManager.Player.Orientation = Direction.South;
+						_worldManager.Player.IsMoving = true;
 						break;
-					case Key.Left:
-						_worldManager.Camera.MoveBy(-Vector3.UnitX);
+					case Key.A:
+						_worldManager.Player.Orientation = Direction.West;
+						_worldManager.Player.IsMoving = true;
 						break;
-					case Key.Right:
-						_worldManager.Camera.MoveBy(Vector3.UnitX);
+					case Key.D:
+						_worldManager.Player.Orientation = Direction.East;
+						_worldManager.Player.IsMoving = true;
 						break;
 				}
 			}
@@ -238,17 +252,21 @@ namespace ASCIIWorld
 		{
 			if (HasFocus)
 			{
-				//switch (e.Key)
-				//{
-				//	case Key.Up:
-				//	case Key.Down:
-				//		_cameraVelocity.Y = 0;
-				//		break;
-				//	case Key.Left:
-				//	case Key.Right:
-				//		_cameraVelocity.X = 0;
-				//		break;
-				//}
+				switch (e.Key)
+				{
+					case Key.Escape:
+						EnterState(new PauseState(Manager));
+						break;
+					case Key.I:
+						Console.WriteLine("Show some inventory.");
+						break;
+					case Key.W:
+					case Key.S:
+					case Key.A:
+					case Key.D:
+						_worldManager.Player.IsMoving = false;
+						break;
+				}
 			}
 		}
 
@@ -258,20 +276,23 @@ namespace ASCIIWorld
 			{
 				if (e.Button == MouseButton.Left)
 				{
-					// TODO: Level.Entities should only return the entities for the active chunk.  The active chunk will need to be tracked somehow.
-					var hoverEntity = _worldManager.Level.Entities.FirstOrDefault(x => x.ContainsPoint(_mouseBlockPosition));
-					if (hoverEntity == null)
+					// Only interact with blocks that are within reach.
+					if (_worldManager.Player.CanReach((int)_mouseBlockPosition.X, (int)_mouseBlockPosition.Y)) // the reach should be partially dependent on the tool used
 					{
-						if (_uiManager.SelectedToolbarItem != null)
+						// TODO: Level.Entities should only return the entities for the active chunk.  The active chunk will need to be tracked somehow.
+						var hoverEntity = _worldManager.Level.Entities.FirstOrDefault(x => x.ContainsPoint(_mouseBlockPosition));
+						if (hoverEntity == null)
 						{
-							_uiManager.SelectedToolbarItem.Use(_worldManager.Level, _worldManager.Level.GetHighestVisibleLayer((int)_mouseBlockPosition.X, (int)_mouseBlockPosition.Y), (int)_mouseBlockPosition.X, (int)_mouseBlockPosition.Y);
+							if (_uiManager.SelectedToolbarSlot != null)
+							{
+								_uiManager.SelectedToolbarSlot.Use(_worldManager.Level, _worldManager.Level.GetHighestVisibleLayer((int)_mouseBlockPosition.X, (int)_mouseBlockPosition.Y), (int)_mouseBlockPosition.X, (int)_mouseBlockPosition.Y);
+							}
 						}
-					}
-					else
-					{
-						// TODO: Need a player entity.
-						hoverEntity.Touch(null);
-						Console.WriteLine(hoverEntity.ToString());
+						else
+						{
+							hoverEntity.Touched(_worldManager.Player);
+							Console.WriteLine(hoverEntity.ToString());
+						}
 					}
 				}
 				if (e.Button == MouseButton.Middle)

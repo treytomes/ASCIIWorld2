@@ -24,6 +24,14 @@
 			</TileStackContentSource>
 		</Tile.source>
 	</Tile>
+	<Tile name="FertilizedTilledSoil">
+		<Tile.source>
+			<TileStackContentSource>
+				<TileSetContentSource tileSet="TileSets/ASCII.xml" tileIndex="219" color="#FF382618" />
+				<TileSetContentSource tileSet="TileSets/ASCII.xml" tileIndex="205" color="#FF685638" />
+			</TileStackContentSource>
+		</Tile.source>
+	</Tile>
 	<Tile name="Solid">
 		<Tile.source>
 			<TileSetContentSource tileSet="TileSets/ASCII.xml" tileIndex="219" />

@@ -113,6 +113,43 @@ namespace ASCIIWorld.Data
 
 		#region Methods
 
+		public void Update(TimeSpan elapsed, Entity player)
+		{
+			GetChunk(player).Update(elapsed, this);
+		}
+
+		public void SetMetadata(ChunkLayer layer, int x, int y, int metadata)
+		{
+			var chunk = GetChunk(x, y);
+			var coords = ToChunkCoordinates(x, y);
+			chunk.SetMetadata(layer, coords.X, coords.Y, metadata);
+		}
+
+		public int GetMetadata(ChunkLayer layer, int x, int y)
+		{
+			var chunk = GetChunk(x, y);
+			var coords = ToChunkCoordinates(x, y);
+			return chunk.GetMetadata(layer, coords.X, coords.Y);
+		}
+
+		public IEnumerable<Entity> GetEntitiesAt(OpenTK.Vector2 position)
+		{
+			var chunk = GetChunk(position);
+
+			var testChunkPosition = ToChunkCoordinates((int)position.X, (int)position.Y);
+
+			// TODO: This isn't very accurate.
+			foreach (var entity in chunk.Entities)
+			{
+				var chunkPosition = ToChunkCoordinates((int)entity.Position.X, (int)entity.Position.Y);
+				if ((Math.Abs(chunkPosition.X - testChunkPosition.X) <= 0.5) && (Math.Abs(chunkPosition.Y - testChunkPosition.Y) <= 0.5))
+				{
+					yield return entity;
+				}
+			}
+			yield break;
+		}
+
 		public void AddEntity(Entity entity)
 		{
 			var chunk = GetChunk((int)entity.Position.X, (int)entity.Position.Y);
@@ -141,18 +178,6 @@ namespace ASCIIWorld.Data
 			return chunk.CanSeeSky(layer, chunkX, chunkY);
 		}
 
-		private void GenerateChunk(int chunkX, int chunkY)
-		{
-			IProgress<string> progress = new Progress<string>(message => Console.WriteLine(message));
-
-			//_chunks[chunkY, chunkX] = new CavernChunkGenerator(_blocks, CHUNK_WIDTH, CHUNK_HEIGHT, "hello!").Generate(progress);
-			//_chunks[chunkY, chunkX] = new CavernChunkGenerator(_blocks, CHUNK_WIDTH, CHUNK_HEIGHT, null).Generate(progress);
-			//_chunks[chunkY, chunkX] = new DugoutDungeonChunkGenerator(_blocks, CHUNK_WIDTH, CHUNK_HEIGHT, null).Generate(progress);
-			//_chunks[chunkY, chunkX] = new LabyrinthChunkGenerator(_blocks, CHUNK_WIDTH, CHUNK_HEIGHT, null).Generate(progress);
-			//_chunks[chunkY, chunkX] = new BSPDungeonChunkGenerator(_blocks, CHUNK_WIDTH, CHUNK_HEIGHT, null).Generate(progress);
-			_chunks[chunkY, chunkX] = new OverworldChunkGenerator(CHUNK_WIDTH, CHUNK_HEIGHT, null, chunkX, chunkY).Generate(progress);
-		}
-
 		/// <summary>
 		/// Get the chunk at the given block position.
 		/// </summary>
@@ -178,6 +203,32 @@ namespace ASCIIWorld.Data
 		public Chunk GetChunk(Entity entity)
 		{
 			return GetChunk(entity.Position);
+		}
+
+		public Vector2I ToChunkCoordinates(int blockX, int blockY)
+		{
+			var chunkX = (int)MathHelper.Modulo(blockX, CHUNK_WIDTH);
+			var chunkY = (int)MathHelper.Modulo(blockY, CHUNK_HEIGHT);
+			return new Vector2I(chunkX, chunkY);
+		}
+
+		public bool IsBlockedAt(int blockX, int blockY)
+		{
+			var chunk = GetChunk(blockX, blockY);
+			var chunkPosition = ToChunkCoordinates(blockX, blockY);
+			return chunk.IsBlockedAt(chunkPosition.X, chunkPosition.Y);
+		}
+
+		private void GenerateChunk(int chunkX, int chunkY)
+		{
+			IProgress<string> progress = new Progress<string>(message => Console.WriteLine(message));
+
+			//_chunks[chunkY, chunkX] = new CavernChunkGenerator(_blocks, CHUNK_WIDTH, CHUNK_HEIGHT, "hello!").Generate(progress);
+			//_chunks[chunkY, chunkX] = new CavernChunkGenerator(_blocks, CHUNK_WIDTH, CHUNK_HEIGHT, null).Generate(progress);
+			//_chunks[chunkY, chunkX] = new DugoutDungeonChunkGenerator(_blocks, CHUNK_WIDTH, CHUNK_HEIGHT, null).Generate(progress);
+			//_chunks[chunkY, chunkX] = new LabyrinthChunkGenerator(_blocks, CHUNK_WIDTH, CHUNK_HEIGHT, null).Generate(progress);
+			//_chunks[chunkY, chunkX] = new BSPDungeonChunkGenerator(_blocks, CHUNK_WIDTH, CHUNK_HEIGHT, null).Generate(progress);
+			_chunks[chunkY, chunkX] = new OverworldChunkGenerator(CHUNK_WIDTH, CHUNK_HEIGHT, null, chunkX, chunkY).Generate(progress);
 		}
 
 		#endregion

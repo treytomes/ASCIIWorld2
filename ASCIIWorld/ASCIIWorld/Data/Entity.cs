@@ -1,17 +1,23 @@
 ﻿using ASCIIWorld.Rendering;
-using GameCore.Rendering;
+using CommonCore.Math;
 using OpenTK;
 using System;
 
 namespace ASCIIWorld.Data
 {
+	// TODO: Scale Entity by 0.8; calculate movement bounds accordingly.
+
 	[Serializable]
-	public class Entity : IUpdateable
+	public class Entity
 	{
 		#region Fields
 
 		private Vector2 _position;
 		private bool _isAlive;
+		private bool _isMoving;
+		private float _speed;
+		private Direction _orientation;
+		private float _range;
 
 		#endregion
 
@@ -20,6 +26,9 @@ namespace ASCIIWorld.Data
 		public Entity()
 		{
 			_isAlive = true;
+			_speed = 1.0f;
+			_orientation = Direction.North;
+			_range = 4.0f;
 		}
 
 		#endregion
@@ -42,24 +51,95 @@ namespace ASCIIWorld.Data
 			}
 		}
 
+		public bool IsMoving
+		{
+			get
+			{
+				return _isMoving;
+			}
+			set
+			{
+				_isMoving = value;
+			}
+		}
+
+		public float Speed
+		{
+			get
+			{
+				return _speed;
+			}
+			protected set
+			{
+				_speed = value;
+			}
+		}
+
+		public float Range
+		{
+			get
+			{
+				return _range;
+			}
+		}
+
+		/// <summary>
+		/// What direction is the entity facing?
+		/// </summary>
+		public Direction Orientation
+		{
+			get
+			{
+				return _orientation;
+			}
+			set
+			{
+				_orientation = value;
+			}
+		}
+
 		#endregion
 
 		#region Methods
 
-		public virtual void Update(TimeSpan elapsed)
+		public virtual void Update(Level level, TimeSpan elapsed)
 		{
+			if (_isMoving)
+			{
+				Move(level);
+			}
 		}
 
-		public void MoveTo(Level level, Vector2 position)
+		public void MoveTo(Level level, Vector2 newPosition)
 		{
-			var oldChunk = level.GetChunk((int)_position.X, (int)_position.Y);
-			_position = position;
-			var newChunk = level.GetChunk((int)_position.X, (int)_position.Y);
-
-			if (oldChunk != newChunk)
+			var impactEntities = level.GetEntitiesAt(newPosition);
+			if (impactEntities != null)
 			{
-				oldChunk.RemoveEntity(this);
-				newChunk.AddEntity(this);
+				foreach (var impactEntity in impactEntities)
+				{
+					if (impactEntity != this)
+					{
+						impactEntity.Touched(this);
+						//_isMoving = false; // TODO: Is it good to continue moving through an entity like this?  Should the Speed by modified at all?
+					}
+				}
+			}
+
+			var oldChunk = level.GetChunk((int)_position.X, (int)_position.Y);
+			var newChunk = level.GetChunk((int)newPosition.X, (int)newPosition.Y);
+
+			if (CanMoveTo(level, newPosition))
+			{
+				_position = newPosition;
+				if (oldChunk != newChunk)
+				{
+					oldChunk.RemoveEntity(this);
+					newChunk.AddEntity(this);
+				}
+			}
+			else
+			{
+				_isMoving = false;
 			}
 		}
 
@@ -68,7 +148,7 @@ namespace ASCIIWorld.Data
 			return Math.Abs((_position - position).Length) <= 0.5;
 		}
 
-		public virtual void Touch(Entity touchedBy)
+		public virtual void Touched(Entity touchedBy)
 		{
 		}
 
@@ -78,6 +158,50 @@ namespace ASCIIWorld.Data
 		public void Die()
 		{
 			_isAlive = false;
+		}
+
+		public bool CanReach(int blockX, int blockY)
+		{
+			var entityCenter = _position + new Vector2(0.5f, 0.5f);
+			var targetCenter = new Vector2(blockX + 0.5f, blockY + 0.5f);
+			var distance = Math.Abs((entityCenter - targetCenter).Length);
+			return distance <= Range;
+		}
+
+		/// <summary>
+		/// Is there a block blocking this position?
+		/// </summary>
+		protected bool CanMoveTo(Level level, Vector2 newPosition)
+		{
+			return
+				!level.IsBlockedAt((int)Math.Floor(newPosition.X), (int)Math.Floor(newPosition.Y)) &&
+				!level.IsBlockedAt((int)Math.Floor(newPosition.X), (int)Math.Ceiling(newPosition.Y)) &&
+				!level.IsBlockedAt((int)Math.Ceiling(newPosition.X), (int)Math.Ceiling(newPosition.Y)) &&
+				!level.IsBlockedAt((int)Math.Ceiling(newPosition.X), (int)Math.Floor(newPosition.Y));
+		}
+
+		private void MoveBy(Level level, Vector2 delta)
+		{
+			MoveTo(level, _position + delta);
+		}
+
+		private void MoveBy(Level level, Direction direction, float speed)
+		{
+			var vi = direction.ToVector2I();
+			MoveBy(level, new Vector2(vi.X * speed, vi.Y * speed));
+		}
+
+		private void Move(Level level, Direction direction)
+		{
+			// TODO: Modify speed according to the friction value of the current block.
+			// TODO: Move slower if traveling on the background layer.
+			// TODO: Don't allow walking through a position where all layers, including the background, are empty.
+			MoveBy(level, direction, _speed);
+		}
+
+		private void Move(Level level)
+		{
+			Move(level, _orientation);
 		}
 
 		#endregion

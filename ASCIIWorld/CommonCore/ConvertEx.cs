@@ -1,30 +1,62 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
+using System.Linq.Expressions;
+using System.Reflection;
 
 namespace CommonCore
 {
 	public static class ConvertEx
 	{
+		private struct Conversion
+		{
+			public readonly Type ConvertFrom;
+			public readonly Type ConvertTo;
+
+			public Conversion(Type from, Type to)
+			{
+				ConvertFrom = from;
+				ConvertTo = to;
+			}
+		}
+
+		private struct Converter
+		{
+			public readonly MethodInfo ConvertWith;
+
+			public Converter(MethodInfo with)
+			{
+				ConvertWith = with;
+			}
+
+			public object Convert(object value)
+			{
+				return ConvertWith.Invoke(null, new[] { value });
+			}
+		}
+
+		private static Dictionary<Conversion, Converter> _converters;
+
+		static ConvertEx()
+		{
+			_converters = new Dictionary<Conversion, Converter>();
+
+			AddConversion<string, Color>(ParseColor);
+			AddConversion<string, int>(ParseInteger);
+		}
+
+		public static void AddConversion<TFrom, TTo>(Func<TFrom, TTo> converter)
+		{
+			_converters.Add(new Conversion(typeof(TFrom), typeof(TTo)), new Converter(converter.Method));
+		}
+
 		public static T ChangeType<T>(object value)
 		{
-			if (typeof(T) == typeof(Color))
+			var conversion = new Conversion(value.GetType(), typeof(T));
+
+			if (_converters.ContainsKey(conversion))
 			{
-				value = ParseColor(value.ToString());
-			}
-			else
-			{
-				if (value.ToString().StartsWith("'"))
-				{
-					var text = value.ToString();
-					if (!text.EndsWith("'") || (text.Length != 3))
-					{
-						throw new Exception($"Expected a character literal: {text}");
-					}
-					else
-					{
-						value = text[1];
-					}
-				}
+				value = _converters[conversion].Convert(value);
 			}
 			return (T)Convert.ChangeType(value, typeof(T));
 		}
@@ -40,6 +72,21 @@ namespace CommonCore
 			}
 
 			return ColorTranslator.FromHtml(argb);
+		}
+
+		/// <summary>
+		/// Parses the integer, optionally using a character expression.
+		/// </summary>
+		private static int ParseInteger(string text)
+		{
+			if (text.StartsWith("'") && text.EndsWith("'") && (text.Length == 3))
+			{
+				return text[1];
+			}
+			else
+			{
+				return Convert.ToInt32(text);
+			}
 		}
 	}
 }

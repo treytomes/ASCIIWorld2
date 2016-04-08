@@ -21,6 +21,7 @@ namespace ASCIIWorld.Data
 		public BlockEntity(int blockId)
 			: base()
 		{
+			Speed = 0.4f;
 			_blockId = blockId;
 			_rotation = 0.0f;
 			_isSelected = false;
@@ -58,22 +59,29 @@ namespace ASCIIWorld.Data
 
 		#region Methods
 
-		public override void Update(TimeSpan elapsed)
+		public override void Update(Level level, TimeSpan elapsed)
 		{
-			base.Update(elapsed);
-			_rotation += 0.4f;
+			base.Update(level, elapsed);
+			_rotation += Speed;
 		}
 
-		public override void Touch(Entity touchedBy)
+		public override void Touched(Entity touchedBy)
 		{
-			base.Touch(touchedBy);
+			base.Touched(touchedBy);
 
-			if (!_isSelected)
+			//if (!_isSelected)
+			//{
+			//	_isSelected = true;
+			//}
+			//else
+			//{
+			//	Die();
+			//}
+
+			if (touchedBy is PlayerEntity)
 			{
-				_isSelected = true;
-			}
-			else
-			{
+				Console.WriteLine("touched!");
+				(touchedBy as PlayerEntity).ReceiveItem(ItemRegistry.Instance.GetByBlockId(_blockId));
 				Die();
 			}
 		}

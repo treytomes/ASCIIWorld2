@@ -104,7 +104,7 @@ namespace ASCIIWorld.Data.Generation.Labyrinth
 			{
 				throw new InvalidOperationException("No adjacent cell exists for the location and direction provided.");
 			}
-			return this[location + direction.ToVector()].Visited;
+			return this[location + direction.ToVector2I()].Visited;
 		}
 
 		public bool AdjacentCellInDirectionIsCorridor(Vector2I location, Direction direction)
