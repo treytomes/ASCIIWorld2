@@ -224,10 +224,10 @@ namespace ASCIIWorld.Data
 			IProgress<string> progress = new Progress<string>(message => Console.WriteLine(message));
 
 			//_chunks[chunkY, chunkX] = new CavernChunkGenerator(_blocks, CHUNK_WIDTH, CHUNK_HEIGHT, "hello!").Generate(progress);
-			//_chunks[chunkY, chunkX] = new CavernChunkGenerator(_blocks, CHUNK_WIDTH, CHUNK_HEIGHT, null).Generate(progress);
+			//_chunks[chunkY, chunkX] = new CavernChunkGenerator(CHUNK_WIDTH, CHUNK_HEIGHT, null).Generate(progress);
 			//_chunks[chunkY, chunkX] = new DugoutDungeonChunkGenerator(_blocks, CHUNK_WIDTH, CHUNK_HEIGHT, null).Generate(progress);
 			//_chunks[chunkY, chunkX] = new LabyrinthChunkGenerator(_blocks, CHUNK_WIDTH, CHUNK_HEIGHT, null).Generate(progress);
-			//_chunks[chunkY, chunkX] = new BSPDungeonChunkGenerator(_blocks, CHUNK_WIDTH, CHUNK_HEIGHT, null).Generate(progress);
+			//_chunks[chunkY, chunkX] = new BSPDungeonChunkGenerator( CHUNK_WIDTH, CHUNK_HEIGHT, null).Generate(progress);
 			_chunks[chunkY, chunkX] = new OverworldChunkGenerator(CHUNK_WIDTH, CHUNK_HEIGHT, null, chunkX, chunkY).Generate(progress);
 		}
 
