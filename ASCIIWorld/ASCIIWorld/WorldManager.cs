@@ -2,6 +2,7 @@
 using ASCIIWorld.Rendering;
 using GameCore;
 using GameCore.Rendering;
+using OpenTK;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -124,6 +125,16 @@ namespace ASCIIWorld
 			Player.Toolbelt.SetFirstCompatibleSlot(new ItemStack(ItemRegistry.Instance.GetId("Pickaxe")));
 			Player.Toolbelt.SetFirstCompatibleSlot(new ItemStack(ItemRegistry.Instance.GetId("Hoe")));
 			Player.Toolbelt.SetFirstCompatibleSlot(new ItemStack(ItemRegistry.Instance.GetId("Grass")));
+
+			var spawnPoint = Level.GetChunk(Player).FindSpawnPoint();
+			if (!spawnPoint.HasValue)
+			{
+				throw new Exception("Unable to spawn the player.");
+			}
+			else
+			{
+				Player.MoveTo(Level, new Vector2(spawnPoint.Value.X, spawnPoint.Value.Y));
+			}
 
 			Level.GetChunk(Player).AddEntity(Player);
 		}

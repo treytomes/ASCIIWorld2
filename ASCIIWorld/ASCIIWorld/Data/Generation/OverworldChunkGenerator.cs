@@ -1,7 +1,5 @@
 ﻿using CommonCore.Math;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace ASCIIWorld.Data.Generation
 {

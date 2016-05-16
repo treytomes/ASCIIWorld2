@@ -190,7 +190,7 @@ namespace ASCIIWorld.Data
 			{
 				var x = random.Next(0, _width);
 				var y = random.Next(0, _height);
-				if (IsBlockedAt(x, y))
+				if (!IsBlockedAt(x, y))
 				{
 					return new Vector2I(x, y);
 				}

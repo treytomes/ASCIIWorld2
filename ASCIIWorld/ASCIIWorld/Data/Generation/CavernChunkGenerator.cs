@@ -17,6 +17,9 @@ namespace ASCIIWorld.Data.Generation
 
 		#region Fields
 
+		private int _chunkX;
+		private int _chunkY;
+
 		private int _randomFillPercent;
 
 		private int _passageCount;
@@ -28,15 +31,13 @@ namespace ASCIIWorld.Data.Generation
 
 		#region Constructors
 
-		public CavernChunkGenerator(Dictionary<int, string> blocks, int width, int height, string seed)
+		public CavernChunkGenerator(int width, int height, string seed, int chunkX, int chunkY)
 			: base(width, height, seed)
 		{
-			if (blocks == null)
-			{
-				throw new ArgumentNullException("blocks");
-			}
+			_chunkX = chunkX;
+			_chunkY = chunkY;
 
-			_stoneId = blocks.Single(x => x.Value == "Stone").Key;
+			_stoneId = BlockRegistry.Instance.GetId("Stone");
 
 			_passageCount = 0;
 			_connectingRoomsCount = 0;
@@ -87,6 +88,8 @@ namespace ASCIIWorld.Data.Generation
 			{
 				for (var y = 0; y < chunk.Height; y++)
 				{
+					//var value = SimplexNoise.Generate((_chunkX * Width + x) / 256.0f, (_chunkY * Height + y) / 256.0f) * 100;
+					//if (value < _randomFillPercent)
 					if (Random.Next(0, 100) < _randomFillPercent)
 					{
 						chunk[ChunkLayer.Blocking, x, y] = _stoneId;
