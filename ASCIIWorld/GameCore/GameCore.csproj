@@ -59,6 +59,7 @@
     <Compile Include="FrameEventArgs.cs" />
     <Compile Include="IGameWindow.cs" />
     <Compile Include="InputManager.cs" />
+    <Compile Include="InputReceiver.cs" />
     <Compile Include="IO\AtlasTileSetContentProvider.cs" />
     <Compile Include="IO\ContentManager.cs" />
     <Compile Include="IO\IContentProvider.cs" />

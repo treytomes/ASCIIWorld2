@@ -41,8 +41,8 @@ namespace ASCIIWorld.UI
 
 		#region Constructors
 
-		public Border(Camera<OrthographicProjection> camera, Vector2 position, int tileWidth, int tileHeight)
-			: base(camera, position)
+		public Border(IGameWindow window, Camera<OrthographicProjection> camera, Vector2 position, int tileWidth, int tileHeight)
+			: base(window, camera, position)
 		{
 			_tileWidth = tileWidth;
 			_tileHeight = tileHeight;

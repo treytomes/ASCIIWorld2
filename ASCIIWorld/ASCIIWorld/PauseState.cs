@@ -55,15 +55,6 @@ namespace ASCIIWorld
 			//var size = _writer.Measure(PAUSE_MESSAGE);
 			//_writer.Position = new Vector2(Manager.GameWindow.Width - size.Width, Manager.GameWindow.Height - size.Height) / 2.0f;
 			//_writer.Color = Color.White;
-
-			InputManager.Instance.Keyboard.KeyDown += Keyboard_KeyDown;
-		}
-
-		public override void UnloadContent()
-		{
-			base.UnloadContent();
-
-			InputManager.Instance.Keyboard.KeyDown -= Keyboard_KeyDown;
 		}
 
 		public override void Resize(Viewport viewport)
@@ -105,11 +96,7 @@ namespace ASCIIWorld
 			//_writer.Write(PAUSE_MESSAGE);
 		}
 
-		#endregion
-
-		#region Event Handlers
-
-		private void Keyboard_KeyDown(object sender, KeyboardKeyEventArgs e)
+		protected override void OnKeyboardKeyDown(KeyboardKeyEventArgs e)
 		{
 			if (HasFocus)
 			{

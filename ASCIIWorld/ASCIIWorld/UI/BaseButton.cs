@@ -21,8 +21,8 @@ namespace ASCIIWorld.UI
 
 		#region Constructors
 
-		public BaseButton(Camera<OrthographicProjection> camera, Vector2 position)
-			: base(camera, position)
+		public BaseButton(IGameWindow window, Camera<OrthographicProjection> camera, Vector2 position)
+			: base(window, camera, position)
 		{
 		}
 
@@ -40,7 +40,7 @@ namespace ASCIIWorld.UI
 		{
 			base.LoadContent(content);
 
-			_border = new Border(Camera, Vector2.Zero, 0, 0);
+			_border = new Border(Window, Camera, Vector2.Zero, 0, 0);
 			_border.LoadContent(content);
 			_border.CanHaveMouseHover = false;
 			BorderColor = _border.BorderColor;

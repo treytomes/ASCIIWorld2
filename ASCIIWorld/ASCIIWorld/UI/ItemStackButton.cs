@@ -11,8 +11,8 @@ namespace ASCIIWorld.UI
 	// TODO: Make an ItemStack button.  Show the stack size in yellow in the top-right corner (or nothing if the stack size = 1).
 	public class ItemStackButton : IconButton
 	{
-		public ItemStackButton(Camera<OrthographicProjection> camera, Vector2 position, ItemStack itemStack, Key? hotkey = null)
-			: base(camera, position, null, hotkey)
+		public ItemStackButton(IGameWindow window, Camera<OrthographicProjection> camera, Vector2 position, ItemStack itemStack, Key? hotkey = null)
+			: base(window, camera, position, null, hotkey)
 		{
 			ItemStack = itemStack;
 		}

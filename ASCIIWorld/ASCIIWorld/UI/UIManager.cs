@@ -14,6 +14,8 @@ namespace ASCIIWorld.UI
 	public class UIManager
 	{
 		#region Fields
+
+		private IGameWindow _window;
 		
 		private Camera<OrthographicProjection> _hudCamera;
 		private ITessellator _tessellator;
@@ -26,8 +28,10 @@ namespace ASCIIWorld.UI
 
 		#region Constructors
 
-		public UIManager(Viewport viewport, WorldManager worldManager)
+		public UIManager(IGameWindow window, Viewport viewport, WorldManager worldManager)
 		{
+			_window = window;
+
 			_worldManager = worldManager;
 
 			_children = new List<UIElement>();
@@ -78,18 +82,18 @@ namespace ASCIIWorld.UI
 		{
 			// TODO: Create a Pause menu for saving and loading.
 			// TODO: If the UI has mouse hover, I don't want the game world to respond to it.
-			SaveButton = new TextButton(_hudCamera, new Vector2(100, 100), "Save");
+			SaveButton = new TextButton(_window, _hudCamera, new Vector2(100, 100), "Save");
 			SaveButton.LoadContent(content);
 			_children.Add(SaveButton);
 
-			LoadButton = new TextButton(_hudCamera, new Vector2(100, SaveButton.Bounds.Bottom), "Load");
+			LoadButton = new TextButton(_window, _hudCamera, new Vector2(100, SaveButton.Bounds.Bottom), "Load");
 			LoadButton.LoadContent(content);
 			_children.Add(LoadButton);
 
 			// TODO: Find a better was to manage user items.
 			BuildItemToolbar(content);
 
-			FPSLabel = new Label(_hudCamera, new Vector2(256, 300), "FPS:");
+			FPSLabel = new Label(_window, _hudCamera, new Vector2(256, 300), "FPS:");
 			FPSLabel.LoadContent(content);
 			_children.Add(FPSLabel);
 		}
@@ -134,7 +138,7 @@ namespace ASCIIWorld.UI
 		// TODO: This is only used in BuildItemToolbar.  Is there a better place for it?
 		private void AddToolbarItem(ContentManager content, int slotIndex, Key hotkey)
 		{
-			var itemButton = new InventorySlotButton(_hudCamera, Vector2.Zero, _worldManager.Player.Toolbelt, slotIndex, hotkey);
+			var itemButton = new InventorySlotButton(_window, _hudCamera, Vector2.Zero, _worldManager.Player.Toolbelt, slotIndex, hotkey);
 			itemButton.LoadContent(content);
 			itemButton.Clicked += ToolbarItemButton_Clicked;
 			_children.Add(itemButton);

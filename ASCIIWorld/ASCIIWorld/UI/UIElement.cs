@@ -9,7 +9,7 @@ using OpenTK;
 
 namespace ASCIIWorld.UI
 {
-	public abstract class UIElement : IUpdateable, IRenderable, IDisposable
+	public abstract class UIElement : InputReceiver, IUpdateable, IRenderable, IDisposable
 	{
 		#region Constants
 		
@@ -29,7 +29,8 @@ namespace ASCIIWorld.UI
 
 		#region Constructors
 
-		public UIElement(Camera<OrthographicProjection> camera, Vector2 position)
+		public UIElement(IGameWindow window, Camera<OrthographicProjection> camera, Vector2 position)
+			: base(window)
 		{
 			ClickStarted = false;
 
@@ -38,10 +39,6 @@ namespace ASCIIWorld.UI
 			CanHaveMouseHover = true;
 
 			Bounds = new RectangleF(position.X, position.Y, 0, 0);
-
-			InputManager.Instance.Mouse.Move += Mouse_Move;
-			InputManager.Instance.Mouse.ButtonDown += Mouse_ButtonDown;
-			InputManager.Instance.Mouse.ButtonUp += Mouse_ButtonUp;
 		}
 
 		#endregion
@@ -73,13 +70,6 @@ namespace ASCIIWorld.UI
 		{
 			UI_ASCII = content.Load<TileSet>("TileSets/UI-ASCII.xml");
 			UI_ASCII.IsNormalized = false;
-		}
-
-		public virtual void Dispose()
-		{
-			InputManager.Instance.Mouse.Move -= Mouse_Move;
-			InputManager.Instance.Mouse.ButtonDown -= Mouse_ButtonDown;
-			InputManager.Instance.Mouse.ButtonUp -= Mouse_ButtonUp;
 		}
 
 		public void Render(ITessellator tessellator)
@@ -167,11 +157,7 @@ namespace ASCIIWorld.UI
 			}
 		}
 
-		#endregion
-
-		#region Event Handlers
-
-		private void Mouse_ButtonUp(object sender, MouseButtonEventArgs e)
+		protected override void OnMouseButtonUp(MouseButtonEventArgs e)
 		{
 			UpdateMouseStatus(e);
 			if (HasMouseHover && (e.Button == MouseButton.Left) && ClickStarted)
@@ -184,7 +170,7 @@ namespace ASCIIWorld.UI
 			ClickStarted = false;
 		}
 
-		private void Mouse_ButtonDown(object sender, MouseButtonEventArgs e)
+		protected override void OnMouseButtonDown(MouseButtonEventArgs e)
 		{
 			UpdateMouseStatus(e);
 			if (HasMouseHover && (e.Button == MouseButton.Left))
@@ -193,7 +179,7 @@ namespace ASCIIWorld.UI
 			}
 		}
 
-		private void Mouse_Move(object sender, MouseMoveEventArgs e)
+		protected override void OnMouseMove(MouseMoveEventArgs e)
 		{
 			UpdateMouseStatus(e);
 		}

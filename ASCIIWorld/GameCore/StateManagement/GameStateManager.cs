@@ -59,6 +59,7 @@ namespace GameCore.StateManagement
 		public void LeaveState()
 		{
 			_states[0].UnloadContent();
+			_states[0].Dispose();
 			_states.RemoveAt(0);
 		}
 

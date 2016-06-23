@@ -38,6 +38,27 @@ namespace GameCore
 
 		#endregion
 
+		#region Methods
+
+		/// <summary>
+		/// Toggle the window to either fullscreen or windowed mode.
+		/// </summary>
+		public void ToggleFullscreen()
+		{
+			if (WindowState != WindowState.Normal)
+			{
+				//DisplayDevice.GetDisplay(DisplayIndex.Default).RestoreResolution();
+				WindowState = WindowState.Normal;
+			}
+			else
+			{
+				//DisplayDevice.GetDisplay(DisplayIndex.Default).ChangeResolution(1280, 720, 32, DisplayDevice.GetDisplay(DisplayIndex.Default).RefreshRate);
+				WindowState = WindowState.Fullscreen;
+			}
+		}
+
+		#endregion
+
 		#region Event Handlers
 
 		/// <summary>

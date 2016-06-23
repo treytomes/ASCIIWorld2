@@ -25,6 +25,8 @@ namespace ASCIIWorld.Data
 			_blockId = blockId;
 			_rotation = 0.0f;
 			_isSelected = false;
+
+			Size = 0.5f;
 		}
 
 		#endregion

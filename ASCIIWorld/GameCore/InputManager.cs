@@ -28,9 +28,9 @@ namespace GameCore
 
 		//public IList<JoystickDevice> Joysticks { get; private set; }
 
-		public KeyboardDevice Keyboard { get; private set; }
+		internal KeyboardDevice Keyboard { get; private set; }
 
-		public MouseDevice Mouse { get; private set; }
+		internal MouseDevice Mouse { get; private set; }
 
 		#endregion
 

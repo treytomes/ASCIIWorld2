@@ -138,10 +138,10 @@ namespace ASCIIWorld.Data
 
 			var testChunkPosition = ToChunkCoordinates((int)position.X, (int)position.Y);
 
-			// TODO: This isn't very accurate.
+			// This is probably accurate enough.
 			foreach (var entity in chunk.Entities)
 			{
-				var chunkPosition = ToChunkCoordinates((int)entity.Position.X, (int)entity.Position.Y);
+				var chunkPosition = ToChunkCoordinates((int)(entity.Position.X + entity.Size / 2), (int)(entity.Position.Y + entity.Size / 2));
 				if ((Math.Abs(chunkPosition.X - testChunkPosition.X) <= 0.5) && (Math.Abs(chunkPosition.Y - testChunkPosition.Y) <= 0.5))
 				{
 					yield return entity;

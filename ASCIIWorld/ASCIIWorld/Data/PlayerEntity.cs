@@ -20,6 +20,7 @@ namespace ASCIIWorld.Data
 			Toolbelt = new InventoryContainer(TOOLBELT_SIZE);
 
 			Speed = 0.1f;
+			Size = 0.8f;
 		}
 
 		#endregion

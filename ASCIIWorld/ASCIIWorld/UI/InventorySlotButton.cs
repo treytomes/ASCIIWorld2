@@ -11,8 +11,8 @@ namespace ASCIIWorld.UI
 		private InventoryContainer _inventory;
 		private int _slotIndex;
 
-		public InventorySlotButton(Camera<OrthographicProjection> camera, Vector2 position, InventoryContainer inventory, int slotIndex, Key? hotkey = null)
-			: base(camera, position, null, hotkey)
+		public InventorySlotButton(IGameWindow window, Camera<OrthographicProjection> camera, Vector2 position, InventoryContainer inventory, int slotIndex, Key? hotkey = null)
+			: base(window, camera, position, null, hotkey)
 		{
 			_inventory = inventory;
 			_slotIndex = slotIndex;

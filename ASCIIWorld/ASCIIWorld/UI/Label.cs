@@ -28,8 +28,8 @@ namespace ASCIIWorld.UI
 
 		#region Constructors
 
-		public Label(Camera<OrthographicProjection> camera, Vector2 position, string text)
-			: base(camera, position)
+		public Label(IGameWindow window, Camera<OrthographicProjection> camera, Vector2 position, string text)
+			: base(window, camera, position)
 		{
 			Text = text;
 			TextColor = COLOR_TEXT;

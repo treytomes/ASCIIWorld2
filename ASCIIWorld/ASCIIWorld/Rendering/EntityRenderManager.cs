@@ -72,7 +72,7 @@ namespace ASCIIWorld.Rendering
 			tessellator.Translate(-0.25f, -0.25f); // center the rotation
 			tessellator.Rotate(entity.Rotation, 0, 0, 1);
 			tessellator.Translate(origin);
-			tessellator.Translate(0.5f, 0.5f); // center on the current tile position
+			tessellator.Translate(entity.Size, entity.Size); // center on the current tile position
 			tessellator.Translate(entity.Position); // move to the entity's position
 
 			BlockRegistry.Instance.GetById(entity.BlockID).Renderer.Render(tessellator);
@@ -88,7 +88,7 @@ namespace ASCIIWorld.Rendering
 			var origin = tessellator.Transform(Vector3.Zero);
 
 			tessellator.LoadIdentity();
-			tessellator.Scale(0.8f, 0.8f);
+			tessellator.Scale(entity.Size, entity.Size);
 			tessellator.Translate(origin);
 			tessellator.Translate(0.1f, 0.1f); // center on the current tile position
 

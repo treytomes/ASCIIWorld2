@@ -52,13 +52,18 @@ namespace CommonCore
 
 		public static T ChangeType<T>(object value)
 		{
-			var conversion = new Conversion(value.GetType(), typeof(T));
+			return (T)ChangeType(value, typeof(T));
+		}
+
+		public static object ChangeType(object value, Type targetType)
+		{
+			var conversion = new Conversion(value.GetType(), targetType);
 
 			if (_converters.ContainsKey(conversion))
 			{
 				value = _converters[conversion].Convert(value);
 			}
-			return (T)Convert.ChangeType(value, typeof(T));
+			return Convert.ChangeType(value, targetType);
 		}
 
 		/// <summary>

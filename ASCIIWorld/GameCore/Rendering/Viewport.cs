@@ -53,6 +53,10 @@ namespace GameCore.Rendering
 			{
 				return X;
 			}
+			set
+			{
+				X = value;
+			}
 		}
 
 		public int Right
@@ -60,6 +64,10 @@ namespace GameCore.Rendering
 			get
 			{
 				return X + Width - 1;
+			}
+			set
+			{
+				Width = value + 1 - X;
 			}
 		}
 
@@ -69,6 +77,10 @@ namespace GameCore.Rendering
 			{
 				return Y;
 			}
+			set
+			{
+				Y = value;
+			}
 		}
 
 		public int Bottom
@@ -76,6 +88,10 @@ namespace GameCore.Rendering
 			get
 			{
 				return Y + Height - 1;
+			}
+			set
+			{
+				Height = value + 1 - Y;
 			}
 		}
 
@@ -99,6 +115,16 @@ namespace GameCore.Rendering
 		public Rectangle ToRectangle()
 		{
 			return new Rectangle(X, Y, Width, Height);
+		}
+
+		public bool Contains(Point position)
+		{
+			return Contains(position.X, position.Y);
+		}
+
+		public bool Contains(int x, int y)
+		{
+			return (Left <= x) && (x <= Right) && (Top <= y) && (y <= Bottom);
 		}
 
 		public Viewport Clone()

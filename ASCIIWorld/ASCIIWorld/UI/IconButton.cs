@@ -19,8 +19,8 @@ namespace ASCIIWorld.UI
 
 		#region Constructors
 
-		public IconButton(Camera<OrthographicProjection> camera, Vector2 position, IRenderable renderable, Key? hotkey = null)
-			: base(camera, position)
+		public IconButton(IGameWindow window, Camera<OrthographicProjection> camera, Vector2 position, IRenderable renderable, Key? hotkey = null)
+			: base(window, camera, position)
 		{
 			Renderable = renderable;
 			IsSelected = false;
@@ -69,15 +69,6 @@ namespace ASCIIWorld.UI
 			SetBorderSize(5, 5);
 
 			ASCII = content.Load<TileSet>("TileSets/ASCII.xml");
-
-			InputManager.Instance.Keyboard.KeyDown += Keyboard_KeyDown;
-		}
-
-		public override void Dispose()
-		{
-			InputManager.Instance.Keyboard.KeyDown -= Keyboard_KeyDown;
-
-			base.Dispose();
 		}
 
 		protected override void RenderContent(ITessellator tessellator)
@@ -121,11 +112,7 @@ namespace ASCIIWorld.UI
 			return ColorHelper.FromAHSB(color.A, hue, saturation, brightness);
 		}
 
-		#endregion
-
-		#region Event Handlers
-
-		private void Keyboard_KeyDown(object sender, KeyboardKeyEventArgs e)
+		protected override void OnKeyboardKeyDown(KeyboardKeyEventArgs e)
 		{
 			if (Hotkey.HasValue && (e.Key == Hotkey.Value))
 			{
@@ -142,8 +129,8 @@ namespace ASCIIWorld.UI
 
 		#region Constructors
 
-		public IconButton(Camera<OrthographicProjection> camera, Vector2 position, TRenderable renderable, Key? hotkey = null)
-			: base(camera, position, renderable, hotkey)
+		public IconButton(IGameWindow window, Camera<OrthographicProjection> camera, Vector2 position, TRenderable renderable, Key? hotkey = null)
+			: base(window, camera, position, renderable, hotkey)
 		{
 		}
 

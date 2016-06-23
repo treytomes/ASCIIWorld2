@@ -120,11 +120,6 @@ namespace GameCore.Rendering
 		public void Resize(Viewport viewport)
 		{
 			Viewport = viewport.Clone();
-
-			//Left = Viewport.Left;
-			//Right = Viewport.Right;
-			//Top = Viewport.Top;
-			//Bottom = Viewport.Bottom;
 		}
 
 		public void Apply()
@@ -138,52 +133,9 @@ namespace GameCore.Rendering
 
 		public bool Contains(float x, float y, float z = 0)
 		{
+			// TODO: ZNear <= z <= ZFar
 			return (Left <= x) && (x <= Right) && (Top <= y) && (y <= Bottom);
 		}
-
-		//public void MoveBy(Vector2 delta)
-		//{
-		//	MoveBy(delta.X, delta.Y);
-		//}
-
-		//public void MoveBy(Vector3 delta)
-		//{
-		//	MoveBy(delta.X, delta.Y, delta.Z);
-		//}
-
-		//public void MoveBy(float deltaX, float deltaY, float deltaZ = 0)
-		//{
-		//	Top += deltaY;
-		//	//Bottom += deltaY;
-
-		//	Left += deltaX;
-		//	//Right += deltaX;
-
-		//	ZNear += deltaZ;
-		//	ZFar += deltaZ;
-		//}
-
-		//public void MoveTo(Vector2 position)
-		//{
-		//	MoveTo(position.X, position.Y);
-		//}
-
-		//public void MoveTo(Vector3 position)
-		//{
-		//	MoveTo(position.X, position.Y, position.Z);
-		//}
-
-		//public void MoveTo(float x, float y, float z = 0)
-		//{
-		//	Top = y;
-		//	//Bottom = y;
-
-		//	Left = x;
-		//	//Right = x;
-
-		//	ZNear = z;
-		//	ZFar = z;
-		//}
 
 		#endregion
 	}

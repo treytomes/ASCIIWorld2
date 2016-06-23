@@ -87,7 +87,12 @@ namespace GameCore.Rendering
 			{
 				_requests.Add(CurrentTextureID, new List<VertexBufferElement>());
 			}
-			_requests[CurrentTextureID].Add(new VertexBufferElement(transformedPoint, ColorHelper.ToArgb(CurrentColor), u, v, Vector3.Zero));
+			_requests[CurrentTextureID].Add(VertexBufferElement.New()
+				.Position(transformedPoint)
+				.Color(CurrentColor)
+				.TextureUV(u, v)
+				.Normal(Vector3.Zero)
+				.Build());
 		}
 
 		/// <remarks>

@@ -17,8 +17,8 @@ namespace ASCIIWorld.UI
 
 		#region Constructors
 
-		public TextButton(Camera<OrthographicProjection> camera, Vector2 position, string text)
-			: base(camera, position)
+		public TextButton(IGameWindow window, Camera<OrthographicProjection> camera, Vector2 position, string text)
+			: base(window, camera, position)
 		{
 			Text = text;
 		}
@@ -39,7 +39,7 @@ namespace ASCIIWorld.UI
 			Bounds = new RectangleF(Bounds.X, Bounds.Y, UI_ASCII.Width * (Text.Length + 2), UI_ASCII.Height * 3);
 			SetBorderSize(Text.Length + 2, 3);
 
-			_label = new Label(Camera, new Vector2(UI_ASCII.Width, UI_ASCII.Height), Text);
+			_label = new Label(Window, Camera, new Vector2(UI_ASCII.Width, UI_ASCII.Height), Text);
 			_label.LoadContent(content);
 			_label.CanHaveMouseHover = false;
 			_labelColor = _label.TextColor;

@@ -29,6 +29,8 @@ namespace ASCIIWorld.Data
 			_speed = 1.0f;
 			_orientation = Direction.North;
 			_range = 4.0f;
+
+			Size = 1.0f;
 		}
 
 		#endregion
@@ -42,6 +44,8 @@ namespace ASCIIWorld.Data
 				return _position;
 			}
 		}
+
+		public float Size { get; protected set; }
 
 		public bool IsAlive
 		{
@@ -112,7 +116,8 @@ namespace ASCIIWorld.Data
 
 		public void MoveTo(Level level, Vector2 newPosition)
 		{
-			var impactEntities = level.GetEntitiesAt(newPosition);
+			var center = new Vector2(newPosition.X + Size / 2, newPosition.Y + Size / 2);
+			var impactEntities = level.GetEntitiesAt(center);
 			if (impactEntities != null)
 			{
 				foreach (var impactEntity in impactEntities)
@@ -125,12 +130,13 @@ namespace ASCIIWorld.Data
 				}
 			}
 
-			var oldChunk = level.GetChunk((int)_position.X, (int)_position.Y);
-			var newChunk = level.GetChunk((int)newPosition.X, (int)newPosition.Y);
-
 			if (CanMoveTo(level, newPosition))
 			{
 				_position = newPosition;
+
+				var oldChunk = level.GetChunk((int)_position.X, (int)_position.Y);
+				var newChunk = level.GetChunk((int)newPosition.X, (int)newPosition.Y);
+
 				if (oldChunk != newChunk)
 				{
 					oldChunk.RemoveEntity(this);
@@ -173,11 +179,15 @@ namespace ASCIIWorld.Data
 		/// </summary>
 		protected bool CanMoveTo(Level level, Vector2 newPosition)
 		{
+			// This looks right, and visually it looks mostly right.
+			var topLeft = new Vector2(newPosition.X + (1 - Size) / 2, newPosition.Y + (1 - Size) / 2);
+			var bottomRight = new Vector2(topLeft.X + Size, topLeft.Y + Size);
+
 			return
-				!level.IsBlockedAt((int)Math.Floor(newPosition.X), (int)Math.Floor(newPosition.Y)) &&
-				!level.IsBlockedAt((int)Math.Floor(newPosition.X), (int)Math.Ceiling(newPosition.Y)) &&
-				!level.IsBlockedAt((int)Math.Ceiling(newPosition.X), (int)Math.Ceiling(newPosition.Y)) &&
-				!level.IsBlockedAt((int)Math.Ceiling(newPosition.X), (int)Math.Floor(newPosition.Y));
+				!level.IsBlockedAt((int)Math.Floor(topLeft.X), (int)Math.Floor(topLeft.Y)) &&
+				!level.IsBlockedAt((int)Math.Floor(topLeft.X), (int)Math.Floor(bottomRight.Y)) &&
+				!level.IsBlockedAt((int)Math.Floor(bottomRight.X), (int)Math.Floor(bottomRight.Y)) &&
+				!level.IsBlockedAt((int)Math.Floor(bottomRight.X), (int)Math.Floor(topLeft.Y));
 		}
 
 		private void MoveBy(Level level, Vector2 delta)

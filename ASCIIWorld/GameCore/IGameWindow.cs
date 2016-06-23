@@ -21,5 +21,10 @@ namespace GameCore
 		/// The game window height in pixels.
 		/// </summary>
 		int Height { get; }
+
+		/// <summary>
+		/// Toggle the window to either fullscreen or windowed mode.
+		/// </summary>
+		void ToggleFullscreen();
 	}
 }

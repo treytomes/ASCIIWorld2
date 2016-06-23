@@ -58,7 +58,7 @@ namespace ASCIIWorld
 			_timer = Stopwatch.StartNew();
 
 			_worldManager = new WorldManager(viewport, level);
-			_uiManager = new UIManager(viewport, _worldManager);
+			_uiManager = new UIManager(manager.GameWindow, viewport, _worldManager);
 
 			_tessellator = new VertexBufferTessellator() { Mode = VertexTessellatorMode.Render };
 		}
@@ -112,25 +112,11 @@ namespace ASCIIWorld
 			_uiManager.LoadContent(content);
 			_uiManager.SaveButton.Clicked += (sender, e) => _worldManager.Save("test.sav");
 			_uiManager.LoadButton.Clicked += (sender, e) => _worldManager.Load("test.sav");
-
-			InputManager.Instance.Keyboard.KeyDown += Keyboard_KeyDown;
-			InputManager.Instance.Keyboard.KeyUp += Keyboard_KeyUp;
-			InputManager.Instance.Mouse.ButtonDown += Mouse_ButtonDown;
-			InputManager.Instance.Mouse.ButtonUp += Mouse_ButtonUp;
-			InputManager.Instance.Mouse.Move += Mouse_Move;
-			InputManager.Instance.Mouse.WheelChanged += Mouse_WheelChanged;
 		}
 
 		public override void UnloadContent()
 		{
 			base.UnloadContent();
-
-			InputManager.Instance.Keyboard.KeyDown -= Keyboard_KeyDown;
-			InputManager.Instance.Keyboard.KeyUp -= Keyboard_KeyUp;
-			InputManager.Instance.Mouse.ButtonDown -= Mouse_ButtonDown;
-			InputManager.Instance.Mouse.ButtonUp -= Mouse_ButtonUp;
-			InputManager.Instance.Mouse.Move -= Mouse_Move;
-			InputManager.Instance.Mouse.WheelChanged -= Mouse_WheelChanged;
 		}
 
 		public override void Resize(Viewport viewport)
@@ -211,12 +197,8 @@ namespace ASCIIWorld
 				Console.WriteLine($"You found a {block.Name} on the {layer.GetDescription()} layer: {block.Description}");
 			}
 		}
-		
-		#endregion
 
-		#region Event Handlers
-
-		private void Keyboard_KeyDown(object sender, KeyboardKeyEventArgs e)
+		protected override void OnKeyboardKeyDown(KeyboardKeyEventArgs e)
 		{
 			if (HasFocus)
 			{
@@ -248,7 +230,7 @@ namespace ASCIIWorld
 			}
 		}
 
-		private void Keyboard_KeyUp(object sender, KeyboardKeyEventArgs e)
+		protected override void OnKeyboardKeyUp(KeyboardKeyEventArgs e)
 		{
 			if (HasFocus)
 			{
@@ -270,7 +252,7 @@ namespace ASCIIWorld
 			}
 		}
 
-		private void Mouse_ButtonDown(object sender, MouseButtonEventArgs e)
+		protected override void OnMouseButtonDown(MouseButtonEventArgs e)
 		{
 			if (HasFocus && !_uiManager.HasMouseHover)
 			{
@@ -281,7 +263,7 @@ namespace ASCIIWorld
 					{
 						// TODO: Level.Entities should only return the entities for the active chunk.  The active chunk will need to be tracked somehow.
 						var hoverEntity = _worldManager.Level.Entities.FirstOrDefault(x => x.ContainsPoint(_mouseBlockPosition));
-						if (hoverEntity == null)
+						if ((hoverEntity == null) || (hoverEntity == _worldManager.Player)) // don't let the player hit himself
 						{
 							if (_uiManager.SelectedToolbarSlot != null)
 							{
@@ -290,6 +272,7 @@ namespace ASCIIWorld
 						}
 						else
 						{
+							// TODO: First try to use the active item on hoverEntity.  Save the Touched event for impacts.
 							hoverEntity.Touched(_worldManager.Player);
 							Console.WriteLine(hoverEntity.ToString());
 						}
@@ -306,30 +289,27 @@ namespace ASCIIWorld
 			}
 		}
 
-		private void Mouse_ButtonUp(object sender, MouseButtonEventArgs e)
-		{
-		}
-
-		private void Mouse_Move(object sender, MouseMoveEventArgs e)
+		protected override void OnMouseMove(MouseMoveEventArgs e)
 		{
 			if (HasFocus)
 			{
 				_mouseBlockPosition = _worldManager.Camera.UnProject(e.X, e.Y);
 
-				if (e.Mouse.IsButtonDown(MouseButton.Middle))
-				{
-					var delta = (_cameraMoveStart - _mouseBlockPosition);
+				// The world manager forces the camera to center on the player, so this does nothing.
+				//if (e.Mouse.IsButtonDown(MouseButton.Middle))
+				//{
+				//	var delta = (_cameraMoveStart - _mouseBlockPosition);
 
-					_worldManager.Camera.MoveBy(delta);
-					_cameraMoveStart = _mouseBlockPosition;
-				}
+				//	_worldManager.Camera.MoveBy(delta);
+				//	_cameraMoveStart = _mouseBlockPosition;
+				//}
 
 				_mouseBlockPosition.X = (float)Math.Floor(_mouseBlockPosition.X);
 				_mouseBlockPosition.Y = (float)Math.Floor(_mouseBlockPosition.Y);
 			}
 		}
 
-		private void Mouse_WheelChanged(object sender, MouseWheelEventArgs e)
+		protected override void OnMouseWheelChanged(MouseWheelEventArgs e)
 		{
 			_worldManager.Camera.Projection.OrthographicSize = (float)Math.Ceiling(_worldManager.Camera.Projection.OrthographicSize - _worldManager.Camera.Projection.OrthographicSize * (e.DeltaPrecise / 10));
 			_worldManager.Camera.Projection.OrthographicSize = (float)Math.Floor(CommonCore.Math.MathHelper.Clamp(_worldManager.Camera.Projection.OrthographicSize, ZOOM_MIN, ZOOM_MAX));

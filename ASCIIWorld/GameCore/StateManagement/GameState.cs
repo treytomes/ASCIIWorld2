@@ -1,10 +1,12 @@
 ﻿using GameCore.IO;
 using GameCore.Rendering;
+using OpenTK.Input;
 using System;
 
 namespace GameCore.StateManagement
 {
-	public abstract class GameState
+
+	public abstract class GameState : InputReceiver
 	{
 		#region Fields
 
@@ -13,6 +15,7 @@ namespace GameCore.StateManagement
 		#region Constructors
 
 		public GameState(GameStateManager manager)
+			: base(manager.GameWindow)
 		{
 			Manager = manager;
 

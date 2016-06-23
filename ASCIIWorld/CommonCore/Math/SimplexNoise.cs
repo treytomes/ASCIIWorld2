@@ -39,7 +39,7 @@ namespace CommonCore.Math
 		}
 
 		/// <summary>
-		/// 2D simplex noise
+		/// 2D simplex noise; generates a value from 0 to 1 (I think).
 		/// </summary>
 		/// <param name="x"></param>
 		/// <param name="y"></param>
