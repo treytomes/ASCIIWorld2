@@ -93,7 +93,16 @@ namespace ASCIIWorld.UI
 			if (CanHaveMouseHover)
 			{
 				var mousePosition = Camera.UnProject(e.X, e.Y);
-				HasMouseHover = Bounds.Contains(mousePosition.X, mousePosition.Y);
+
+				//HasMouseHover = Bounds.Contains(mousePosition.X, mousePosition.Y);
+				if (Bounds.Contains(mousePosition.X, mousePosition.Y))
+				{
+					HasMouseHover = true;
+				}
+				else
+				{
+					HasMouseHover = false;
+				}
 			}
 		}
 

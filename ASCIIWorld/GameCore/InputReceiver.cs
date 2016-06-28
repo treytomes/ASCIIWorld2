@@ -69,14 +69,19 @@ namespace GameCore
 		{
 		}
 
-		private TMouseEvent ProcessMouseEvent<TMouseEvent>(TMouseEvent e)
-			where TMouseEvent : MouseEventArgs
-		{
-			var position = e.Position;
-			position.Y = Window.Height - position.Y;
-			e.Position = position;
-			return e;
-		}
+		//private TMouseEvent ProcessMouseEvent<TMouseEvent>(TMouseEvent e)
+		//	where TMouseEvent : MouseEventArgs
+		//{
+		//	if (!e.IsProcessed())
+		//	{
+		//		var position = e.Position;
+		//		position.Y = Window.Height - position.Y;
+		//		e.Position = position;
+
+		//		e.IsProcessed(true);
+		//	}
+		//	return e;
+		//}
 
 		#endregion
 
@@ -84,22 +89,26 @@ namespace GameCore
 
 		private void Mouse_WheelChanged(object sender, MouseWheelEventArgs e)
 		{
-			OnMouseWheelChanged(ProcessMouseEvent(e));
+			//OnMouseWheelChanged(ProcessMouseEvent(e));
+			OnMouseWheelChanged(e);
 		}
 
 		private void Mouse_Move(object sender, MouseMoveEventArgs e)
 		{
-			OnMouseMove(ProcessMouseEvent(e));
+			//OnMouseMove(ProcessMouseEvent(e));
+			OnMouseMove(e);
 		}
 
 		private void Mouse_ButtonUp(object sender, MouseButtonEventArgs e)
 		{
-			OnMouseButtonUp(ProcessMouseEvent(e));
+			//OnMouseButtonUp(ProcessMouseEvent(e));
+			OnMouseButtonUp(e);
 		}
 
 		private void Mouse_ButtonDown(object sender, MouseButtonEventArgs e)
 		{
-			OnMouseButtonDown(ProcessMouseEvent(e));
+			//OnMouseButtonDown(ProcessMouseEvent(e));
+			OnMouseButtonDown(e);
 		}
 
 		private void Keyboard_KeyUp(object sender, KeyboardKeyEventArgs e)

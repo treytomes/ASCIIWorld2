@@ -5,6 +5,7 @@ using System.Linq;
 
 namespace ASCIIWorld.Data
 {
+	[Serializable]
 	public class InventoryContainer : IEnumerable<ItemStack>
 	{
 		#region Fields

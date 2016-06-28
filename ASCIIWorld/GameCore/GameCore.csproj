@@ -71,6 +71,7 @@
     <Compile Include="IO\XmlBasedContentProvider.cs" />
     <Compile Include="Math\ViewCamera.cs" />
     <Compile Include="Math\ICamera.cs" />
+    <Compile Include="MouseEventArgsExtensions.cs" />
     <Compile Include="Platform\GdiPlus.cs" />
     <Compile Include="Platform\IGdiPlusInternals.cs" />
     <Compile Include="Platform\Windows\WinGdiPlusInternals.cs" />

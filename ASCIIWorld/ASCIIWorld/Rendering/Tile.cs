@@ -68,8 +68,8 @@ namespace ASCIIWorld.Rendering
 			var layer =  -tessellator.Transform(Vector3.Zero).Z;
 			if (layer < _numChunkLayers)
 			{
-				var multiplier = 1.0 - (_numChunkLayers - layer) / (_numChunkLayers * 2) + 0.25f;
-				tessellator.BindColor(Color.FromArgb((int)(color.R * multiplier), (int)(color.G * multiplier), (int)(color.B * multiplier)));
+				var multiplier = 1.0 - (_numChunkLayers - layer) / (_numChunkLayers * 2); // + 0.25f;
+				tessellator.BindColor(Color.FromArgb((int)MathHelper.Clamp(color.R * multiplier, 0, 255), (int)MathHelper.Clamp(color.G * multiplier, 0, 255), (int)MathHelper.Clamp(color.B * multiplier, 0, 255)));
 			}
 
 			if (Transform != null)

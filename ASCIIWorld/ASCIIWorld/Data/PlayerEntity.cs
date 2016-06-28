@@ -1,4 +1,6 @@
 ﻿using System;
+using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
 
 namespace ASCIIWorld.Data
 {
@@ -12,10 +14,18 @@ namespace ASCIIWorld.Data
 
 		#endregion
 
+		#region Fields
+
+		private Guid _playerId;
+
+		#endregion
+
 		#region Constructors
 
 		public PlayerEntity()
 		{
+			_playerId = Guid.NewGuid();
+
 			Inventory = new InventoryContainer(INVENTORY_SIZE);
 			Toolbelt = new InventoryContainer(TOOLBELT_SIZE);
 
@@ -31,9 +41,71 @@ namespace ASCIIWorld.Data
 
 		public InventoryContainer Toolbelt { get; private set; }
 
+		private string Filename
+		{
+			get
+			{
+				return $"{_playerId.ToString()}.player";
+			}
+		}
+
 		#endregion
 
 		#region Methods
+
+		/// <summary>
+		/// Re-load the given player.
+		/// </summary>
+		public static PlayerEntity Load(PlayerEntity player)
+		{
+			return Load(player.Filename);
+		}
+
+		public static PlayerEntity Load(string filename)
+		{
+			if (!File.Exists(filename))
+			{
+				Console.WriteLine($"{filename} does not exist.");
+				return null;
+			}
+
+			var fileStream = new FileStream(filename, FileMode.Open);
+			var formatter = new BinaryFormatter();
+			try
+			{
+				var player = (PlayerEntity)formatter.Deserialize(fileStream);
+				Console.WriteLine($"Player loaded from '{filename}'.");
+				return player;
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine(ex.Message);
+				return null;
+			}
+			finally
+			{
+				fileStream.Close();
+			}
+		}
+
+		public static void Save(PlayerEntity player)
+		{
+			var fileStream = new FileStream(player.Filename, FileMode.Create);
+			var formatter = new BinaryFormatter();
+			try
+			{
+				formatter.Serialize(fileStream, player);
+				Console.WriteLine($"Player saved to '{player.Filename}'.");
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine(ex.Message);
+			}
+			finally
+			{
+				fileStream.Close();
+			}
+		}
 
 		public override void Update(Level level, TimeSpan elapsed)
 		{

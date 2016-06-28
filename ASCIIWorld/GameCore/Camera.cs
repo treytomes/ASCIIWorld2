@@ -87,7 +87,7 @@ namespace GameCore
 			Vector4 vec;
 
 			vec.X = 2.0f * position.X / (float)viewport.Width - 1;
-			vec.Y = (2.0f * position.Y / (float)viewport.Height - 1); // This was negated to handle the inverse-y position of the mouse, but I fixed this in the input manager.
+			vec.Y = -1 * (2.0f * position.Y / (float)viewport.Height - 1); // This was negated to handle the inverse-y position of the mouse, but I fixed this in the input manager.
 			vec.Z = 0;
 			vec.W = 1.0f;
 

@@ -1,7 +1,12 @@
-﻿namespace ASCIIWorld.Data
+﻿using System;
+
+namespace ASCIIWorld.Data
 {
+	[Serializable]
 	public class ItemStack
 	{
+		#region Constructors
+
 		public ItemStack(int itemId, int stackSize = 1, int metadata = 0)
 		{
 			ItemId = itemId;
@@ -9,11 +14,24 @@
 			Metadata = metadata;
 		}
 
+		#endregion
+
+		#region Properties
+
 		public int ItemId { get; private set; }
 
 		public int StackSize { get; private set; }
 
 		public int Metadata { get; private set; }
+
+		#endregion
+
+		#region Methods
+
+		public static ItemStack FromName(string name, int stackSize = 1, int metadata = 0)
+		{
+			return new ItemStack(ItemRegistry.Instance.GetId(name), stackSize, metadata);
+		}
 
 		// TODO: Might need to pass in the owner entity, so that if a potion is used up, the player will get an empty bottle.
 		public void Use(Level level, ChunkLayer layer, int blockX, int blockY)
@@ -50,5 +68,7 @@
 		{
 			return (ItemId == other.ItemId) && (Metadata == other.Metadata);
 		}
+
+		#endregion
 	}
 }

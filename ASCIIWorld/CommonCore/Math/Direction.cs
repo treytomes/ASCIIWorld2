@@ -4,6 +4,7 @@ using System.Linq;
 
 namespace CommonCore.Math
 {
+	[Serializable]
 	public struct Direction
 	{
 		#region Fields

@@ -115,7 +115,27 @@ namespace ASCIIWorld.Data
 
 		public void Update(TimeSpan elapsed, Entity player)
 		{
-			GetChunk(player).Update(elapsed, this);
+			//GetChunk(player).Update(elapsed, this);
+
+			// Update every chunk the player is touching.  This doesn't seem to do what I'm hoping for.  It's probably good anyway though.
+
+			//var center = new OpenTK.Vector2(player.Position.X + player.Size / 2, player.Position.Y + player.Size / 2);
+
+			var topLeft = new OpenTK.Vector2(player.Position.X + (1 - player.Size) / 2, player.Position.Y + (1 - player.Size) / 2);
+			var bottomRight = new OpenTK.Vector2(topLeft.X + player.Size, topLeft.Y + player.Size);
+
+			var chunks = new[]
+			{
+				GetChunk((int)Math.Floor(topLeft.X), (int)Math.Floor(topLeft.Y)),
+				GetChunk((int)Math.Floor(topLeft.X), (int)Math.Floor(bottomRight.Y)),
+				GetChunk((int)Math.Floor(bottomRight.X), (int)Math.Floor(bottomRight.Y)),
+				GetChunk((int)Math.Floor(bottomRight.X), (int)Math.Floor(topLeft.Y))
+			}.Distinct();
+
+			foreach (var chunk in chunks)
+			{
+				chunk.Update(elapsed, this);
+			}
 		}
 
 		public void SetMetadata(ChunkLayer layer, int x, int y, int metadata)
@@ -202,7 +222,9 @@ namespace ASCIIWorld.Data
 
 		public Chunk GetChunk(Entity entity)
 		{
-			return GetChunk(entity.Position);
+			// TODO: I don't think this is always returning the correct value at chunk boundaries.
+			//return GetChunk((int)entity.Position.X, (int)entity.Position.Y);
+			return GetChunk((int)(entity.Position.X + entity.Size / 2), (int)(entity.Position.Y + entity.Size / 2));
 		}
 
 		public Vector2I ToChunkCoordinates(int blockX, int blockY)

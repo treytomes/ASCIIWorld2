@@ -4,7 +4,6 @@ using GameCore;
 using GameCore.Rendering;
 using OpenTK;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 
@@ -49,6 +48,9 @@ namespace ASCIIWorld
 
 		public void Load(string filename)
 		{
+			Player = PlayerEntity.Load("0edb7a22-611b-479b-b4a9-e2c5e7ee4263.player");
+			//Player = PlayerEntity.Load(Player);
+
 			var fileStream = new FileStream(filename, FileMode.Open);
 			var formatter = new BinaryFormatter();
 			try
@@ -56,7 +58,7 @@ namespace ASCIIWorld
 				// The player is not loaded from the level file.
 				Level = (Level)formatter.Deserialize(fileStream);
 				Level.AddEntity(Player);
-				Console.WriteLine($"Loaded from '{filename}'.");
+				Console.WriteLine($"Level loaded from '{filename}'.");
 			}
 			catch (Exception ex)
 			{
@@ -66,8 +68,6 @@ namespace ASCIIWorld
 			{
 				fileStream.Close();
 			}
-
-			// TODO: Load the player from it's own file.
 		}
 
 		public void Save(string filename)
@@ -77,10 +77,11 @@ namespace ASCIIWorld
 			try
 			{
 				// Don't save the player with the level!
-				Level.GetChunk(Player).RemoveEntity(Player);
+				var playerChunk = Level.GetChunk(Player);
+				playerChunk.RemoveEntity(Player);
 				formatter.Serialize(fileStream, Level);
-				Level.AddEntity(Player);
-				Console.WriteLine($"Saved to '{filename}'.");
+				playerChunk.AddEntity(Player);
+				Console.WriteLine($"Level saved to '{filename}'.");
 			}
 			catch (Exception ex)
 			{
@@ -91,7 +92,7 @@ namespace ASCIIWorld
 				fileStream.Close();
 			}
 
-			// TODO: Save the player to it's own file.
+			PlayerEntity.Save(Player);
 		}
 
 		public void Resize(Viewport viewport)
@@ -122,9 +123,9 @@ namespace ASCIIWorld
 		{
 			Player = new PlayerEntity();
 
-			Player.Toolbelt.SetFirstCompatibleSlot(new ItemStack(ItemRegistry.Instance.GetId("Pickaxe")));
-			Player.Toolbelt.SetFirstCompatibleSlot(new ItemStack(ItemRegistry.Instance.GetId("Hoe")));
-			Player.Toolbelt.SetFirstCompatibleSlot(new ItemStack(ItemRegistry.Instance.GetId("Grass")));
+			Player.Toolbelt.SetFirstCompatibleSlot(ItemStack.FromName("Pickaxe"));
+			Player.Toolbelt.SetFirstCompatibleSlot(ItemStack.FromName("Hoe"));
+			Player.Toolbelt.SetFirstCompatibleSlot(ItemStack.FromName("Grass"));
 
 			var spawnPoint = Level.GetChunk(Player).FindSpawnPoint();
 			if (!spawnPoint.HasValue)

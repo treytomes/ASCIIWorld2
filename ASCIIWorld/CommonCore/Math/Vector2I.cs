@@ -1,8 +1,11 @@
-﻿namespace CommonCore.Math
+﻿using System;
+
+namespace CommonCore.Math
 {
 	/// <summary>
 	/// Represent an integer-based 2-dimentional vector.
 	/// </summary>
+	[Serializable]
 	public struct Vector2I
 	{
 		#region Fields

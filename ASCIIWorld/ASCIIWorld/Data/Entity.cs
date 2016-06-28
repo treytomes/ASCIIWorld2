@@ -132,10 +132,11 @@ namespace ASCIIWorld.Data
 
 			if (CanMoveTo(level, newPosition))
 			{
+				var oldChunk = level.GetChunk(this); // (int)(_position.X + Size / 2), (int)(_position.Y + Size / 2));
+
 				_position = newPosition;
 
-				var oldChunk = level.GetChunk((int)_position.X, (int)_position.Y);
-				var newChunk = level.GetChunk((int)newPosition.X, (int)newPosition.Y);
+				var newChunk = level.GetChunk(this);
 
 				if (oldChunk != newChunk)
 				{

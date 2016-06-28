@@ -299,7 +299,6 @@ namespace ASCIIWorld
 				//if (e.Mouse.IsButtonDown(MouseButton.Middle))
 				//{
 				//	var delta = (_cameraMoveStart - _mouseBlockPosition);
-
 				//	_worldManager.Camera.MoveBy(delta);
 				//	_cameraMoveStart = _mouseBlockPosition;
 				//}

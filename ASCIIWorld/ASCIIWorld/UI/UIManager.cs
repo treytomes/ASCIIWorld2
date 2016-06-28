@@ -82,13 +82,13 @@ namespace ASCIIWorld.UI
 		{
 			// TODO: Create a Pause menu for saving and loading.
 			// TODO: If the UI has mouse hover, I don't want the game world to respond to it.
-			SaveButton = new TextButton(_window, _hudCamera, new Vector2(100, 100), "Save");
-			SaveButton.LoadContent(content);
-			_children.Add(SaveButton);
-
-			LoadButton = new TextButton(_window, _hudCamera, new Vector2(100, SaveButton.Bounds.Bottom), "Load");
+			LoadButton = new TextButton(_window, _hudCamera, new Vector2(100, 100), "Load");
 			LoadButton.LoadContent(content);
 			_children.Add(LoadButton);
+
+			SaveButton = new TextButton(_window, _hudCamera, new Vector2(100, LoadButton.Bounds.Bottom + 16), "Save");
+			SaveButton.LoadContent(content);
+			_children.Add(SaveButton);
 
 			// TODO: Find a better was to manage user items.
 			BuildItemToolbar(content);
