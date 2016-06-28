@@ -96,7 +96,7 @@ namespace ASCIIWorld
 			//_writer.Write(PAUSE_MESSAGE);
 		}
 
-		protected override void OnKeyboardKeyDown(KeyboardKeyEventArgs e)
+		protected override void OnKeyboardKeyUp(KeyboardKeyEventArgs e)
 		{
 			if (HasFocus)
 			{

@@ -204,9 +204,6 @@ namespace ASCIIWorld
 			{
 				switch (e.Key)
 				{
-					case Key.Escape:
-						IsPaused = true;
-						break;
 					case Key.I:
 						Console.WriteLine("Show some inventory.");
 						break;
