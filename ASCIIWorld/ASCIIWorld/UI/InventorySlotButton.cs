@@ -3,15 +3,16 @@ using GameCore;
 using GameCore.Rendering;
 using OpenTK;
 using OpenTK.Input;
+using System;
 
 namespace ASCIIWorld.UI
 {
 	public class InventorySlotButton : ItemStackButton
 	{
-		private InventoryContainer _inventory;
+		private Func<InventoryContainer> _inventory;
 		private int _slotIndex;
 
-		public InventorySlotButton(IGameWindow window, Camera<OrthographicProjection> camera, Vector2 position, InventoryContainer inventory, int slotIndex, Key? hotkey = null)
+		public InventorySlotButton(IGameWindow window, Camera<OrthographicProjection> camera, Vector2 position, Func<InventoryContainer> inventory, int slotIndex, Key? hotkey = null)
 			: base(window, camera, position, null, hotkey)
 		{
 			_inventory = inventory;
@@ -22,7 +23,7 @@ namespace ASCIIWorld.UI
 		{
 			get
 			{
-				return _inventory.GetSlot(_slotIndex);
+				return _inventory().GetSlot(_slotIndex);
 			}
 		}
 	}

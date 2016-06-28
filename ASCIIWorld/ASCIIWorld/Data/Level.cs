@@ -121,7 +121,7 @@ namespace ASCIIWorld.Data
 
 			//var center = new OpenTK.Vector2(player.Position.X + player.Size / 2, player.Position.Y + player.Size / 2);
 
-			var topLeft = new OpenTK.Vector2(player.Position.X + (1 - player.Size) / 2, player.Position.Y + (1 - player.Size) / 2);
+			var topLeft = new OpenTK.Vector2(player.Position.X - player.Size / 2, player.Position.Y - player.Size / 2);
 			var bottomRight = new OpenTK.Vector2(topLeft.X + player.Size, topLeft.Y + player.Size);
 
 			var chunks = new[]
@@ -161,7 +161,7 @@ namespace ASCIIWorld.Data
 			// This is probably accurate enough.
 			foreach (var entity in chunk.Entities)
 			{
-				var chunkPosition = ToChunkCoordinates((int)(entity.Position.X + entity.Size / 2), (int)(entity.Position.Y + entity.Size / 2));
+				var chunkPosition = ToChunkCoordinates((int)entity.Position.X, (int)entity.Position.Y);
 				if ((Math.Abs(chunkPosition.X - testChunkPosition.X) <= 0.5) && (Math.Abs(chunkPosition.Y - testChunkPosition.Y) <= 0.5))
 				{
 					yield return entity;
@@ -223,8 +223,7 @@ namespace ASCIIWorld.Data
 		public Chunk GetChunk(Entity entity)
 		{
 			// TODO: I don't think this is always returning the correct value at chunk boundaries.
-			//return GetChunk((int)entity.Position.X, (int)entity.Position.Y);
-			return GetChunk((int)(entity.Position.X + entity.Size / 2), (int)(entity.Position.Y + entity.Size / 2));
+			return GetChunk((int)entity.Position.X, (int)entity.Position.Y);
 		}
 
 		public Vector2I ToChunkCoordinates(int blockX, int blockY)

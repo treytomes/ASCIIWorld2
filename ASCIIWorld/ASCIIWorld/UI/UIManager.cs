@@ -138,7 +138,7 @@ namespace ASCIIWorld.UI
 		// TODO: This is only used in BuildItemToolbar.  Is there a better place for it?
 		private void AddToolbarItem(ContentManager content, int slotIndex, Key hotkey)
 		{
-			var itemButton = new InventorySlotButton(_window, _hudCamera, Vector2.Zero, _worldManager.Player.Toolbelt, slotIndex, hotkey);
+			var itemButton = new InventorySlotButton(_window, _hudCamera, Vector2.Zero, () => _worldManager.Player.Toolbelt, slotIndex, hotkey);
 			itemButton.LoadContent(content);
 			itemButton.Clicked += ToolbarItemButton_Clicked;
 			_children.Add(itemButton);

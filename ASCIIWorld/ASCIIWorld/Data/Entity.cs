@@ -116,8 +116,7 @@ namespace ASCIIWorld.Data
 
 		public void MoveTo(Level level, Vector2 newPosition)
 		{
-			var center = new Vector2(newPosition.X + Size / 2, newPosition.Y + Size / 2);
-			var impactEntities = level.GetEntitiesAt(center);
+			var impactEntities = level.GetEntitiesAt(newPosition);
 			if (impactEntities != null)
 			{
 				foreach (var impactEntity in impactEntities)
@@ -181,7 +180,7 @@ namespace ASCIIWorld.Data
 		protected bool CanMoveTo(Level level, Vector2 newPosition)
 		{
 			// This looks right, and visually it looks mostly right.
-			var topLeft = new Vector2(newPosition.X + (1 - Size) / 2, newPosition.Y + (1 - Size) / 2);
+			var topLeft = new Vector2(newPosition.X, newPosition.Y);
 			var bottomRight = new Vector2(topLeft.X + Size, topLeft.Y + Size);
 
 			return

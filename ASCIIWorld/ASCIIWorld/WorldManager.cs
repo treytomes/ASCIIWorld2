@@ -48,7 +48,7 @@ namespace ASCIIWorld
 
 		public void Load(string filename)
 		{
-			Player = PlayerEntity.Load("0edb7a22-611b-479b-b4a9-e2c5e7ee4263.player");
+			Player = PlayerEntity.Load("adccda30-36f7-4574-ae18-9a2eb48fe271.player");
 			//Player = PlayerEntity.Load(Player);
 
 			var fileStream = new FileStream(filename, FileMode.Open);
