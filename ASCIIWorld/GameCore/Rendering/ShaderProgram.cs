@@ -4,7 +4,6 @@ using System.IO;
 
 namespace GameCore.Rendering
 {
-	// TODO: Verify OpenGL version >= 2.0
 	public class ShaderProgram : IDisposable
 	{
 		#region Fields
@@ -20,6 +19,17 @@ namespace GameCore.Rendering
 		#endregion
 
 		#region Constructors
+
+		static ShaderProgram()
+		{
+			var versionText = GL.GetString(StringName.Version);
+			var major = Convert.ToInt32(versionText[0].ToString());
+			//var minor = Convert.ToInt32(versionText[2].ToString());
+			if (major < 2)
+			{
+				throw new Exception($"Shaders require OpenGL version >= 2.0.  Your version is {versionText}.");
+			}
+		}
 
 		public ShaderProgram(string vertexShaderPath, string fragmentShaderPath)
 		{

@@ -15,7 +15,9 @@ namespace ASCIIWorld.Data
 		Blocking = 2,
 		
 		[Description("Ceiling")]
-		Ceiling = 3
+		Ceiling = 3,
+
+		Lights = 4
 	}
 
 	public static class ChunkLayerExtensions

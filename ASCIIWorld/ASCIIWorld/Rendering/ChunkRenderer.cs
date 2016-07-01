@@ -1,9 +1,11 @@
 ﻿using ASCIIWorld.Data;
+using CommonCore.Math;
 using GameCore;
 using GameCore.Rendering;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 
 namespace ASCIIWorld.Rendering
@@ -50,7 +52,59 @@ namespace ASCIIWorld.Rendering
 			RenderLayer(_tessellator, chunk, ChunkLayer.Blocking, minX, maxX, minY, maxY);
 			RenderLayer(_tessellator, chunk, ChunkLayer.Ceiling, minX, maxX, minY, maxY);
 
+			RenderLightMap(_tessellator, chunk, minX, maxX, minY, maxY);
+
 			_tessellator.End();
+		}
+
+		private void RenderLightMap(ITessellator tessellator, IChunkAccess chunk, int minX, int maxX, int minY, int maxY)
+		{
+			tessellator.PushTransform();
+			tessellator.Translate(0, 0, -1 * (int)ChunkLayer.Lights);
+			tessellator.BindTexture(null);
+
+			int[,] lightMap = new int[maxY - minY + 1, maxX - minX + 1];
+			foreach (var entity in chunk.Entities)
+			{
+				var originX = (int)(entity.Position.X + 0.5f);
+				var originY = (int)(entity.Position.Y + 0.5f);
+
+				var considered = new List<Vector2I>();
+				for (var distance = 0.0f; distance < 8.0f; distance++)
+				{
+					for (var angle = 0.0f; angle < 360.0f; angle += (9.0f - distance)) // hit more angles as you move further out
+					{
+						var x = (int)(originX + distance * Math.Cos(OpenTK.MathHelper.DegreesToRadians(angle)));
+						var y = (int)(originY + distance * Math.Sin(OpenTK.MathHelper.DegreesToRadians(angle)));
+						var vector = new Vector2I(y - minY, x - minX);
+						if (!considered.Contains(vector))
+						{
+							considered.Add(vector);
+
+							//var alpha = (8.0f - distance) / 8.0f;
+							var alpha = 1.0f / Math.Pow((distance + 1) / 4.0f, 2);
+
+							lightMap[y - minY, x - minX] = OpenTK.MathHelper.Clamp((int)(lightMap[y - minY, x - minX] + alpha * 255.0f), 0, 255);
+						}
+					}
+				}
+			}
+
+			for (var y = 0; y < lightMap.GetLength(0); y++)
+			{
+				for (var x = 0; x < lightMap.GetLength(1); x++)
+				{
+					tessellator.BindColor(Color.FromArgb(255 - lightMap[y, x], 0, 0, 0));
+					tessellator.Translate(minX + x, minY + y);
+					tessellator.AddPoint(0, 0);
+					tessellator.AddPoint(0, 1);
+					tessellator.AddPoint(1, 1);
+					tessellator.AddPoint(1, 0);
+					tessellator.Translate(-(minX + x), -(minY + y));
+				}
+			}
+
+			tessellator.PopTransform();
 		}
 
 		private void RenderEntities(ITessellator tessellator, IChunkAccess chunk, int minX, int maxX, int minY, int maxY)
