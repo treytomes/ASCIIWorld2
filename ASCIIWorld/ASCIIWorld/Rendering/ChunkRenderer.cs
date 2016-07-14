@@ -13,7 +13,7 @@ namespace ASCIIWorld.Rendering
 	public class ChunkRenderer
 	{
 		#region Fields
-		
+
 		private ITessellator _tessellator;
 
 		#endregion
@@ -43,7 +43,7 @@ namespace ASCIIWorld.Rendering
 
 			_tessellator.LoadIdentity();
 			_tessellator.Begin(PrimitiveType.Quads);
-			
+
 			RenderLayer(_tessellator, chunk, ChunkLayer.Background, minX, maxX, minY, maxY);
 			RenderLayer(_tessellator, chunk, ChunkLayer.Floor, minX, maxX, minY, maxY);
 
@@ -57,6 +57,12 @@ namespace ASCIIWorld.Rendering
 			_tessellator.End();
 		}
 
+		/// <summary>
+		/// Renders a light map around each entity.
+		/// </summary>
+		/// <remarks>
+		/// Also takes line-of-sight into account.
+		/// </remarks>
 		private void RenderLightMap(ITessellator tessellator, IChunkAccess chunk, int minX, int maxX, int minY, int maxY)
 		{
 			tessellator.PushTransform();
@@ -70,9 +76,10 @@ namespace ASCIIWorld.Rendering
 				var originY = (int)(entity.Position.Y + 0.5f);
 
 				var considered = new List<Vector2I>();
-				for (var distance = 0.0f; distance < 8.0f; distance++)
+				//for (var angle = 0.0f; angle < 360.0f; angle += (9.0f - distance)) // hit more angles as you move further out
+				for (var angle = 0.0f; angle < 360.0f; angle += 1.0f)
 				{
-					for (var angle = 0.0f; angle < 360.0f; angle += (9.0f - distance)) // hit more angles as you move further out
+					for (var distance = 0.0f; distance < 8.0f; distance++)
 					{
 						var x = (int)(originX + distance * Math.Cos(OpenTK.MathHelper.DegreesToRadians(angle)));
 						var y = (int)(originY + distance * Math.Sin(OpenTK.MathHelper.DegreesToRadians(angle)));
@@ -80,11 +87,16 @@ namespace ASCIIWorld.Rendering
 						if (!considered.Contains(vector))
 						{
 							considered.Add(vector);
-
+							
 							//var alpha = (8.0f - distance) / 8.0f;
-							var alpha = 1.0f / Math.Pow((distance + 1) / 4.0f, 2);
+							var alpha = 1.0f / Math.Pow((distance + 1) / 4.0f, 2); // The 4.0 represents the light intensity.
 
 							lightMap[y - minY, x - minX] = OpenTK.MathHelper.Clamp((int)(lightMap[y - minY, x - minX] + alpha * 255.0f), 0, 255);
+						}
+
+						if (chunk[ChunkLayer.Blocking, x, y] != 0)
+						{
+							break;
 						}
 					}
 				}
@@ -110,7 +122,7 @@ namespace ASCIIWorld.Rendering
 		private void RenderEntities(ITessellator tessellator, IChunkAccess chunk, int minX, int maxX, int minY, int maxY)
 		{
 			tessellator.Translate(0, 0, -1 * (int)ChunkLayer.Blocking);
-			
+
 			foreach (var entity in chunk.Entities)
 			{
 				if (CommonCore.Math.MathHelper.IsInRange(entity.Position.X, minX, maxX + 1) &&
