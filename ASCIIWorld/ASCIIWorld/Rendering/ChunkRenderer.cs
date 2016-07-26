@@ -52,9 +52,79 @@ namespace ASCIIWorld.Rendering
 			RenderLayer(_tessellator, chunk, ChunkLayer.Blocking, minX, maxX, minY, maxY);
 			RenderLayer(_tessellator, chunk, ChunkLayer.Ceiling, minX, maxX, minY, maxY);
 
-			RenderLightMap(_tessellator, chunk, minX, maxX, minY, maxY);
+			var fov = CalculateFieldOfView(_tessellator, camera, chunk, minX, maxX, minY, maxY);
+			RenderFieldOfView(fov, _tessellator, camera, chunk, minX, maxX, minY, maxY);
 
 			_tessellator.End();
+		}
+
+		private int[,] CalculateFieldOfView(ITessellator tessellator, Camera<OrthographicProjection> camera, IChunkAccess chunk, int minX, int maxX, int minY, int maxY)
+		{
+			int[,] fovMap = new int[maxY - minY + 1, maxX - minX + 1];
+			var originX = camera.Eye.X + 0.5f;
+			var originY = camera.Eye.Y + 0.5f;
+
+			var considered = new List<Vector2I>();
+			//for (var angle = 0.0f; angle < 360.0f; angle += (9.0f - distance)) // hit more angles as you move further out
+			for (var angle = 0.0f; angle < 360.0f; angle += 1.0f)
+			{
+				for (var distance = 0.0f; distance < chunk.AmbientLightLevel * 2.0f; distance++)
+				{
+					var x = (int)(originX + distance * Math.Cos(OpenTK.MathHelper.DegreesToRadians(angle)));
+					var y = (int)(originY + distance * Math.Sin(OpenTK.MathHelper.DegreesToRadians(angle)));
+					var vector = new Vector2I(y - minY, x - minX);
+					if (!considered.Contains(vector))
+					{
+						considered.Add(vector);
+
+						if (CommonCore.Math.MathHelper.IsInRange(y - minY, 0, maxY - minY + 1) && CommonCore.Math.MathHelper.IsInRange(x - minX, 0, maxX - minX + 1))
+						{
+							//var alpha = (8.0f - distance) / 8.0f;
+							var alpha = 1.0f / Math.Pow((distance + 1) / chunk.AmbientLightLevel, 2);
+
+							fovMap[y - minY, x - minX] = OpenTK.MathHelper.Clamp((int)(fovMap[y - minY, x - minX] + alpha * 255.0f), 0, 255);
+						}
+						else
+						{
+							break;
+						}
+					}
+
+					if (chunk[ChunkLayer.Blocking, x, y] != 0)
+					{
+						break;
+					}
+				}
+			}
+			return fovMap;
+		}
+
+		private void RenderFieldOfView(int[,] fovMap, ITessellator tessellator, Camera<OrthographicProjection> camera, IChunkAccess chunk, int minX, int maxX, int minY, int maxY)
+		{
+			tessellator.PushTransform();
+			tessellator.Translate(0, 0, -1 * (int)ChunkLayer.Lights);
+			tessellator.BindTexture(null);
+
+			for (var y = 0; y < fovMap.GetLength(0); y++)
+			{
+				for (var x = 0; x < fovMap.GetLength(1); x++)
+				{
+					if (fovMap[y, x] == 255)
+					{
+						continue;
+					}
+
+					tessellator.BindColor(Color.FromArgb(255 - fovMap[y, x], 0, 0, 0));
+					tessellator.Translate(minX + x, minY + y);
+					tessellator.AddPoint(0, 0);
+					tessellator.AddPoint(0, 1);
+					tessellator.AddPoint(1, 1);
+					tessellator.AddPoint(1, 0);
+					tessellator.Translate(-(minX + x), -(minY + y));
+				}
+			}
+
+			tessellator.PopTransform();
 		}
 
 		/// <summary>
@@ -72,14 +142,14 @@ namespace ASCIIWorld.Rendering
 			int[,] lightMap = new int[maxY - minY + 1, maxX - minX + 1];
 			foreach (var entity in chunk.Entities)
 			{
-				var originX = (int)(entity.Position.X + 0.5f);
-				var originY = (int)(entity.Position.Y + 0.5f);
+				var originX = (int)(entity.Position.X);
+				var originY = (int)(entity.Position.Y);
 
 				var considered = new List<Vector2I>();
 				//for (var angle = 0.0f; angle < 360.0f; angle += (9.0f - distance)) // hit more angles as you move further out
 				for (var angle = 0.0f; angle < 360.0f; angle += 1.0f)
 				{
-					for (var distance = 0.0f; distance < 8.0f; distance++)
+					for (var distance = 0.0f; distance < chunk.AmbientLightLevel * 2.0f; distance++)
 					{
 						var x = (int)(originX + distance * Math.Cos(OpenTK.MathHelper.DegreesToRadians(angle)));
 						var y = (int)(originY + distance * Math.Sin(OpenTK.MathHelper.DegreesToRadians(angle)));
@@ -87,11 +157,18 @@ namespace ASCIIWorld.Rendering
 						if (!considered.Contains(vector))
 						{
 							considered.Add(vector);
-							
-							//var alpha = (8.0f - distance) / 8.0f;
-							var alpha = 1.0f / Math.Pow((distance + 1) / 4.0f, 2); // The 4.0 represents the light intensity.
 
-							lightMap[y - minY, x - minX] = OpenTK.MathHelper.Clamp((int)(lightMap[y - minY, x - minX] + alpha * 255.0f), 0, 255);
+							if (CommonCore.Math.MathHelper.IsInRange(y - minY, 0, maxY - minY + 1) && CommonCore.Math.MathHelper.IsInRange(x - minX, 0, maxX - minX + 1))
+							{
+								//var alpha = (8.0f - distance) / 8.0f;
+								var alpha = 1.0f / Math.Pow((distance + 1) / chunk.AmbientLightLevel, 2);
+
+								lightMap[y - minY, x - minX] = OpenTK.MathHelper.Clamp((int)(lightMap[y - minY, x - minX] + alpha * 255.0f), 0, 255);
+							}
+							else
+							{
+								break;
+							}
 						}
 
 						if (chunk[ChunkLayer.Blocking, x, y] != 0)

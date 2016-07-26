@@ -64,6 +64,8 @@ namespace ASCIIWorld.Rendering
 		{
 			var color = tessellator.CurrentColor;
 
+			// TODO: If this is an entity tile, then don't adjust the color...?
+
 			// This will cause tile images to become darker as they move into the background layers.
 			var layer =  -tessellator.Transform(Vector3.Zero).Z;
 			if (layer < _numChunkLayers)
