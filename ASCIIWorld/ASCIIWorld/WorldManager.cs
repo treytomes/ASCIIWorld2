@@ -110,13 +110,13 @@ namespace ASCIIWorld
 				throw new NotImplementedException("The player is dead.");
 			}
 
-			Level.Update(elapsed, Player);
+			Level.Update(elapsed, Camera, Player);
 		}
 
 		public void Render()
 		{
 			Camera.Apply();
-			_chunkRenderer.Render(Camera, Level);
+			_chunkRenderer.Render(Camera, Player, Level);
 		}
 
 		private void GeneratePlayer()

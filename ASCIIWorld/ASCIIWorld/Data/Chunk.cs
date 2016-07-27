@@ -25,7 +25,8 @@ namespace ASCIIWorld.Data
 		private int[,,] _blockIndex;
 		private int[,,] _blockMetadata;
 		private List<Entity> _entities;
-		
+		private float _ambientLightLevel;
+
 		#endregion
 
 		#region Constructors
@@ -98,12 +99,22 @@ namespace ASCIIWorld.Data
 			}
 		}
 
+		public float AmbientLightLevel
+		{
+			get
+			{
+				return _ambientLightLevel;
+			}
+		}
+
 		#endregion
 
 		#region Methods
 
 		public void Update(TimeSpan elapsed, Level level)
 		{
+			_ambientLightLevel = level.AmbientLightLevel;
+
 			UpdateBlocks(elapsed, level, ChunkLayer.Background);
 			UpdateBlocks(elapsed, level, ChunkLayer.Floor);
 

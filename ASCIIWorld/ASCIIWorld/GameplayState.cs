@@ -194,8 +194,8 @@ namespace ASCIIWorld
 			if (blockId > 0)
 			{
 				var block = BlockRegistry.Instance.GetById(blockId);
-				Console.WriteLine($"You found a {block.Name} on the {layer.GetDescription()} layer: {block.Description}");
-			}
+				Console.WriteLine($"You found a {block.Name} on the {layer.GetDescription()} layer: {block.Description} @ ({blockX},{blockY})");
+            }
 		}
 
 		protected override void OnKeyboardKeyDown(KeyboardKeyEventArgs e)

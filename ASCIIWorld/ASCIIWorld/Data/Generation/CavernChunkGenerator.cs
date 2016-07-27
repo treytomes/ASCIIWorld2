@@ -1,11 +1,11 @@
-﻿using ASCIIWorld.Data;
-using CommonCore.Math;
+﻿using CommonCore.Math;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace ASCIIWorld.Data.Generation
 {
+	[Serializable]
 	public class CavernChunkGenerator : BaseChunkGenerator
 	{
 		#region Constants
@@ -16,9 +16,6 @@ namespace ASCIIWorld.Data.Generation
 		#endregion
 
 		#region Fields
-
-		private int _chunkX;
-		private int _chunkY;
 
 		private int _randomFillPercent;
 
@@ -31,12 +28,9 @@ namespace ASCIIWorld.Data.Generation
 
 		#region Constructors
 
-		public CavernChunkGenerator(int width, int height, string seed, int chunkX, int chunkY)
+		public CavernChunkGenerator(int width, int height, string seed)
 			: base(width, height, seed)
 		{
-			_chunkX = chunkX;
-			_chunkY = chunkY;
-
 			_stoneId = BlockRegistry.Instance.GetId("Stone");
 
 			_passageCount = 0;
@@ -47,10 +41,25 @@ namespace ASCIIWorld.Data.Generation
 
 		#endregion
 
+		#region Properties
+
+		public override float AmbientLightLevel
+		{
+			get
+			{
+				return 8.0f;
+			}
+		}
+
+		#endregion
+
+
 		#region Methods
 
-		public override Chunk Generate(IProgress<string> progress)
+		public override Chunk Generate(IProgress<string> progress, int chunkX, int chunkY)
 		{
+			Reseed(chunkX, chunkY);
+
 			progress.Report("Generating chunk.");
 
 			var chunk = new Chunk(Width, Height);

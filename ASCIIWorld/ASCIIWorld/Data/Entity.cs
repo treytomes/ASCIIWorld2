@@ -1,7 +1,7 @@
-﻿using ASCIIWorld.Rendering;
-using CommonCore.Math;
+﻿using CommonCore.Math;
 using OpenTK;
 using System;
+using System.Linq;
 
 namespace ASCIIWorld.Data
 {
@@ -116,7 +116,8 @@ namespace ASCIIWorld.Data
 
 		public void MoveTo(Level level, Vector2 newPosition)
 		{
-			var impactEntities = level.GetEntitiesAt(newPosition);
+			var center = new Vector2(newPosition.X + Size / 2.0f, newPosition.Y + Size / 2.0f);
+			var impactEntities = level.GetEntitiesAt(center, new Vector2(Size / 2.0f, Size / 2.0f));
 			if (impactEntities != null)
 			{
 				foreach (var impactEntity in impactEntities)

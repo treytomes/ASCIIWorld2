@@ -8,6 +8,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
+using GameCore;
+using GameCore.Rendering;
 
 namespace ASCIIWorld.Data
 {
@@ -39,14 +41,20 @@ namespace ASCIIWorld.Data
 		#region Fields
 		
 		private Chunk[,] _chunks;
+		private ChunkType _chunkType;
+		private IChunkGenerator _generator;
+		private float _ambientLightLevel;
 
 		#endregion
 
 		#region Constructors
 
-		public Level()
+		public Level(ChunkType chunkType)
 		{
+			_chunkType = chunkType;
+			_generator = ChunkGeneratorFactory.Instance.GetGenerator(chunkType, CHUNK_WIDTH, CHUNK_HEIGHT, null);
 			_chunks = new Chunk[LEVEL_HEIGHT, LEVEL_WIDTH];
+			_ambientLightLevel = _generator.AmbientLightLevel;
 		}
 
 		#endregion
@@ -109,11 +117,23 @@ namespace ASCIIWorld.Data
 			}
 		}
 
+		public float AmbientLightLevel
+		{
+			get
+			{
+				return _ambientLightLevel;
+			}
+			set
+			{
+				_ambientLightLevel = value;
+			}
+		}
+
 		#endregion
 
 		#region Methods
 
-		public void Update(TimeSpan elapsed, Entity player)
+		public void Update(TimeSpan elapsed, Camera<OrthographicProjection> camera, Entity player)
 		{
 			//GetChunk(player).Update(elapsed, this);
 
@@ -121,15 +141,25 @@ namespace ASCIIWorld.Data
 
 			//var center = new OpenTK.Vector2(player.Position.X + player.Size / 2, player.Position.Y + player.Size / 2);
 
-			var topLeft = new OpenTK.Vector2(player.Position.X - player.Size / 2, player.Position.Y - player.Size / 2);
-			var bottomRight = new OpenTK.Vector2(topLeft.X + player.Size, topLeft.Y + player.Size);
+			//var topLeft = new OpenTK.Vector2(player.Position.X - player.Size / 2, player.Position.Y - player.Size / 2);
+			//var bottomRight = new OpenTK.Vector2(topLeft.X + player.Size, topLeft.Y + player.Size);
+
+			//GetChunk(player).Update(elapsed, this);
+
+			var topLeft = OpenTK.Vector3.Transform(new OpenTK.Vector3(camera.Projection.Left, camera.Projection.Top, 0), camera.ModelViewMatrix.Inverted());
+			var bottomRight = OpenTK.Vector3.Transform(new OpenTK.Vector3(camera.Projection.Right, camera.Projection.Bottom, 0), camera.ModelViewMatrix.Inverted());
+
+			var minX = (int)Math.Floor(topLeft.X);
+			var maxX = (int)Math.Ceiling(bottomRight.X);
+			var minY = (int)Math.Floor(topLeft.Y);
+			var maxY = (int)Math.Ceiling(bottomRight.Y);
 
 			var chunks = new[]
 			{
-				GetChunk((int)Math.Floor(topLeft.X), (int)Math.Floor(topLeft.Y)),
-				GetChunk((int)Math.Floor(topLeft.X), (int)Math.Floor(bottomRight.Y)),
-				GetChunk((int)Math.Floor(bottomRight.X), (int)Math.Floor(bottomRight.Y)),
-				GetChunk((int)Math.Floor(bottomRight.X), (int)Math.Floor(topLeft.Y))
+				GetChunk(minX, minY),
+				GetChunk(minX, maxY),
+				GetChunk(maxX, maxY),
+				GetChunk(maxX, minY)
 			}.Distinct();
 
 			foreach (var chunk in chunks)
@@ -152,17 +182,17 @@ namespace ASCIIWorld.Data
 			return chunk.GetMetadata(layer, coords.X, coords.Y);
 		}
 
-		public IEnumerable<Entity> GetEntitiesAt(OpenTK.Vector2 position)
+		public IEnumerable<Entity> GetEntitiesAt(OpenTK.Vector2 position, OpenTK.Vector2 radius)
 		{
 			var chunk = GetChunk(position);
 
-			var testChunkPosition = ToChunkCoordinates((int)position.X, (int)position.Y);
+			var testChunkPosition = ToChunkCoordinates(position.X, position.Y);
 
 			// This is probably accurate enough.
 			foreach (var entity in chunk.Entities)
 			{
-				var chunkPosition = ToChunkCoordinates((int)entity.Position.X, (int)entity.Position.Y);
-				if ((Math.Abs(chunkPosition.X - testChunkPosition.X) <= 0.5) && (Math.Abs(chunkPosition.Y - testChunkPosition.Y) <= 0.5))
+				var chunkPosition = ToChunkCoordinates(entity.Position.X + entity.Size / 2.0f, entity.Position.Y + entity.Size / 2.0f);
+				if ((Math.Abs(chunkPosition.X - testChunkPosition.X) <= (radius.X + entity.Size / 2.0f)) && (Math.Abs(chunkPosition.Y - testChunkPosition.Y) <= (radius.Y + entity.Size / 2.0f)))
 				{
 					yield return entity;
 				}
@@ -172,13 +202,13 @@ namespace ASCIIWorld.Data
 
 		public void AddEntity(Entity entity)
 		{
-			var chunk = GetChunk((int)entity.Position.X, (int)entity.Position.Y);
+			var chunk = GetChunk(entity);
 			chunk.AddEntity(entity);
 		}
 
 		public void RemoveEntity(Entity entity)
 		{
-			var chunk = GetChunk((int)entity.Position.X, (int)entity.Position.Y);
+			var chunk = GetChunk(entity);
 			chunk.RemoveEntity(entity);
 		}
 
@@ -204,10 +234,10 @@ namespace ASCIIWorld.Data
 		/// <remarks>
 		/// The chunk will be generated if it doesn't exist yet.
 		/// </remarks>
-		public Chunk GetChunk(int blockX, int blockY)
+		public Chunk GetChunk(float blockX, float blockY)
 		{
-			var levelX = (int)MathHelper.Modulo(Math.Floor((float)blockX / CHUNK_WIDTH), LEVEL_WIDTH);
-			var levelY = (int)MathHelper.Modulo(Math.Floor((float)blockY / CHUNK_HEIGHT), LEVEL_HEIGHT);
+			var levelX = (int)MathHelper.Modulo(Math.Floor(blockX / CHUNK_WIDTH), LEVEL_WIDTH);
+			var levelY = (int)MathHelper.Modulo(Math.Floor(blockY / CHUNK_HEIGHT), LEVEL_HEIGHT);
 			if (_chunks[levelY, levelX] == null)
 			{
 				GenerateChunk(levelX, levelY);
@@ -217,13 +247,13 @@ namespace ASCIIWorld.Data
 
 		public Chunk GetChunk(OpenTK.Vector2 position)
 		{
-			return GetChunk((int)position.X, (int)position.Y);
+			return GetChunk(position.X, position.Y);
 		}
 
 		public Chunk GetChunk(Entity entity)
 		{
 			// TODO: I don't think this is always returning the correct value at chunk boundaries.
-			return GetChunk((int)entity.Position.X, (int)entity.Position.Y);
+			return GetChunk(entity.Position.X + entity.Size / 2.0f, entity.Position.Y + entity.Size / 2.0f);
 		}
 
 		public Vector2I ToChunkCoordinates(int blockX, int blockY)
@@ -231,6 +261,13 @@ namespace ASCIIWorld.Data
 			var chunkX = (int)MathHelper.Modulo(blockX, CHUNK_WIDTH);
 			var chunkY = (int)MathHelper.Modulo(blockY, CHUNK_HEIGHT);
 			return new Vector2I(chunkX, chunkY);
+		}
+
+		public OpenTK.Vector2 ToChunkCoordinates(float blockX, float blockY)
+		{
+			var chunkX = (float)MathHelper.Modulo(blockX, CHUNK_WIDTH);
+			var chunkY = (float)MathHelper.Modulo(blockY, CHUNK_HEIGHT);
+			return new OpenTK.Vector2(chunkX, chunkY);
 		}
 
 		public bool IsBlockedAt(int blockX, int blockY)
@@ -250,7 +287,7 @@ namespace ASCIIWorld.Data
 			//_chunks[chunkY, chunkX] = new BSPDungeonChunkGenerator( CHUNK_WIDTH, CHUNK_HEIGHT, null).Generate(progress);
 
 			//_chunks[chunkY, chunkX] = new OverworldChunkGenerator(CHUNK_WIDTH, CHUNK_HEIGHT, null, chunkX, chunkY).Generate(progress);
-			_chunks[chunkY, chunkX] = new CavernChunkGenerator(CHUNK_WIDTH, CHUNK_HEIGHT, null, chunkX, chunkY).Generate(progress);
+			_chunks[chunkY, chunkX] = _generator.Generate(progress, chunkX, chunkY);
 		}
 
 		#endregion

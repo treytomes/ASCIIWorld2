@@ -75,12 +75,22 @@ namespace ASCIIWorld.Data.Generation.Dugout
 			private set;
 		}
 
-		#endregion
+		public override float AmbientLightLevel
+		{
+			get
+			{
+				return 8.0f;
+			}
+		}
 
+		#endregion
+		
 		#region Methods
 
-		public override Chunk Generate(IProgress<string> progress)
+		public override Chunk Generate(IProgress<string> progress, int chunkX, int chunkY)
 		{
+			Reseed(chunkX, chunkY);
+
 			CreateDungeon(progress, NUM_FEATURES);
 
 			var chunk = new Chunk(_columns, _rows);

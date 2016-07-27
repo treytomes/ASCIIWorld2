@@ -10,6 +10,7 @@ using OpenTK;
 using System.Threading;
 using System.Collections.Concurrent;
 using GameCore;
+using ASCIIWorld.Data.Generation;
 
 namespace ASCIIWorld
 {
@@ -57,7 +58,7 @@ namespace ASCIIWorld
 
 			_loadingTask = Task.Run(() =>
 			{
-				_level = new Level();
+				_level = new Level(ChunkType.Overworld);
 				var chunk = _level[ChunkLayer.Floor, 0, 0]; // generate the first chunk
 			}).ContinueWith(x => Thread.Sleep(100));
 		}

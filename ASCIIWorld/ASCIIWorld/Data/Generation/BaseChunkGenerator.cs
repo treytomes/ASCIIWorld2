@@ -7,8 +7,6 @@ namespace ASCIIWorld.Data.Generation
 	{
 		#region Fields
 
-		private string _seed;
-
 		#endregion
 
 		#region Constructors
@@ -18,13 +16,15 @@ namespace ASCIIWorld.Data.Generation
 			Width = width;
 			Height = height;
 
-			_seed = seed ?? DateTime.Now.GetHashCode().ToString();
-			Random = new Random(_seed.GetHashCode());
+			Seed = seed ?? DateTime.Now.GetHashCode().ToString();
+			Random = new Random(Seed.GetHashCode());
 		}
 
 		#endregion
 
 		#region Properties
+
+		public abstract float AmbientLightLevel { get; }
 
 		protected int Width { get; private set; }
 
@@ -32,11 +32,13 @@ namespace ASCIIWorld.Data.Generation
 
 		protected Random Random { get; private set; }
 
+		protected string Seed { get; private set; }
+
 		#endregion
 
 		#region Methods
 
-		public abstract Chunk Generate(IProgress<string> progress);
+		public abstract Chunk Generate(IProgress<string> progress, int chunkX, int chunkY);
 
 		public void Fill(Chunk chunk, ChunkLayer layer, int blockId)
 		{
@@ -68,6 +70,12 @@ namespace ASCIIWorld.Data.Generation
 			{
 				chunk[layer, column, y] = blockId;
 			}
+		}
+
+		protected void Reseed(int chunkX, int chunkY)
+		{
+			// TODO: This will probably need to change.
+			Random = new Random(Seed.GetHashCode() + chunkX + chunkY * Width);
 		}
 
 		#endregion

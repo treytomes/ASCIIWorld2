@@ -69,6 +69,7 @@
     <Compile Include="Data\BlockItem.cs" />
     <Compile Include="Data\BlockRegistry.cs" />
     <Compile Include="Data\Chunk.cs" />
+    <Compile Include="Data\Generation\ChunkGeneratorFactory.cs" />
     <Compile Include="Data\ChunkLayer.cs" />
     <Compile Include="Data\Entity.cs" />
     <Compile Include="Data\Generation\BaseChunkGenerator.cs" />
@@ -79,6 +80,7 @@
     <Compile Include="Data\Generation\BSP\RoomGenerator.cs" />
     <Compile Include="Data\Generation\BSP\VerticalArea.cs" />
     <Compile Include="Data\Generation\CavernChunkGenerator.cs" />
+    <Compile Include="Data\Generation\ChunkType.cs" />
     <Compile Include="Data\Generation\Dugout\DugoutDungeonChunkGenerator.cs" />
     <Compile Include="Data\Generation\Dugout\Tile.cs" />
     <Compile Include="Data\Generation\IChunkGenerator.cs" />

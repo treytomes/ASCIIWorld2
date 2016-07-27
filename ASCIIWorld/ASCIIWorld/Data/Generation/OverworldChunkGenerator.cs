@@ -3,12 +3,10 @@ using System;
 
 namespace ASCIIWorld.Data.Generation
 {
+	[Serializable]
 	public class OverworldChunkGenerator : BaseChunkGenerator
 	{
 		#region Fields
-
-		private int _chunkX;
-		private int _chunkY;
 
 		private int _dirtId;
 		private int _waterId;
@@ -21,12 +19,9 @@ namespace ASCIIWorld.Data.Generation
 
 		#region Constructors
 
-		public OverworldChunkGenerator(int width, int height, string seed, int chunkX, int chunkY)
+		public OverworldChunkGenerator(int width, int height, string seed)
 			: base(width, height, seed)
 		{
-			_chunkX = chunkX;
-			_chunkY = chunkY;
-
 			_dirtId = BlockRegistry.Instance.GetId("Dirt");
 			_waterId = BlockRegistry.Instance.GetId("Water");
 			_sandId = BlockRegistry.Instance.GetId("Sand");
@@ -37,10 +32,24 @@ namespace ASCIIWorld.Data.Generation
 
 		#endregion
 
+		#region Properties
+
+		public override float AmbientLightLevel
+		{
+			get
+			{
+				return 32.0f;
+			}
+		}
+
+		#endregion
+
 		#region Methods
 
-		public override Chunk Generate(IProgress<string> progress)
+		public override Chunk Generate(IProgress<string> progress, int chunkX, int chunkY)
 		{
+			Reseed(chunkX, chunkY);
+
 			var chunk = new Chunk(Width, Height);
 			Fill(chunk, ChunkLayer.Background, _dirtId);
 			Fill(chunk, ChunkLayer.Floor, _grassId);
@@ -49,7 +58,7 @@ namespace ASCIIWorld.Data.Generation
 			{
 				for (var y = 0; y < Height; y++)
 				{
-					var value = SimplexNoise.Generate((_chunkX * Width + x) / 256.0f, (_chunkY * Height + y) / 256.0f);
+					var value = SimplexNoise.Generate((chunkX * Width + x) / 256.0f, (chunkY * Height + y) / 256.0f);
 					if (value < -0.5)
 					{
 						chunk[ChunkLayer.Floor, x, y] = _waterId;

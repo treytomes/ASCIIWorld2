@@ -27,10 +27,24 @@ namespace ASCIIWorld.Data.Generation.Labyrinth
 
 		#endregion
 
+		#region Properties
+
+		public override float AmbientLightLevel
+		{
+			get
+			{
+				return 8.0f;
+			}
+		}
+
+		#endregion
+
+
 		#region Methods
 
-		public override Chunk Generate(IProgress<string> progress)
+		public override Chunk Generate(IProgress<string> progress, int chunkX, int chunkY)
 		{
+			Reseed(chunkX, chunkY);
 			var tileMap = new Chunk(Width, Height);
 
 			progress.Report("Generating dungeon...");

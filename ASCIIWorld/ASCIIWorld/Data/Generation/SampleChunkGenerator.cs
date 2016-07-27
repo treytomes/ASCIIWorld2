@@ -16,8 +16,23 @@ namespace ASCIIWorld.Data.Generation
 			_waterId = blocks.Single(x => x.Value == "Water").Key;
 		}
 
-		public override Chunk Generate(IProgress<string> progress)
+		#region Properties
+
+		public override float AmbientLightLevel
 		{
+			get
+			{
+				return 8.0f;
+			}
+		}
+
+		#endregion
+
+
+		public override Chunk Generate(IProgress<string> progress, int chunkX, int chunkY)
+		{
+			Reseed(chunkX, chunkY);
+
 			progress.Report("Generating chunk.");
 
 			var chunk = new Chunk(Width, Height);

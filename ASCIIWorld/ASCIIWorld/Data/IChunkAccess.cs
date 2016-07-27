@@ -4,6 +4,8 @@ namespace ASCIIWorld.Data
 {
 	public interface IChunkAccess
 	{
+		float AmbientLightLevel { get; }
+
 		int this[ChunkLayer layer, int blockX, int blockY] { get; set; }
 
 		IEnumerable<Entity> Entities { get; }

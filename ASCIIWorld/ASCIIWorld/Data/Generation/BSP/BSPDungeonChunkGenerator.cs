@@ -38,10 +38,24 @@ namespace ASCIIWorld.Data.Generation.BSP
 
 		#endregion
 
+		#region Properties
+
+		public override float AmbientLightLevel
+		{
+			get
+			{
+				return 8.0f;
+			}
+		}
+
+		#endregion
+
 		#region Methods
 
-		public override Chunk Generate(IProgress<string> progress)
+		public override Chunk Generate(IProgress<string> progress, int chunkX, int chunkY)
 		{
+			Reseed(chunkX, chunkY);
+
 			var chunk = new Chunk(Width, Height);
 			Fill(chunk, ChunkLayer.Floor, _floorId);
 			Fill(chunk, ChunkLayer.Blocking, _wallId);

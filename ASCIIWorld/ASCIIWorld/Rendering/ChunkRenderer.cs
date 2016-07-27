@@ -29,7 +29,7 @@ namespace ASCIIWorld.Rendering
 
 		#region Methods
 
-		public void Render(Camera<OrthographicProjection> camera, IChunkAccess chunk)
+		public void Render(Camera<OrthographicProjection> camera, PlayerEntity player, IChunkAccess chunk)
 		{
 			var topLeft = Vector3.Transform(new Vector3(camera.Projection.Left, camera.Projection.Top, 0), camera.ModelViewMatrix.Inverted());
 			var bottomRight = Vector3.Transform(new Vector3(camera.Projection.Right, camera.Projection.Bottom, 0), camera.ModelViewMatrix.Inverted());
@@ -52,17 +52,17 @@ namespace ASCIIWorld.Rendering
 			RenderLayer(_tessellator, chunk, ChunkLayer.Blocking, minX, maxX, minY, maxY);
 			RenderLayer(_tessellator, chunk, ChunkLayer.Ceiling, minX, maxX, minY, maxY);
 
-			var fov = CalculateFieldOfView(_tessellator, camera, chunk, minX, maxX, minY, maxY);
+			var fov = CalculateFieldOfView(_tessellator, camera, player, chunk, minX, maxX, minY, maxY);
 			RenderFieldOfView(fov, _tessellator, camera, chunk, minX, maxX, minY, maxY);
 
 			_tessellator.End();
 		}
 
-		private int[,] CalculateFieldOfView(ITessellator tessellator, Camera<OrthographicProjection> camera, IChunkAccess chunk, int minX, int maxX, int minY, int maxY)
+		private int[,] CalculateFieldOfView(ITessellator tessellator, Camera<OrthographicProjection> camera, PlayerEntity player, IChunkAccess chunk, int minX, int maxX, int minY, int maxY)
 		{
 			int[,] fovMap = new int[maxY - minY + 1, maxX - minX + 1];
-			var originX = camera.Eye.X + 0.5f;
-			var originY = camera.Eye.Y + 0.5f;
+			var originX = player.Position.X + player.Size / 2.0f;
+			var originY = player.Position.Y + player.Size / 2.0f;
 
 			var considered = new List<Vector2I>();
 			//for (var angle = 0.0f; angle < 360.0f; angle += (9.0f - distance)) // hit more angles as you move further out
@@ -70,8 +70,8 @@ namespace ASCIIWorld.Rendering
 			{
 				for (var distance = 0.0f; distance < chunk.AmbientLightLevel * 2.0f; distance++)
 				{
-					var x = (int)(originX + distance * Math.Cos(OpenTK.MathHelper.DegreesToRadians(angle)));
-					var y = (int)(originY + distance * Math.Sin(OpenTK.MathHelper.DegreesToRadians(angle)));
+					var x = (int)Math.Floor(originX + distance * Math.Cos(OpenTK.MathHelper.DegreesToRadians(angle)));
+					var y = (int)Math.Floor(originY + distance * Math.Sin(OpenTK.MathHelper.DegreesToRadians(angle)));
 					var vector = new Vector2I(y - minY, x - minX);
 					if (!considered.Contains(vector))
 					{
