@@ -125,7 +125,8 @@ namespace ASCIIWorld
 
 			Player.Toolbelt.SetFirstCompatibleSlot(ItemStack.FromName("Pickaxe"));
 			Player.Toolbelt.SetFirstCompatibleSlot(ItemStack.FromName("Hoe"));
-			Player.Toolbelt.SetFirstCompatibleSlot(ItemStack.FromName("Grass"));
+			Player.Toolbelt.SetFirstCompatibleSlot(ItemStack.FromName("Wheat Seed", 64));
+			Player.Toolbelt.SetFirstCompatibleSlot(ItemStack.FromName("Grass", 64));
 
 			var spawnPoint = Level.GetChunk(Player).FindSpawnPoint();
 			if (!spawnPoint.HasValue)

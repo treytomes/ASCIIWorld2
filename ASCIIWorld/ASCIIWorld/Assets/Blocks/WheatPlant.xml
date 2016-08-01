@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Block name="Wheat Plant" tileSet="TileSets/SampleBlocks.xml" description="It's wheat.">
+	<Block.renderer>
+		<MetadataTileSet mask="15"> <!-- 0x0F - use the first 4 bytes to hold the value -->
+			<Tile name="WheatPlant_0" data="0" />
+			<Tile name="WheatPlant_1" data="1" />
+			<Tile name="WheatPlant_2" data="2" />
+			<Tile name="WheatPlant_3" data="3" />
+			<Tile name="WheatPlant_4" data="4" />
+			<Tile name="WheatPlant_5" data="5" />
+			<Tile name="WheatPlant_6" data="6" />
+			<Tile name="WheatPlant_7" data="7" />
+		</MetadataTileSet>
+	</Block.renderer>
+	<Properties>
+		<Property name="Friction" value="1" />
+	</Properties>
+	<Behaviors>
+		<Behavior type="ASCIIWorld.Data.PlantBlockBehavior" />
+	</Behaviors>
+</Block>

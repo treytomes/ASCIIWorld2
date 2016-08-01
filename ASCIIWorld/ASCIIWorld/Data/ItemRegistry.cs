@@ -23,6 +23,7 @@ namespace ASCIIWorld.Data
 		{
 			Register(new PickaxeItem());
 			Register(new HoeItem());
+			Register(new WheatSeedItem());
 
 			foreach (var block in BlockRegistry.Instance)
 			{

@@ -153,7 +153,7 @@ namespace ASCIIWorld.Data
 			{
 				for (var blockY = 0; blockY < Height; blockY++)
 				{
-					var blockId = _blockIndex[(int)layer, blockX, blockY];
+					var blockId = _blockIndex[(int)layer, blockY, blockX];
 					if (blockId != NULL_BLOCK_ID)
 					{
 						BlockRegistry.Instance.GetById(blockId).Update(elapsed, level, layer, blockX, blockY);

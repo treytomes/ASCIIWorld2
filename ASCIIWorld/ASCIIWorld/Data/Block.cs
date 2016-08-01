@@ -2,6 +2,7 @@
 using CommonCore;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace ASCIIWorld.Data
 {
@@ -13,18 +14,20 @@ namespace ASCIIWorld.Data
 		#region Fields
 
 		private Dictionary<string, object> _properties;
+		private BlockBehavior[] _behaviors;
 
 		#endregion
 
 		#region Constructors
 
-		public Block(string name, bool isOpaque, IBlockRenderer renderer, string description)
+		public Block(string name, bool isOpaque, IBlockRenderer renderer, string description, IEnumerable<BlockBehavior> behaviors)
 		{
 			Name = name;
 			Renderer = renderer;
 			Description = description;
 
 			_properties = new Dictionary<string, object>();
+			_behaviors = behaviors.ToArray();
 		}
 
 		#endregion
@@ -66,6 +69,11 @@ namespace ASCIIWorld.Data
 		public virtual void Update(TimeSpan elapsed, Level level, ChunkLayer layer, int blockX, int blockY)
 		{
 			// TODO: Blocks need behavioral components.  Best if written in Lua.
+
+			foreach (var behavior in _behaviors)
+			{
+				behavior.Update(elapsed, level, layer, blockX, blockY);
+			}
 		}
 
 		public override string ToString()

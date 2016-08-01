@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Reflection;
 using System.Xml.Linq;
 
 namespace ASCIIWorld.IO
@@ -33,7 +34,8 @@ namespace ASCIIWorld.IO
 			
 			var rendererElem = blockElem.Element("Block.renderer").Elements().Single();
 			var renderer = LoadRenderer(tileSet, rendererElem);
-			var block = new Block(name, isOpaque, renderer, description);
+			var behaviors = LoadBehaviors(blockElem);
+			var block = new Block(name, isOpaque, renderer, description, behaviors);
 
 			var propertiesElem = blockElem.Element("Properties");
 			if (propertiesElem != null)
@@ -52,6 +54,28 @@ namespace ASCIIWorld.IO
 			return block;
 		}
 
+		private IEnumerable<BlockBehavior> LoadBehaviors(XElement blockElem)
+		{
+			var behaviors = new List<BlockBehavior>();
+			var behaviorsElem = blockElem.Element("Behaviors");
+			if (behaviorsElem != null)
+			{
+				foreach (var behaviorElem in behaviorsElem.Elements("Behavior"))
+				{
+					if (behaviorElem.HasAttribute("type"))
+					{
+						behaviors.Add(LoadBehavior(behaviorElem.Attribute<string>("type")));
+					}
+				}
+			}
+			return behaviors;
+		}
+
+		private BlockBehavior LoadBehavior(string type)
+		{
+			return (BlockBehavior)Activator.CreateInstance(Assembly.GetExecutingAssembly().GetType(type));
+		}
+
 		private IBlockRenderer LoadRenderer(TileSet tileSet, XElement rendererElem)
 		{
 			if (rendererElem.Name == "Animation")
@@ -61,6 +85,10 @@ namespace ASCIIWorld.IO
 			else if (rendererElem.Name == "RegionBoundedTileStack")
 			{
 				return LoadRegionBoundedTileStack(tileSet as AtlasTileSet, rendererElem);
+			}
+			else if (rendererElem.Name == "MetadataTileSet")
+			{
+				return LoadMetadataTileSet(tileSet, rendererElem);
 			}
 			else if (rendererElem.Name == "TileStack")
 			{
@@ -103,6 +131,17 @@ namespace ASCIIWorld.IO
 			var westWall = tileStackElem.Attribute<string>("westWall");
 
 			return new RegionBoundedTileStack(tiles, tileSet, outlineColor, northWall, eastWall, southWall, westWall);
+		}
+
+		private MetadataTileSet LoadMetadataTileSet(TileSet tileSet, XElement tileSetElem)
+		{
+			var mask = tileSetElem.Attribute<int>("mask");
+			var tiles = new Dictionary<int, IRenderable>();
+			foreach (var tileElem in tileSetElem.Elements())
+			{
+				tiles.Add(tileElem.Attribute<int>("data"), LoadRenderer(tileSet, tileElem));
+			}
+			return new MetadataTileSet(mask, tiles);
 		}
 
 		private TileStack LoadTileStack(TileSet tileSet, XElement tileStackElem)

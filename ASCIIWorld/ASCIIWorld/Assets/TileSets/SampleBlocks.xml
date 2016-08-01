@@ -32,6 +32,85 @@
 			</TileStackContentSource>
 		</Tile.source>
 	</Tile>
+	<Tile name="WheatSeed">
+		<Tile.source>
+			<TileStackContentSource>
+				<TileSetContentSource tileSet="TileSets/ASCII.xml" tileIndex="249" color="#FFFFEB59" />
+			</TileStackContentSource>
+		</Tile.source>
+	</Tile>
+	<Tile name="WheatPlant_0">
+		<Tile.source>
+			<TileStackContentSource>
+				<TileSetContentSource tileSet="TileSets/ASCII.xml" tileIndex="219" color="#FF685638" />
+				<TileSetContentSource tileSet="TileSets/ASCII.xml" tileIndex="205" color="#FFA28756" />
+				<TileSetContentSource tileSet="TileSets/ASCII.xml" tileIndex="249" color="#FF68D361" />
+			</TileStackContentSource>
+		</Tile.source>
+	</Tile>
+	<Tile name="WheatPlant_1">
+		<Tile.source>
+			<TileStackContentSource>
+				<TileSetContentSource tileSet="TileSets/ASCII.xml" tileIndex="219" color="#FF685638" />
+				<TileSetContentSource tileSet="TileSets/ASCII.xml" tileIndex="205" color="#FFA28756" />
+				<TileSetContentSource tileSet="TileSets/ASCII.xml" tileIndex="196" color="#FF68D361" />
+			</TileStackContentSource>
+		</Tile.source>
+	</Tile>
+	<Tile name="WheatPlant_2">
+		<Tile.source>
+			<TileStackContentSource>
+				<TileSetContentSource tileSet="TileSets/ASCII.xml" tileIndex="219" color="#FF685638" />
+				<TileSetContentSource tileSet="TileSets/ASCII.xml" tileIndex="205" color="#FFA28756" />
+				<TileSetContentSource tileSet="TileSets/ASCII.xml" tileIndex="205" color="#FF68D361" />
+			</TileStackContentSource>
+		</Tile.source>
+	</Tile>
+	<Tile name="WheatPlant_3">
+		<Tile.source>
+			<TileStackContentSource>
+				<TileSetContentSource tileSet="TileSets/ASCII.xml" tileIndex="219" color="#FF685638" />
+				<TileSetContentSource tileSet="TileSets/ASCII.xml" tileIndex="205" color="#FFA28756" />
+				<TileSetContentSource tileSet="TileSets/ASCII.xml" tileIndex="193" color="#FF68D361" />
+			</TileStackContentSource>
+		</Tile.source>
+	</Tile>
+	<Tile name="WheatPlant_4">
+		<Tile.source>
+			<TileStackContentSource>
+				<TileSetContentSource tileSet="TileSets/ASCII.xml" tileIndex="219" color="#FF685638" />
+				<TileSetContentSource tileSet="TileSets/ASCII.xml" tileIndex="205" color="#FFA28756" />
+				<TileSetContentSource tileSet="TileSets/ASCII.xml" tileIndex="207" color="#FF68D361" />
+			</TileStackContentSource>
+		</Tile.source>
+	</Tile>
+	<Tile name="WheatPlant_5">
+		<Tile.source>
+			<TileStackContentSource>
+				<TileSetContentSource tileSet="TileSets/ASCII.xml" tileIndex="219" color="#FF685638" />
+				<TileSetContentSource tileSet="TileSets/ASCII.xml" tileIndex="205" color="#FFA28756" />
+				<TileSetContentSource tileSet="TileSets/ASCII.xml" tileIndex="202" color="#FF68D361" />
+			</TileStackContentSource>
+		</Tile.source>
+	</Tile>
+	<Tile name="WheatPlant_6">
+		<Tile.source>
+			<TileStackContentSource>
+				<TileSetContentSource tileSet="TileSets/ASCII.xml" tileIndex="219" color="#FF685638" />
+				<TileSetContentSource tileSet="TileSets/ASCII.xml" tileIndex="205" color="#FFA28756" />
+				<TileSetContentSource tileSet="TileSets/ASCII.xml" tileIndex="208" color="#FF68D361" />
+			</TileStackContentSource>
+		</Tile.source>
+	</Tile>
+	<Tile name="WheatPlant_7">
+		<Tile.source>
+			<TileStackContentSource>
+				<TileSetContentSource tileSet="TileSets/ASCII.xml" tileIndex="219" color="#FF685638" />
+				<TileSetContentSource tileSet="TileSets/ASCII.xml" tileIndex="205" color="#FFA28756" />
+				<TileSetContentSource tileSet="TileSets/ASCII.xml" tileIndex="208" color="#FFFFEB59" />
+			</TileStackContentSource>
+		</Tile.source>
+	</Tile>
 	<Tile name="Solid">
 		<Tile.source>
 			<TileSetContentSource tileSet="TileSets/ASCII.xml" tileIndex="219" />

@@ -15,6 +15,7 @@ namespace ASCIIWorld.Rendering
 
 		private IRenderable _pickaxe;
 		private IRenderable _hoe;
+		private IRenderable _wheatSeed;
 
 		#endregion
 
@@ -43,6 +44,7 @@ namespace ASCIIWorld.Rendering
 		{
 			_pickaxe = new Tile(content.Load<AtlasTileSet>("TileSets/SampleBlocks.xml"), "Pickaxe");
 			_hoe = new Tile(content.Load<AtlasTileSet>("TileSets/SampleBlocks.xml"), "Hoe");
+			_wheatSeed = new Tile(content.Load<AtlasTileSet>("TileSets/SampleBlocks.xml"), "WheatSeed");
 		}
 
 		public void Render(ITessellator tessellator, Item item)
@@ -63,6 +65,10 @@ namespace ASCIIWorld.Rendering
 			else if (item is HoeItem)
 			{
 				return _hoe;
+			}
+			else if (item is WheatSeedItem)
+			{
+				return _wheatSeed;
 			}
 			else if (item is BlockItem)
 			{

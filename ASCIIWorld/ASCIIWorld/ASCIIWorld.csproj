@@ -66,6 +66,7 @@
   <ItemGroup>
     <Compile Include="AppSettings.cs" />
     <Compile Include="ASCIIWorldGameWindow.cs" />
+    <Compile Include="Data\BlockBehavior.cs" />
     <Compile Include="Data\BlockItem.cs" />
     <Compile Include="Data\BlockRegistry.cs" />
     <Compile Include="Data\Chunk.cs" />
@@ -107,6 +108,7 @@
     <Compile Include="Data\PickaxeItem.cs" />
     <Compile Include="Data\BlockEntity.cs" />
     <Compile Include="Data\PlayerEntity.cs" />
+    <Compile Include="Data\WheatSeedItem.cs" />
     <Compile Include="IO\BlockRegistryContentProvider.cs" />
     <Compile Include="Rendering\Animation.cs" />
     <Compile Include="Data\Block.cs" />
@@ -115,6 +117,7 @@
     <Compile Include="Rendering\IRenderable.cs" />
     <Compile Include="Rendering\ItemRenderManager.cs" />
     <Compile Include="Rendering\IUpdateable.cs" />
+    <Compile Include="Rendering\MetadataTileSet.cs" />
     <Compile Include="Rendering\RegionBoundedTileStack.cs" />
     <Compile Include="Rendering\TileStack.cs" />
     <Compile Include="Rendering\Tile.cs" />
@@ -258,6 +261,11 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Blocks\TilledSoil.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Assets\Blocks\WheatPlant.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>

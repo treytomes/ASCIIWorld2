@@ -1,23 +1,27 @@
-﻿namespace ASCIIWorld.Data
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace ASCIIWorld.Data
 {
-	public class HoeItem : Item
+	public class WheatSeedItem : Item
 	{
 		#region Fields
 
-		private int _dirtId;
-		private int _grassId;
 		private int _tilledSoil;
-		
+		private int _wheatPlant;
+
 		#endregion
 
 		#region Constructors
 
-		public HoeItem()
-			: base("Hoe")
+		public WheatSeedItem()
+			: base("Wheat Seed")
 		{
-			_dirtId = BlockRegistry.Instance.GetId("Dirt");
-			_grassId = BlockRegistry.Instance.GetId("Grass");
 			_tilledSoil = BlockRegistry.Instance.GetId("Tilled Soil");
+			_wheatPlant = BlockRegistry.Instance.GetId("Wheat Plant");
 		}
 
 		#endregion
@@ -35,13 +39,13 @@
 
 			layer = level.GetHighestVisibleLayer(blockX, blockY);
 			var blockId = level[layer, blockX, blockY];
-			if ((blockId == _dirtId) || (blockId == _grassId))
+			if ((blockId == _tilledSoil))
 			{
-				level[layer, blockX, blockY] = _tilledSoil;
+				level[layer, blockX, blockY] = _wheatPlant;
+				isConsumed = true;
 			}
 
 			// TODO: If durability <= 0, isConsumed = true.
-			isConsumed = false;
 		}
 
 		#endregion
